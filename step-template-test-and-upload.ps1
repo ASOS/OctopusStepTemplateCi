@@ -1,4 +1,4 @@
-﻿#requires -version 4
+#requires -version 4
 
 # TODO
 # * add some unit tests
@@ -159,9 +159,16 @@ function Get-ScriptBody {
     )
     $scriptBody = [IO.File]::ReadAllText($inputFile)
     #remove 'metadata' parameters
-    $scriptBody = Remove-VariableFromScript -ScriptBody $scriptBody -VariableName StepTemplateName
-    $scriptBody = Remove-VariableFromScript -ScriptBody $scriptBody -VariableName StepTemplateDescription
-    $scriptBody = Remove-VariableFromScript -ScriptBody $scriptBody -VariableName StepTemplateParameters
+    if ($inputFile -match ".*\.scriptmodule\.ps1")
+    {
+        $scriptBody = Remove-VariableFromScript -ScriptBody $scriptBody -VariableName ScriptModuleName    
+    }
+    elseif ($inputFile -match ".*\.steptemplate\.ps1")
+    {
+        $scriptBody = Remove-VariableFromScript -ScriptBody $scriptBody -VariableName StepTemplateName
+        $scriptBody = Remove-VariableFromScript -ScriptBody $scriptBody -VariableName StepTemplateDescription
+        $scriptBody = Remove-VariableFromScript -ScriptBody $scriptBody -VariableName StepTemplateParameters
+    }
     $scriptBody = $scriptBody.TrimStart("`r", "`n")
     return $scriptBody
 }
@@ -351,12 +358,80 @@ function Run-Tests {
         throw "$($testResult.FailedCount) tests failed for step template '$inputFile'"
     }
     $testResultsFile = $inputFile.Replace(".ps1", ".generic.TestResults.xml")
-    $testResult = Invoke-Pester -Script @{ Path = "$PSScriptRoot\step-template-generic-tests.ps1"; Parameters = @{ Sut = $inputFile } } -PassThru -OutputFile $testResultsFile -OutputFormat NUnitXml
+    if ($inputFile -match ".*\.scriptmodule\.ps1")
+    {
+        $testResult = Invoke-Pester -Script @{ Path = "$PSScriptRoot\scriptmodule-generic-tests.ps1"; Parameters = @{ Sut = $inputFile } } -PassThru -OutputFile $testResultsFile -OutputFormat NUnitXml
+    }
+    else
+    {
+        $testResult = Invoke-Pester -Script @{ Path = "$PSScriptRoot\step-template-generic-tests.ps1"; Parameters = @{ Sut = $inputFile } } -PassThru -OutputFile $testResultsFile -OutputFormat NUnitXml
+    }
+    
 
     if ($testResult.FailedCount -gt 0) {
         throw "$($testResult.FailedCount) tests failed for step template '$inputFile'"
     }
 }
+
+
+function Upload-ScriptModule {
+[CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [string] $inputFile,
+        [Parameter(Mandatory)]
+        [string] $octopusURI,
+        [Parameter(Mandatory)]
+        [string] $apikey
+    )
+
+$header = @{ "X-Octopus-ApiKey" = $apikey }
+
+#Module Name and Powershell Script
+$ModuleName = Get-VariableFromScriptFile -Path $InputFile -VariableName ScriptModuleName
+$ModuleScript = Get-ScriptBody -inputFile $inputFile
+
+
+#Getting if module already exists, and if it doesnt, create it
+$Modules = Invoke-WebRequest $octopusURI/api/LibraryVariableSets -Method GET -Headers $header | select -ExpandProperty content | ConvertFrom-Json
+$ScriptModule = $Modules.Items | ?{$_.name -eq $ModuleName}
+
+If($ScriptModule -eq $null){
+    
+    $SMBody = [PSCustomObject]@{
+        ContentType = "ScriptModule"
+        Name = $ModuleName
+    } | ConvertTo-Json
+
+    $Scriptmodule = Invoke-WebRequest $octopusURI/api/LibraryVariableSets -Method POST -Body $SMBody -Headers $header | select -ExpandProperty content | ConvertFrom-Json    
+}
+
+#Getting the library variable set asociated with the module
+$Variables = Invoke-WebRequest $octopusURI/$($Scriptmodule.Links.Variables) -Headers $header | select -ExpandProperty content | ConvertFrom-Json
+
+#Creating/updating the variable that holds the Powershell script
+If($Variables.Variables.Count -eq 0)
+{
+    $Variable = [PSCustomObject]@{   
+        Name = "Octopus.Script.Module[$Modulename]"    
+        Value = $ModuleScript #Powershell script goes here
+    }
+
+    $Variables.Variables += $Variable
+
+    $VSBody = $Variables | ConvertTo-Json -Depth 3
+}
+else{    
+    $Variables.Variables[0].value = $ModuleScript #Updating powershell script
+    $VSBody = $Variables | ConvertTo-Json -Depth 3    
+}
+
+#Updating the library variable set
+Invoke-WebRequest $octopusURI/$($Scriptmodule.Links.Variables) -Headers $header -Body $VSBody -Method PUT | select -ExpandProperty content | ConvertFrom-Json
+
+}
+
+
 
 function Upload-StepTemplateIfChanged {
     [CmdletBinding()]
@@ -418,10 +493,11 @@ try {
     Remove-Item "*.TestResults.xml" -recurse
 
     $overallResult = $true
-    foreach ($inputFile in (Get-ChildItem $PSScriptRoot -filter "*.steptemplate.ps1"))
+    foreach ($inputFile in (Get-ChildItem "$PSScriptRoot\StepTemplates" -filter "*.steptemplate.ps1"))
     {
         try
         {
+            Write-Host "PROCESSING STEP TEMPLATES"
             Write-Host "================================="
             Write-Host "Processing $inputFile"
 
@@ -436,6 +512,26 @@ try {
         catch
         {
             $overallResult = $false
+            Write-Error -ErrorRecord $_
+        }
+    }
+
+    foreach ($inputfile in (Get-ChildItem "$PSScriptRoot\ScriptModules" -filter "*.scriptmodule.ps1"))
+    {
+        try
+        {
+            Write-Host "PROCESSING SCRIPT MODULES"
+            Write-Host "================================="
+            Write-Host "Processing $inputFile"
+
+            Run-Tests $inputFile.FullName
+            if (Test-Path Env:\TEAMCITY_VERSION) {
+                #only upload if we are running under teamcity
+                Upload-ScriptModule -inputFile $inputFile.FullName -octopusURI $ENV:OctopusURI -apikey $ENV:OctopusApikey
+            }
+        }
+        catch
+        {
             Write-Error -ErrorRecord $_
         }
     }
