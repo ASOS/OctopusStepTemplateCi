@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>OctopusStepTemplateCi</id>
+    <version>$version$</version>
+    <title>Octopus Step Template Continuous Integration Cmdlets</title>
+    <summary>A set of testing tools for testing and publishing Octopus Deploy step templates and script modules.</summary>
+    <description>A set of cmdlets that enable continuous integration patterns for Octopus Deploy step templates and script modules.</description>
+    <tags>powershell octopus deploy unit testing tdd</tags>
+    <authors>Asos</authors>
+    <projectUrl>https://github.com/ASOS/OctopusStepTemplateCi</projectUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <copyright>(c) 2016 ASOS, licensed under Apache 2.0 License.</copyright>
+  </metadata>
+  <files>
+    <file src="OctopusStepTemplateCi.psm1" target="" />
+    <file src="OctopusStepTemplateCi.psd1" target="" />
+    <file src="LICENSE*" target="" />
+    <file src="Cmdlets\**\*.*" target="Cmdlets" />
+    <file src="ScriptValidationTests\**\*.*" target="ScriptValidationTests" />
+  </files>
+</package>
