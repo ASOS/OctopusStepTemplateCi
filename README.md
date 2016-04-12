@@ -6,7 +6,7 @@ A set of cmdlets that enable Continuous Integration (CI) patterns for Octopus De
 
 1. Download the code as a zip file 
 2. If required, unblock the zip file
-3. Extract the zip file to a folder called OctopusStepTemplateCi under your modules fodler (usually `%USERPROFILE%\Documents\WindowsPowerShell\Modules`)
+3. Extract the zip file to a folder called OctopusStepTemplateCi under your modules folder (usually `%USERPROFILE%\Documents\WindowsPowerShell\Modules`)
 4. To confirm its installed, start a new powershell session, and run `Get-Module -ListAvailable -Name OctopusStepTemplateCi`, which will show the module
 
 ## Usage
