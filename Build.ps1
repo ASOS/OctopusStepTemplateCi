@@ -334,6 +334,23 @@ function Are-TemplatesDifferent {
     return $false
 }
 
+function Are-ScriptModulesDifferent {
+[CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        $oldmodule,
+        [Parameter(Mandatory)]
+        $newmodule
+    )
+
+    if ($oldmodule -ne $newmodule)
+    {
+        return $true
+    }
+
+    return $false
+}
+
 function Run-Tests {
     [CmdletBinding()]
     param (
@@ -377,7 +394,7 @@ function Run-Tests {
 
 
 function Upload-ScriptModule {
-[CmdletBinding()]
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
         [string] $inputFile,
@@ -387,50 +404,57 @@ function Upload-ScriptModule {
         [string] $apikey
     )
 
-$header = @{ "X-Octopus-ApiKey" = $apikey }
+    $header = @{ "X-Octopus-ApiKey" = $apikey }
 
-#Module Name and Powershell Script
-$ModuleName = Get-VariableFromScriptFile -Path $InputFile -VariableName ScriptModuleName
-$ModuleScript = Get-ScriptBody -inputFile $inputFile
+    #Module Name and Powershell Script
+    $ModuleName = Get-VariableFromScriptFile -Path $InputFile -VariableName ScriptModuleName
+    $ModuleScript = Get-ScriptBody -inputFile $inputFile
 
+    #Getting if module already exists, and if it doesnt, create it
+    $Modules = Invoke-WebRequest $octopusURI/api/LibraryVariableSets -Method GET -Headers $header -UseBasicParsing | select -ExpandProperty content | ConvertFrom-Json
+    $ScriptModule = $Modules.Items | ?{$_.name -eq $ModuleName}
 
-#Getting if module already exists, and if it doesnt, create it
-$Modules = Invoke-WebRequest $octopusURI/api/LibraryVariableSets -Method GET -Headers $header | select -ExpandProperty content | ConvertFrom-Json
-$ScriptModule = $Modules.Items | ?{$_.name -eq $ModuleName}
-
-If($ScriptModule -eq $null){
+    If($ScriptModule -eq $null){
     
-    $SMBody = [PSCustomObject]@{
-        ContentType = "ScriptModule"
-        Name = $ModuleName
-    } | ConvertTo-Json
+        $SMBody = [PSCustomObject]@{
+            ContentType = "ScriptModule"
+            Name = $ModuleName
+        } | ConvertTo-Json
 
-    $Scriptmodule = Invoke-WebRequest $octopusURI/api/LibraryVariableSets -Method POST -Body $SMBody -Headers $header | select -ExpandProperty content | ConvertFrom-Json    
-}
-
-#Getting the library variable set asociated with the module
-$Variables = Invoke-WebRequest $octopusURI/$($Scriptmodule.Links.Variables) -Headers $header | select -ExpandProperty content | ConvertFrom-Json
-
-#Creating/updating the variable that holds the Powershell script
-If($Variables.Variables.Count -eq 0)
-{
-    $Variable = [PSCustomObject]@{   
-        Name = "Octopus.Script.Module[$Modulename]"    
-        Value = $ModuleScript #Powershell script goes here
+        $Scriptmodule = Invoke-WebRequest $octopusURI/api/LibraryVariableSets -Method POST -Body $SMBody -Headers $header -UseBasicParsing | select -ExpandProperty content | ConvertFrom-Json    
     }
 
-    $Variables.Variables += $Variable
+    #Getting the library variable set asociated with the module
+    $Variables = Invoke-WebRequest $octopusURI/$($Scriptmodule.Links.Variables) -Headers $header -UseBasicParsing | select -ExpandProperty content | ConvertFrom-Json
 
-    $VSBody = $Variables | ConvertTo-Json -Depth 3
-}
-else{    
-    $Variables.Variables[0].value = $ModuleScript #Updating powershell script
-    $VSBody = $Variables | ConvertTo-Json -Depth 3    
-}
+    #Creating/updating the variable that holds the Powershell script
+    If($Variables.Variables.Count -eq 0)
+    {
+        Write-Host "Script module $ModuleName does not exist, creating"
+        $Variable = [PSCustomObject]@{   
+            Name = "Octopus.Script.Module[$Modulename]"    
+            Value = $ModuleScript #Powershell script goes here
+        }
 
-#Updating the library variable set
-Invoke-WebRequest $octopusURI/$($Scriptmodule.Links.Variables) -Headers $header -Body $VSBody -Method PUT | select -ExpandProperty content | ConvertFrom-Json
+        $Variables.Variables += $Variable
 
+        $VSBody = $Variables | ConvertTo-Json -Depth 3
+
+        #Updating the library variable set
+        Invoke-WebRequest $octopusURI/$($Scriptmodule.Links.Variables) -Headers $header -Body $VSBody -Method PUT -UseBasicParsing | select -ExpandProperty content | ConvertFrom-Json
+    }
+    else {
+        if (Are-ScriptModulesDifferent $Variables.Variables[0].value $ModuleScript)
+        {
+            Write-Host "Script module $ModuleName has changed, updating"
+
+            $Variables.Variables[0].value = $ModuleScript #Updating powershell script
+            $VSBody = $Variables | ConvertTo-Json -Depth 3 
+
+            #Updating the library variable set
+            Invoke-WebRequest $octopusURI/$($Scriptmodule.Links.Variables) -Headers $header -Body $VSBody -Method PUT -UseBasicParsing | select -ExpandProperty content | ConvertFrom-Json
+        }  
+    }
 }
 
 
