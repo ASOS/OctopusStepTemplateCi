@@ -357,6 +357,8 @@ function Run-Tests {
     if ($testResult.FailedCount -gt 0) {
         throw "$($testResult.FailedCount) tests failed for step template '$inputFile'"
     }
+
+    write-host "##teamcity[blockOpened name='GenericTests']"
     $testResultsFile = $inputFile.Replace(".ps1", ".generic.TestResults.xml")
     if ($inputFile -match ".*\.scriptmodule\.ps1")
     {
@@ -366,7 +368,7 @@ function Run-Tests {
     {
         $testResult = Invoke-Pester -Script @{ Path = "$PSScriptRoot\step-template-generic-tests.ps1"; Parameters = @{ Sut = $inputFile } } -PassThru -OutputFile $testResultsFile -OutputFormat NUnitXml
     }
-    
+    write-host "##teamcity[blockClosed name='GenericTests']"
 
     if ($testResult.FailedCount -gt 0) {
         throw "$($testResult.FailedCount) tests failed for step template '$inputFile'"
@@ -497,32 +499,27 @@ try {
     {
         try
         {
-            Write-Host "PROCESSING STEP TEMPLATES"
-            Write-Host "================================="
-            Write-Host "Processing $inputFile"
+            Write-Host "##teamcity[blockOpened name='Step Template: $inputFile']"
 
             Run-Tests $inputFile.FullName
             if (Test-Path Env:\TEAMCITY_VERSION) {
                 #only upload if we are running under teamcity
                 Upload-StepTemplateIfChanged -inputFile $inputFile.FullName -octopusURI $ENV:OctopusURI -apikey $ENV:OctopusApikey
-                #Upload-StepTemplateIfChanged -inputFile $inputFile.FullName -octopusURI $ENV:TestOctopusURI -apikey $ENV:TestOctopusApikey
             }
-
         }
         catch
         {
             $overallResult = $false
             Write-Error -ErrorRecord $_
         }
+        Write-Host "##teamcity[blockClosed name='Step Template: $inputFile']"
     }
 
     foreach ($inputfile in (Get-ChildItem "$PSScriptRoot\ScriptModules" -filter "*.scriptmodule.ps1"))
     {
         try
         {
-            Write-Host "PROCESSING SCRIPT MODULES"
-            Write-Host "================================="
-            Write-Host "Processing $inputFile"
+            Write-Host "##teamcity[blockOpened name='Script Module: $inputFile']"
 
             Run-Tests $inputFile.FullName
             if (Test-Path Env:\TEAMCITY_VERSION) {
@@ -532,8 +529,10 @@ try {
         }
         catch
         {
+            $overallResult = $false
             Write-Error -ErrorRecord $_
         }
+        Write-Host "##teamcity[blockClosed name='Script Module: $inputFile']"
     }
 
     if ($overallResult) {
