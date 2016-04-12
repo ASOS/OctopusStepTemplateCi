@@ -6,7 +6,7 @@ A set of cmdlets that enable Continuous Integration (CI) patterns for Octopus De
 
 1. Download the code as a zip file 
 2. If required, unblock the zip file
-3. Extract the zip file to a folder called OctopusStepTemplateCi under your modules fodler (usually %USERPROFILE%\Documents\WindowsPowerShell\Modules)
+3. Extract the zip file to a folder called OctopusStepTemplateCi under your modules fodler (usually `%USERPROFILE%\Documents\WindowsPowerShell\Modules`)
 4. To confirm its installed, start a new powershell session, and run `Get-Module -ListAvailable -Name OctopusStepTemplateCi`, which will show the module
 
 ## Usage
@@ -28,7 +28,7 @@ The default setup expects a directory structure similar to:
 
 ## Commands
 
-`Invoke-OctopusScriptTestSuite` - This will run the Pester tests written specifically for the step tempate / script module, along with Pester tests to confirm that the format of the step template / script module file is in the correct.
+`Invoke-OctopusScriptTestSuite` - This will run the Pester tests written specifically for the step tempate / script module, along with Pester tests to confirm that the format of the step template / script module file is correct.
 
 `Invoke-TeamCityCiUpload` - This will take a number of step template & script modules, run the octopus script tests against them, if the tests pass then they will be uploaded into Octopus if they are different to the version that currently exists within Octopus. This is designed to be run from within TeamCity and therefore formats output in a TeamCity specific format.
 
