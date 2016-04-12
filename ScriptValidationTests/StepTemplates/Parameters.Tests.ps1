@@ -1,26 +1,28 @@
-﻿#requires -version 3
+<#
+Copyright 2016 ASOS.com Limited
 
-# ------------------------------------------------
-# Octopus Deploy Step Template Generic Tests
-# ------------------------------------------------
-#
-# Ver    Who                             When        What
-# 1.00   Matt Richardson (DevOpsGuys)    14-08-15    Initial Version
-# 1.01   Matt Richardson (DevOpsGuys)    07-10-15    Adding tests for required fields on parameters
-# 1.02   Matt Richardson (DevOpsGuys)    24-11-15    Add validation to ensure a script module description is supplied
-# 1.03   Matt Richardson (DevOpsGuys)    30-11-15    Adding new test to ensure we dont overwrite passed in parameters
-# 1.04   Matt Richardson (DevOpsGuys)    01-12-15    Write warning messages as teamcity build warnings
-# 1.05   Matt Richardson (DevOpsGuys)    03-12-15    Add comment to explain why a given test exists
-# 1.06   Matt Richardson (DevOpsGuys)    09-12-15    Updating generic tests to have unique test names
-# 1.07   Matt Richardson (DevOpsGuys)    14-01-16    Convert warnings to test failures, as warnings are not having the required impact
-# 1.08   Matt Richardson (DevOpsGuys)    02-02-16    Add new test for non-ascii characters - getting failures due to bad dashes
-# 1.09   Matt Richardson (DevOpsGuys)    03-02-16    Dont print out teamcity warnings - showing up out of order
-# 1.10   Matt Richardson (DevOpsGuys)    03-02-16    Ensure testing for variables is only done once for each variable
-# 1.11   Matt Richardson (DevOpsGuys)    03-02-16    Add test to ensure pester test names are unique
-# 1.12   Matt Richardson (DevOpsGuys)    04-02-16    Extract tests that are common to step templates and script modules to separate file
-# ------------------------------------------------
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-param ([string] $sut)
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+#>
+
+<#
+.NAME
+    Parameters.Tests
+    
+.SYNOPSIS
+    Pester tests for Parameters.
+#>
+param ([System.String] $sut, [System.String] $TestResultsFile, [System.Collections.Hashtable]$Settings)
+Set-StrictMode -Version Latest
 
 Describe 'Step template parameters' {
     $filename = Split-Path -Leaf $sut
@@ -58,7 +60,7 @@ Describe 'Step template parameters' {
 
                 $scriptBlock = $null
                 try {
-                    $scriptBlock = Get-VariableFromScriptFile -Path $sut -VariableName $variableName -ResolveVariable $false
+                    $scriptBlock = Get-VariableFromScriptFile -Path $sut -VariableName $variableName -DontResolveVariable
                 }
                 catch {
                     #all good here
