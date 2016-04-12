@@ -17,7 +17,7 @@ In a CI tool, you are most likely to use `Invoke-TeamCityCiUpload`. In a develop
 
 The default setup expects a directory structure similar to:
 
-```powershell
+```
 - StepTemplates
   - *.steptemplate.ps1
   - *.steptemplate.tests.ps1
@@ -43,7 +43,7 @@ The default setup expects a directory structure similar to:
 `New-ScriptValidationTest` - This will create a stub script validation test powershell file as a starting point for a new test.
 
 ## Future/outstanding improvements
-- [ ] add support for PSScriptAnalyzer tests
+- [ ] improve support for PSScriptAnalyzer tests
 - [ ] publish to powershell gallery
 - [ ] investigate how this can tie in with the new 'Store scripts in nuget package' [feature](https://github.com/OctopusDeploy/Issues/issues/2189) in 3.3.0
 - [ ] ensure that the [breaking change](http://docs.octopusdeploy.com/display/OD/Sensitive+Properties+API+Changes+in+Release+3.3) around sensitive properties in 3.3.0 doesn't affect things
