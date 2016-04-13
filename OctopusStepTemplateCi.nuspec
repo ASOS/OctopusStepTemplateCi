@@ -13,10 +13,7 @@
     <copyright>(c) 2016 ASOS, licensed under Apache 2.0 License.</copyright>
   </metadata>
   <files>
-    <file src="OctopusStepTemplateCi.psm1" target="" />
-    <file src="OctopusStepTemplateCi.psd1" target="" />
-    <file src="LICENSE*" target="" />
-    <file src="Cmdlets\**\*.*" target="Cmdlets" />
-    <file src="ScriptValidationTests\**\*.*" target="ScriptValidationTests" />
+    <file src="OctopusStepTemplateCi\**\*.*" target="" />
+    <file src="LICENSE" target="" />
   </files>
 </package>
