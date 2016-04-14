@@ -5,14 +5,15 @@ image: WMF 5
 environment:
   PowerShellGalleryApiKey:
     secure: hpjzyINysy/YqCBScdQj3xfAoOxKx1fdfNJzmJb7wX0HPo0q0t+tIN7mOyTKGsnG
+  Publish: false
 install:
 - ps: cinst pester
 build_script:
 - ps: >-
     $moduleFile = Resolve-Path '.\OctopusStepTemplateCi\OctopusStepTemplateCi.psd1'
     Set-Content -Path $moduleFile -Value (Get-Content -Path $moduleFile | % {
-    if ($_.StartsWith('ModuleVersion')) { "ModuleVersion = '{0}'" -f $env:APPVEYOR_BUILD_VERSION }
-    else { $_ }
+      if ($_.StartsWith('ModuleVersion')) { "ModuleVersion = '{0}'" -f $env:APPVEYOR_BUILD_VERSION }
+      else { $_ }
     })
     nuget.exe pack OctopusStepTemplateCi.nuspec -version $env:APPVEYOR_BUILD_VERSION
     $nupkg = "OctopusStepTemplateCi.{0}.nupkg" -f $env:APPVEYOR_BUILD_VERSION
@@ -21,10 +22,21 @@ test_script:
 - ps: >-
     $res = Invoke-Pester -Path ".\OctopusStepTemplateCi\Cmdlets" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
     (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
-  if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
+    if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
 artifacts:
 - path: OctopusStepTemplateCi.%APPVEYOR_BUILD_VERSION%.nupkg
-deploy_script:
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: zJghEg4jSFdkNek+BVf4xK75EhYaNNJxhfbkWQmqmGt3z/ESjO4LePGIm2R1LpI9
+  draft: true
+  force_update: true
+  on:
+    branch: master
+    Publish: true
+after_deploy:
 - ps: >-
-    Install-PackageProvider -Name NuGet -Force
-    Publish-Module -Path '.\OctopusStepTemplateCi' -NuGetApiKey $env:PowerShellGalleryApiKey -LicenseUri "http://www.apache.org/licenses/LICENSE-2.0.html" -ProjectUri "https://github.com/ASOS/OctopusStepTemplateCi" -Tags "powershell,octopus deploy,unit testing,tdd"
+    if ($env:Publish -eq "true") {
+      Install-PackageProvider -Name NuGet -Force
+      Publish-Module -Path '.\OctopusStepTemplateCi' -NuGetApiKey $env:PowerShellGalleryApiKey -LicenseUri "http://www.apache.org/licenses/LICENSE-2.0.html" -ProjectUri "https://github.com/ASOS/OctopusStepTemplateCi" -Tags "powershell,octopus deploy,unit testing,tdd"
+    }
