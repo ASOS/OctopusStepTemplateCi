@@ -1,4 +1,5 @@
 # Octopus Step Template CI
+[![Build status](https://ci.appveyor.com/api/projects/status/lxkpk7itkcmho5a8?svg=true)](https://ci.appveyor.com/project/paulmarsy/octopussteptemplateci)
 
 A set of cmdlets that enable Continuous Integration (CI) patterns for Octopus Deploy step templates and script modules.
 
