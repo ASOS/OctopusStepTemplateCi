@@ -27,7 +27,7 @@ limitations under the License.
 RootModule = 'OctopusStepTemplateCi.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0'
+ModuleVersion = '1.1'
 
 # ID used to uniquely identify this module
 GUID = 'd9623624-9b21-4bd0-95b8-076589f1fab3'
