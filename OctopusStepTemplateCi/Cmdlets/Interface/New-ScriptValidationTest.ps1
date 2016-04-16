@@ -42,7 +42,7 @@ function New-ScriptValidationTest {
         [Parameter(Mandatory=$false)][ValidateScript({ Test-Path $_ })][System.String]$Path = $PWD
     )
     
-    $fileName = Join-Path $Path ("{0}.Tests.ps1" -f ($Name -replace '\s', '-'))
+    $fileName = Join-Path $Path ("{0}.ScriptValidationTest.ps1" -f ($Name -replace '\s', '-'))
     
     if (Test-Path $fileName) {
         throw "Script Validation Test file '$fileName' already exists"
