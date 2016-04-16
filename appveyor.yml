@@ -1,14 +1,12 @@
-version: 1.0.{build}
+version: 1.0.{build}-{branch}
 pull_requests:
   do_not_increment_build_number: true
-branches:
-  only:
-  - master
 image: WMF 5
 environment:
   PowerShellGalleryApiKey:
     secure: hpjzyINysy/YqCBScdQj3xfAoOxKx1fdfNJzmJb7wX0HPo0q0t+tIN7mOyTKGsnG
-  Publish: true
+  Publish: false
+  PublishRelease: false
 install:
 - ps: cinst pester
 build_script:
@@ -28,26 +26,47 @@ build_script:
     Push-AppveyorArtifact (Resolve-Path $nupkg) -FileName $nupkg
 test_script:
 - ps: >-
-    $res = Invoke-Pester -Path ".\OctopusStepTemplateCi\Cmdlets" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru
+    $res = Invoke-Pester -Path ".\OctopusStepTemplateCi\Cmdlets" -OutputFormat NUnitXml -OutputFile TestsResults.xml -PassThru -CodeCoverage (Get-ChildItem -Path ".\OctopusStepTemplateCi\Cmdlets" -File -Recurse -Include "*.ps1" -Exclude "*.Tests.ps1" | % FullName)
 
     (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
 
     if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
 artifacts:
 - path: OctopusStepTemplateCi.%APPVEYOR_BUILD_VERSION%.nupkg
+before_deploy:
+- ps: >-
+    # Only publish from ASOS repo
+
+    if ($env:APPVEYOR_REPO_NAME -eq "ASOS/OctopusStepTemplateCi") {
+      $env:Publish = "true"
+      # Only publish a new release if a tag (new version) is being built
+      $env:PublishRelease = $env:APPVEYOR_REPO_TAG
+    }
 deploy:
 - provider: GitHub
+  release: Rolling CI Build
+  description: Rolling CI build release
+  auth_token:
+    secure: zJghEg4jSFdkNek+BVf4xK75EhYaNNJxhfbkWQmqmGt3z/ESjO4LePGIm2R1LpI9
+  draft: false
+  prerelease: true
+  force_update: true
+  on:
+    Publish: true
+- provider: GitHub
+  release: Release - $(APPVEYOR_REPO_TAG_NAME) - ($(APPVEYOR_BUILD_VERSION))
+  description: 'TODO: Enter description before publishing release'
   auth_token:
     secure: zJghEg4jSFdkNek+BVf4xK75EhYaNNJxhfbkWQmqmGt3z/ESjO4LePGIm2R1LpI9
   draft: true
   force_update: true
   on:
-    branch: master
     Publish: true
+    PublishRelease: true
 after_deploy:
 - ps: >-
     if ($env:Publish -eq "true") {
       Install-PackageProvider -Name NuGet -Force
-      Publish-Module -Path '.\OctopusStepTemplateCi' -NuGetApiKey $env:PowerShellGalleryApiKey -LicenseUri "http://www.apache.org/licenses/LICENSE-2.0.html" -ProjectUri "https://github.com/ASOS/OctopusStepTemplateCi" -Tags "powershell,octopus deploy,unit testing,tdd"
+      Publish-Module -Path '.\OctopusStepTemplateCi' -NuGetApiKey $env:PowerShellGalleryApiKey -LicenseUri "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
  
