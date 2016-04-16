@@ -25,6 +25,7 @@ limitations under the License.
 Set-StrictMode -Version Latest
 
 <# Interface Functions exported in the PSD1 file #>
+. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Export-StepTemplate.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Invoke-OctopusScriptTestSuite.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Invoke-TeamCityCiUpload.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-ScriptModule.ps1')"
