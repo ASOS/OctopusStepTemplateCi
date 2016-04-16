@@ -1,7 +1,17 @@
-version: 1.0.{build}-{branch}
-pull_requests:
-  do_not_increment_build_number: true
+version: 1.1.{build}
+branches:
+  only:
+  - master
 image: WMF 5
+init:
+- ps: >-
+    # Only publish from ASOS repo
+
+    if ($env:APPVEYOR_REPO_NAME -eq "ASOS/OctopusStepTemplateCi") {
+      $env:Publish = "true"
+      # Only publish a new release if a tag (new version) is being built
+      $env:PublishRelease = $env:APPVEYOR_REPO_TAG
+    }
 environment:
   PowerShellGalleryApiKey:
     secure: hpjzyINysy/YqCBScdQj3xfAoOxKx1fdfNJzmJb7wX0HPo0q0t+tIN7mOyTKGsnG
@@ -33,15 +43,6 @@ test_script:
     if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
 artifacts:
 - path: OctopusStepTemplateCi.%APPVEYOR_BUILD_VERSION%.nupkg
-before_deploy:
-- ps: >-
-    # Only publish from ASOS repo
-
-    if ($env:APPVEYOR_REPO_NAME -eq "ASOS/OctopusStepTemplateCi") {
-      $env:Publish = "true"
-      # Only publish a new release if a tag (new version) is being built
-      $env:PublishRelease = $env:APPVEYOR_REPO_TAG
-    }
 deploy:
 - provider: GitHub
   release: Rolling CI Build
@@ -52,6 +53,7 @@ deploy:
   prerelease: true
   force_update: true
   on:
+    branch: master
     Publish: true
 - provider: GitHub
   release: Release - $(APPVEYOR_REPO_TAG_NAME) - ($(APPVEYOR_BUILD_VERSION))
@@ -61,6 +63,7 @@ deploy:
   draft: true
   force_update: true
   on:
+    branch: master
     Publish: true
     PublishRelease: true
 after_deploy:
