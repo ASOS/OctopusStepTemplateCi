@@ -18,7 +18,10 @@ environment:
   Publish: false
   PublishRelease: false
 install:
-- ps: cinst pester
+- ps: >-
+    cinst pester
+
+    cinst psget
 build_script:
 - ps: >-
     $moduleFile = Resolve-Path '.\OctopusStepTemplateCi\OctopusStepTemplateCi.psd1'
@@ -41,6 +44,18 @@ test_script:
     (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestsResults.xml))
 
     if ($res.FailedCount -gt 0) { throw "$($res.FailedCount) tests failed."}
+
+
+    $nupkg = Resolve-Path (".\OctopusStepTemplateCi.{0}.nupkg" -f $env:APPVEYOR_BUILD_VERSION)
+
+    Import-Module PsGet
+
+    PsGet\Install-Module -ModuleName OctopusStepTemplateCi -ModulePath $nupkg -Type ZIP -DoNotImport
+
+
+    # Try loading module to validate
+
+    Import-Module .\OctopusStepTemplateCi -Force -Verbose
 artifacts:
 - path: OctopusStepTemplateCi.%APPVEYOR_BUILD_VERSION%.nupkg
 deploy:
@@ -55,6 +70,7 @@ deploy:
   on:
     branch: master
     Publish: true
+    PublishRelease: true
 - provider: GitHub
   release: Release - $(APPVEYOR_REPO_TAG_NAME) - ($(APPVEYOR_BUILD_VERSION))
   description: 'TODO: Enter description before publishing release'
@@ -72,4 +88,11 @@ after_deploy:
       Install-PackageProvider -Name NuGet -Force
       Publish-Module -Path '.\OctopusStepTemplateCi' -NuGetApiKey $env:PowerShellGalleryApiKey -LicenseUri "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
+on_failure:
+- ps: >-
+    Get-ChildItem | Out-Host
+
+    $blockRdp = $true
+
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
  
