@@ -35,6 +35,9 @@ Describe "Invoke-OctopusScriptTestSuite" {
     New-Item "TestDrive:\test.steptemplate.Tests.ps1" -ItemType File | Out-Null
     New-Item "TestDrive:\test.scriptmodule.ps1" -ItemType File | Out-Null
     New-Item "TestDrive:\test.scriptmodule.Tests.ps1" -ItemType File | Out-Null
+    New-Item "TestDrive:\Generic" -ItemType Directory | Out-Null  
+    New-Item "TestDrive:\StepTemplates" -ItemType Directory | Out-Null
+    New-Item "TestDrive:\ScriptModules" -ItemType Directory | Out-Null
     Mock Invoke-PesterForTeamCity {}
     Mock Get-ScriptValidationTestsPath {"TestDrive:\"}
     
@@ -47,7 +50,8 @@ Describe "Invoke-OctopusScriptTestSuite" {
     }
     
     It "Should run the generic tests" {
-        Mock Invoke-PesterForTeamCity {} -ParameterFilter { $Script.Path -like "*\Generic\*" } -Verifiable
+        Mock Invoke-PesterForTeamCity {} -ParameterFilter { $TestResultsFile -like "*.generic.TestResults.xml" } -Verifiable
+        Mock Get-ChildItem { @(@{ FullName = "TestDrive:\Generic\1.ScriptValidationTest.ps1" }, @{FullName = "TestDrive:\Generic\2.ScriptValidationTest.ps1" }) } -ParameterFilter { $Path -like "*\Generic\*.ScriptValidationTest.ps1" } -Verifiable
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
         
@@ -55,7 +59,8 @@ Describe "Invoke-OctopusScriptTestSuite" {
     }
     
     It "Should run the step template tests" {
-        Mock Invoke-PesterForTeamCity {} -ParameterFilter { $Script.Path -like "*\StepTemplates\*" } -Verifiable
+        Mock Invoke-PesterForTeamCity {} -ParameterFilter { $TestResultsFile -like "*.step-template.TestResults.xml" } -Verifiable
+        Mock Get-ChildItem { @(@{ FullName = "TestDrive:\StepTemplates\1.ScriptValidationTest.ps1" }, @{FullName = "TestDrive:\StepTemplates\2.ScriptValidationTest.ps1" }) } -ParameterFilter { $Path -like "*\StepTemplates\*.ScriptValidationTest.ps1" } -Verifiable
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
         
@@ -63,7 +68,8 @@ Describe "Invoke-OctopusScriptTestSuite" {
     }
     
     It "Should run the script module tests" {
-        Mock Invoke-PesterForTeamCity {} -ParameterFilter { $Script.Path -like "*\ScriptModules\*" } -Verifiable
+        Mock Invoke-PesterForTeamCity {} -ParameterFilter { $TestResultsFile -like "*.script-module.TestResults.xml" } -Verifiable
+        Mock Get-ChildItem { @(@{ FullName = "TestDrive:\ScriptModules\1.ScriptValidationTest.ps1" }, @{FullName = "TestDrive:\ScriptModules\2.ScriptValidationTest.ps1" }) } -ParameterFilter { $Path -like "*\ScriptModules\*.ScriptValidationTest.ps1" } -Verifiable
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
         
@@ -71,7 +77,7 @@ Describe "Invoke-OctopusScriptTestSuite" {
     }
     
     It "Should set success to false if there are any failed tests" {
-        Mock Invoke-PesterForTeamCity { New-Object -TypeName PSObject -Property @{ Passed = 0; Failed = 1 } } -ParameterFilter { $Script.Path -like "*\ScriptModules\*" }
+        Mock Invoke-PesterForTeamCity { New-Object -TypeName PSObject -Property @{ Passed = 0; Failed = 1 } } -ParameterFilter { $TestResultsFile -like "*.script-module.TestResults.xml" }
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\" | % Success | Should Be $false
     }
