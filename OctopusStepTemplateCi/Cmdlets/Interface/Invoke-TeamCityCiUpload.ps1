@@ -92,6 +92,9 @@ function Invoke-TeamCityCiUpload {
         $passedTests = 0
         $failedTests = 0
         $itemsToProcess | % {
+            Write-TeamCityMessage "##teamcity[blockOpened name='$($_.BaseName)']"
+            Write-TeamCityMessage "##teamcity[progressMessage 'Running tests for $($_.BaseName)']"
+            
             $testResults = Invoke-OctopusScriptTestSuite -Path $_.FullName `
                                         -ResultFilesPath $BuildDirectory `
                                         -StepTemplateFilter $StepTemplateFilter `
@@ -102,11 +105,18 @@ function Invoke-TeamCityCiUpload {
             $failedTests += $testResults.Failed
                                             
             if ($testResults.Success -and $UploadIfSuccessful) {
-                    $uploadCount += Get-ChildItem -Path $_.FullName -File -Recurse | % {
-                        if ($_.Name -like $ScriptModuleFilter) { Sync-ScriptModule -Path $_.FullName -UseCache }
-                        elseif ($_.Name -like $StepTemplateFilter) { Sync-StepTemplate -Path $_.FullName -UseCache }
-                    } | % UploadCount | Measure-Object -Sum | % Sum
+                Write-TeamCityMessage "##teamcity[progressMessage 'Starting sync of $($_.BaseName) to Octopus']"
+                
+                $uploadCount += Get-ChildItem -Path $_.FullName -File -Recurse | % {
+                    if ($_.Name -like $ScriptModuleFilter) { Sync-ScriptModule -Path $_.FullName -UseCache }
+                    elseif ($_.Name -like $StepTemplateFilter) { Sync-StepTemplate -Path $_.FullName -UseCache }
+                } | % UploadCount | Measure-Object -Sum | % Sum
+                if ($uploadCount -gt 0) {
+                    Write-TeamCityMessage "##teamcity[progressMessage 'Uploaded $($_.BaseName) to Octopus']"
                 }
+            }
+            
+            Write-TeamCityMessage "##teamcity[blockClosed name='$($_.BaseName)']"
         }
         
         if ($UploadIfSuccessful) {
