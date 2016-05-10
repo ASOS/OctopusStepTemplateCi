@@ -103,9 +103,9 @@ Describe "Invoke-TeamCityCiUpload" {
      
      It "Should handle only a single file being returned from Get-ChildItem in individual mode" {
          New-StepTemplate -Name "test3" -Path "TestDrive:\" 
-         Mock Get-ChildItem { @{Name = "test3.steptemplate.ps1"; FullName = "TestDrive:\test3.steptemplate.ps1" } } -ParameterFilter { $Filter -eq "*.steptemplate.ps1" }
+         Mock Get-ChildItem { @{Name = "test3.steptemplate.ps1"; FullName = "TestDrive:\test3.steptemplate.ps1"; BaseName = "test3.steptemplate" } } -ParameterFilter { $Filter -eq "*.steptemplate.ps1" }
          New-ScriptModule -Name "test4" -Path "TestDrive:\"
-         Mock Get-ChildItem { @{Name = "test4.scriptmodule.ps1"; FullName = "TestDrive:\test4.scriptmodule.ps1" } } -ParameterFilter { $Filter -eq "*.scriptmodule.ps1" }
+         Mock Get-ChildItem { @{Name = "test4.scriptmodule.ps1"; FullName = "TestDrive:\test4.scriptmodule.ps1"; BaseName = "test4.steptemplate"  } } -ParameterFilter { $Filter -eq "*.scriptmodule.ps1" }
          
          { Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" -ProcessingMode Individual } | Should Not Throw
      }
