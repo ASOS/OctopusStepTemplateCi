@@ -66,7 +66,7 @@ function Export-StepTemplate {
             "Step Template exported to $ExportPath"
         }
         "Clipboard" {
-            Microsoft.PowerShell.Management\Set-Clipboard -Value $stepTemplate
+             [System.Windows.Forms.Clipboard]::SetText($stepTemplate)
             
             "Step Template exported clipboard"
         }

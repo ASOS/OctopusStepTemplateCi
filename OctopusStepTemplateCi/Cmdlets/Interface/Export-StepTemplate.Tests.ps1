@@ -75,12 +75,10 @@ Describe "Export-StepTemplate" {
     }
     
     Context "Clipboard" {
-        It "Should export the steptemplate to the system clipboard" {
-            Mock Microsoft.PowerShell.Management\Set-Clipboard {} -ParameterFilter { $Value -eq "steptemplate" } -Verifiable
-            
+        It "Should export the steptemplate to the system clipboard" {           
             Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportToClipboard
             
-            Assert-VerifiableMocks 
+            [System.Windows.Forms.Clipboard]::GetText() | Should Be "steptemplate"
         }
     }
 }
