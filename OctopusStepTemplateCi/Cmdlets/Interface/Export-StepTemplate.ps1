@@ -66,6 +66,7 @@ function Export-StepTemplate {
             "Step Template exported to $ExportPath"
         }
         "Clipboard" {
+             Add-Type -AssemblyName System.Windows.Forms
              [System.Windows.Forms.Clipboard]::SetText($stepTemplate)
             
             "Step Template exported clipboard"
