@@ -100,7 +100,8 @@ function Invoke-TeamCityCiUpload {
                                         -StepTemplateFilter $StepTemplateFilter `
                                         -ScriptModuleFilter $ScriptModuleFilter `
                                         -TestSettings $TestSettings `
-                                        -SuppressPesterOutput:$SuppressPesterOutput
+                                        -SuppressPesterOutput:$SuppressPesterOutput `
+                                        -CiTool "TeamCity"
             $passedTests += $testResults.Passed
             $failedTests += $testResults.Failed
                                             
