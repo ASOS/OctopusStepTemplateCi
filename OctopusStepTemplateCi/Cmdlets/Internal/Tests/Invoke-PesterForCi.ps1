@@ -36,7 +36,7 @@ function Invoke-PesterForCi {
     Update-XPathValue -Path $TestResultsFile -XPath '//test-results/test-suite/@name' -Value $TestName
 
     #tell teamcity to import the test results. Cant use the xml report processor feature of TeamCity, due to aysnc issues around updating the test suite name
-    if ($CiTool = "TeamCity"){
+    if ($CiTool -eq "TeamCity"){
         Write-TeamCityMessage "##teamcity[importData type='nunit' path='$TestResultsFile' verbose='true']"
     }
     

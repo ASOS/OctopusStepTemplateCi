@@ -50,7 +50,7 @@ Describe "Invoke-PesterForCi" {
         Assert-VerifiableMocks
     }
     
-    It "Should write out a teamcity message to import the test results file" {
+    It "Should write out a teamcity message to import the test results file when parameter is supplied" {
         Mock Update-XPathValue {}
         Mock Write-TeamCityMessage {} -ParameterFilter { $Message -eq "##teamcity[importData type='nunit' path='TestDrive:\results.xml' verbose='true']" } -Verifiable
         Mock Invoke-Pester { @{PassedCount = 1; FailedCount = 1} }
@@ -59,6 +59,16 @@ Describe "Invoke-PesterForCi" {
         
         Assert-VerifiableMocks
     }
+
+    It "Should NOT write out a teamcity message to import the test results file when parameter has not supplied" {
+        Mock Update-XPathValue {}
+        Mock Write-TeamCityMessage {Param ($Message)} 
+        Mock Invoke-Pester { @{PassedCount = 1; FailedCount = 1} }
+        
+        Invoke-PesterForCi -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml"
+        
+        Assert-MockCalled Write-TeamCityMessage -Scope It -Exactly 0 -ParameterFilter { $Message -eq "##teamcity[importData type='nunit' path='TestDrive:\results.xml' verbose='true']" }
+    }    
     
     It "Should return a hashtable containing the passed and failed count" {
         Mock Update-XPathValue {}
