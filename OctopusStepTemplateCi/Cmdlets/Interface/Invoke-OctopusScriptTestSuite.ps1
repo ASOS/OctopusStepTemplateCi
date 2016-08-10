@@ -67,24 +67,24 @@ function Invoke-OctopusScriptTestSuite {
     $results = ($stepTemplates + $scriptModules) | ? Name -NotLike "*.Tests.ps1" | % {
         $sut = $_.FullName
         $testResultsFile = Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".TestResults.xml")
-        Invoke-PesterForTeamCity -TestName $_.Name `
+        Invoke-PesterForCi -TestName $_.Name `
             -Script $_.FullName.Replace(".ps1", ".Tests.ps1") `
             -TestResultsFile $testResultsFile `
             -SuppressPesterOutput:$SuppressPesterOutput
         
-        Invoke-PesterForTeamCity -TestName $_.Name `
+        Invoke-PesterForCi -TestName $_.Name `
             -Script @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\Generic\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
             -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".generic.TestResults.xml")) `
             -SuppressPesterOutput:$SuppressPesterOutput
         
         if ($_.Name -like $ScriptModuleFilter) {
-            Invoke-PesterForTeamCity -TestName $_.Name `
+            Invoke-PesterForCi -TestName $_.Name `
                 -Script @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\ScriptModules\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
                 -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".script-module.TestResults.xml")) `
                 -SuppressPesterOutput:$SuppressPesterOutput
         }
         elseif ($_.Name -like $StepTemplateFilter) {
-            Invoke-PesterForTeamCity -TestName $_.Name `
+            Invoke-PesterForCi -TestName $_.Name `
                 -Script @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\StepTemplates\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
                 -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".step-template.TestResults.xml")) `
                 -SuppressPesterOutput:$SuppressPesterOutput
