@@ -64,6 +64,13 @@ function Sync-StepTemplate {
             $newParameter
         })
 
+        $paramCount = ($stepTemplate.Parameters.Count) - 1
+        # Remove the Id from each parameter
+        while ($paramCount -ge 0) {
+            ($stepTemplate.Parameters[$paramCount]).Remove('Id')
+            $paramCount = $paramCount - 1
+        }       
+
         if (Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate) {
             Write-TeamCityMessage "Script template '$templateName' has changed. Updating"
 
