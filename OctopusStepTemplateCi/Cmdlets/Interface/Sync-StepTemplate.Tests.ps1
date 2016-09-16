@@ -108,7 +108,7 @@ Describe "Sync-StepTemplate" {
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" }
             (Sync-StepTemplate -Path $tempFile).UploadCount | Should be 0
         }
-        It "Should not upload a step template which is identical" {
+        It "Should not upload a step template which differs only in the parameter ID" {
             Mock Invoke-OctopusOperation {
                 $oldTemplate = New-StepTemplateObject -Path $tempFile
                 $oldTemplate.Parameters = Convert-HashTableToPsCustomObject $oldTemplate.Parameters
