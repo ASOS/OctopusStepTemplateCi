@@ -39,7 +39,7 @@ limitations under the License.
 #>
 function Sync-StepTemplate {
     [CmdletBinding()]
-	[OutputType("System.Collections.Hashtable")]
+    [OutputType("System.Collections.Hashtable")]
     param (
         [Parameter(Mandatory=$true)][ValidateScript({ Test-Path $_ })][System.String]$Path,
         [Parameter(Mandatory=$false)][System.Management.Automation.SwitchParameter]$UseCache
