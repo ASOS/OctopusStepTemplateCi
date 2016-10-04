@@ -39,7 +39,7 @@ limitations under the License.
 #>
 function Sync-StepTemplate {
     [CmdletBinding()]
-	[OutputType("System.Collections.Hashtable")]
+    [OutputType("System.Collections.Hashtable")]
     param (
         [Parameter(Mandatory=$true)][ValidateScript({ Test-Path $_ })][System.String]$Path,
         [Parameter(Mandatory=$false)][System.Management.Automation.SwitchParameter]$UseCache
@@ -63,6 +63,13 @@ function Sync-StepTemplate {
             $newParameter.DisplaySettings = Convert-PSObjectToHashTable $newParameter.DisplaySettings
             $newParameter
         })
+
+        $paramCount = ($stepTemplate.Parameters.Count) - 1
+        # Remove the Id from each parameter
+        while ($paramCount -ge 0) {
+            ($stepTemplate.Parameters[$paramCount]).Remove('Id')
+            $paramCount = $paramCount - 1
+        }       
 
         if (Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate) {
             Write-TeamCityMessage "Script template '$templateName' has changed. Updating"
