@@ -68,7 +68,8 @@ function ParseJsonString
         return $result
     }
 
-    # .NET JSON Serializer 
+    # .NET JSON Serializer
+    [System.Reflection.Assembly]::LoadWithPartialName("System.Web.Extensions")
     $script:javaScriptSerializer = New-Object System.Web.Script.Serialization.JavaScriptSerializer
     $script:javaScriptSerializer.MaxJsonLength = [System.Int32]::MaxValue
     $script:javaScriptSerializer.RecursionLimit = 99
