@@ -29,9 +29,11 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\Test-OctopusConnectivity.ps1"
 . "$here\Convert-ToOctopusJson.ps1"
 . "$here\Get-Cache.ps1"
+. "$here\..\PowerShellManipulation\ParseJson.ps1"
 
 Describe "Invoke-OctopusOperation" {
     Mock Invoke-WebRequest {}
+    Mock ParseJsonString {}
     $Env:OctopusUri = "http://example.local"
     $Env:OctopusApiKey = "secret"
     Mock Get-Cache { @{} }

@@ -49,6 +49,7 @@ Set-StrictMode -Version Latest
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBody.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptFile.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableStatement.ps1')"
+. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\ParseJson.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\Write-TeamCityMessage.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.ps1')"
