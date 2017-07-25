@@ -64,12 +64,21 @@ function Sync-StepTemplate {
             $newParameter
         })
 
-        $paramCount = ($stepTemplate.Parameters.Count) - 1
-        # Remove the Id from each parameter
-        while ($paramCount -ge 0) {
-            ($stepTemplate.Parameters[$paramCount]).Remove('Id')
-            $paramCount = $paramCount - 1
-        }       
+        # Strip out unneccessary keys such as Id and links.
+        Try {
+            $keysToRemove = $stepTemplate.Parameters.Keys | Select -Unique | ? {$_ -notin ("DefaultValue", "Label", "HelpText", "Name", "DisplaySettings")}
+
+            foreach ($key in $keysToRemove) {
+                $paramCount = ($stepTemplate.Parameters.Count) - 1
+                while ($paramCount -ge 0) {
+                    ($stepTemplate.Parameters[$paramCount]).Remove($key)
+                    $paramCount = $paramCount - 1
+                }
+            }
+        }
+        Catch {
+            Write-Verbose "No parameter keys to remove"
+        }      
 
         if (Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate) {
             Write-TeamCityMessage "Script template '$templateName' has changed. Updating"
