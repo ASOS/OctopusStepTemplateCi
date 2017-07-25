@@ -66,7 +66,7 @@ function Invoke-OctopusOperation {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType] "Ssl3, Tls, Tls11, Tls12"
 
     $result = Invoke-WebRequest -Uri $uri -Method $method -Body $jsonObject -Headers @{"X-Octopus-ApiKey" = $OctopusApiKey} -UseBasicParsing |  `
-        % Content | ConvertFrom-Json
+        % Content | ParseJsonString
         
     if ($UseCache) {
         $cache.Add($cacheKey, $result)
