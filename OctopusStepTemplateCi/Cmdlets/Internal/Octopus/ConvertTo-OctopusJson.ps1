@@ -37,13 +37,12 @@ function ConvertTo-OctopusJson
     $ErrorActionPreference = "Stop";
     Set-StrictMode -Version "Latest";
 
-    if( $InputObject -eq $null )
-    {
-        return "null";
-    }
-
     switch( $true )
     {
+
+        { $InputObject -eq $null } {
+            return "null";
+        }
 
         { $InputObject -is [string] } {
             $value = $InputObject;
