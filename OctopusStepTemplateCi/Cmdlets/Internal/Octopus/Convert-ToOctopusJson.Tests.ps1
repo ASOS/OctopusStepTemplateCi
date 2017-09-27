@@ -38,5 +38,14 @@ Describe "Convert-ToOctopusJson" {
     
     It "Should correct escaped single quotes" {
         Convert-ToOctopusJson -InputObject "'" | Should Be "`"'`""
-    } 
+    }
+
+    It "Should not mangle literal strings with whitespace between curly brackets" {
+        Convert-ToOctopusJson -InputObject "{    }" | Should Be "`"{    }`""
+    }
+
+    It "Should not mangle literal strings that look like unicode character escape sequences" {
+        Convert-ToOctopusJson -InputObject "\u0027" | Should Be `""\\u0027`""
+    }
+
 }
