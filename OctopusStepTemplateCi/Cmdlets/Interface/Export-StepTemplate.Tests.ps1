@@ -28,7 +28,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\..\Internal\Octopus\StepTemplates\New-StepTemplateObject.ps1"
-. "$here\..\Internal\Octopus\Convert-ToOctopusJson.ps1"
+. "$here\..\Internal\Octopus\ConvertTo-OctopusJson.ps1"
 
 Describe "Export-StepTemplate" {
     BeforeEach {
@@ -38,13 +38,13 @@ Describe "Export-StepTemplate" {
     }
         
     Mock New-StepTemplateObject { "steptemplate" }
-    Mock Convert-ToOctopusJson { "steptemplate" }
+    Mock ConvertTo-OctopusJson { "steptemplate" }
     Set-Content "TestDrive:\steptemplate.ps1" "steptemplate" 
     
     It "Should convert the step template to json" {
         Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1"
         
-        Assert-MockCalled Convert-ToOctopusJson
+        Assert-MockCalled ConvertTo-OctopusJson
     }    
     
     It "Should return a message to the user" {

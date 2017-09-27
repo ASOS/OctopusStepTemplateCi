@@ -57,7 +57,7 @@ function Invoke-OctopusOperation {
     }
     
     if ($null -ne $Object) {
-        $jsonObject = Convert-ToOctopusJson -InputObject $Object
+        $jsonObject = ConvertTo-OctopusJson -InputObject $Object
     } else {
         $jsonObject = $null
     }
