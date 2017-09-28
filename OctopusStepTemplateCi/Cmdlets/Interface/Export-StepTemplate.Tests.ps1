@@ -17,7 +17,7 @@ limitations under the License.
 <#
 .NAME
     Export-StepTemplate.Tests
-    
+
 .SYNOPSIS
     Pester tests for Export-StepTemplate
 
@@ -31,54 +31,50 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\Octopus\ConvertTo-OctopusJson.ps1"
 
 Describe "Export-StepTemplate" {
+
     BeforeEach {
         if (Test-Path "TestDrive:\test.ps1") {
             Remove-Item "TestDrive:\test.ps1" -Force
         }
     }
-        
+
     Mock New-StepTemplateObject { "steptemplate" }
     Mock ConvertTo-OctopusJson { "steptemplate" }
     Set-Content "TestDrive:\steptemplate.ps1" "steptemplate" 
     
     It "Should convert the step template to json" {
         Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1"
-        
         Assert-MockCalled ConvertTo-OctopusJson
-    }    
-    
+    }
+
     It "Should return a message to the user" {
         Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" | % GetType | % Name | Should Be "string"
     }
-    
+
     Context "File" {
-        
+
         It "Should export the steptemplate to a file" {
             Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1"
-            
-           "TestDrive:\test.ps1" | Should Contain "steptemplate"   
+           "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
         }
-        
+
         It "Should throw an exception if the file already exists" {
             Set-Content "TestDrive:\test.ps1" -Value "existing"
-            
             { Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" } | Should Throw
         }
-        
+
         It "Should overwrite the file if it already exists and -Force is specified" {
             Set-Content "TestDrive:\test.ps1" -Value "existing"
-                        
             Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" -Force
-            
-           "TestDrive:\test.ps1" | Should Contain "steptemplate"   
+           "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
         }
     }
-    
+
     Context "Clipboard" {
-        It "Should export the steptemplate to the system clipboard" {           
+        It "Should export the steptemplate to the system clipboard" {
             Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportToClipboard
-            
             [System.Windows.Forms.Clipboard]::GetText() | Should Be "steptemplate"
         }
     }
+
 }
