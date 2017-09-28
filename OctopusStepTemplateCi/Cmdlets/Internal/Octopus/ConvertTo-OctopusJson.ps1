@@ -44,6 +44,17 @@ function ConvertTo-OctopusJson
             return "null";
         }
 
+        { $InputObject -is [bool] } {
+            if( $InputObject )
+            {
+                return "true";
+            }
+            else
+            {
+                return "false";
+            }
+        }
+
         { $InputObject -is [string] } {
             $value = $InputObject;
             $value = $value.Replace("\",  "\\");
