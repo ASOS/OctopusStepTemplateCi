@@ -16,10 +16,9 @@ limitations under the License.
 
 <#
 .NAME
-	Convert-HashTableToPsCustomObject.Tests
-
+  Convert-HashTableToPsCustomObject.Tests
 .SYNOPSIS
-	Pester tests for Convert-HashTableToPsCustomObject.
+  Pester tests for Convert-HashTableToPsCustomObject.
 #>
 Set-StrictMode -Version Latest
 
@@ -28,14 +27,18 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 Describe "Convert-HashTableToPsCustomObject" {
+
     It "Should return a PS custom object" {
        Convert-HashTableToPsCustomObject -InputObject @{'Name' = 'Test'} | % GetType | % Name | Should Be 'PSCustomObject'
     }
-    
+
     It "Should convert all the properties into the PS custom object" {
        (Convert-HashTableToPsCustomObject -InputObject @{'Name' = 'Test'; 'Description' = 'Test'} | gm | ? {$_.MemberType -eq 'NoteProperty'}).Count| Should Be 2
     }
+
     It "Should return an error if a hashtable is not the input object" {
-        Convert-HashTableToPsCustomObject -InputObject (New-Object -TypeName PSObject -Property (@{test = 1})) 2>&1 | Should be "Object is not a hashtable"
+        { Convert-HashTableToPsCustomObject -InputObject (New-Object -TypeName PSObject -Property (@{test = 1})) } `
+            | Should Throw "Object is not a hashtable"
     }
+
 }
