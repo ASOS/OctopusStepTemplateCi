@@ -21,7 +21,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "ConvertTo-OctopusDeploy" {
+Describe "ConvertTo-OctopusJson" {
 
     It "when InputObject is null" {
         $input    = $null;
@@ -140,6 +140,8 @@ Describe "ConvertTo-OctopusDeploy" {
   }
 }
 "@
+        # normalize line breaks in "$expected" here-string in case they get mangled on git commit
+        if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n");
         ConvertTo-OctopusJson -InputObject $input `
             | Should Be $expected;
     }
