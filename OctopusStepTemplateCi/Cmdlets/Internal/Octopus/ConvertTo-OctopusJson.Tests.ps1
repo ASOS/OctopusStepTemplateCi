@@ -141,7 +141,7 @@ Describe "ConvertTo-OctopusJson" {
 }
 "@
         # normalize line breaks in "$expected" here-string in case they get mangled on git commit
-        if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n");
+        if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n"); }
         ConvertTo-OctopusJson -InputObject $input `
             | Should Be $expected;
     }
