@@ -20,7 +20,7 @@ function Convert-HashTableToPsCustomObject {
              } 
              $output; 
          } else { 
-             Write-Error "Object is not a hashtable"; 
+             throw "Object is not a hashtable";
          } 
      } 
 }

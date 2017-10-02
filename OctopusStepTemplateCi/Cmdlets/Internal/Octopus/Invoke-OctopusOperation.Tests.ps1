@@ -27,7 +27,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\Test-OctopusConnectivity.ps1"
-. "$here\Convert-ToOctopusJson.ps1"
+. "$here\ConvertTo-OctopusJson.ps1"
 . "$here\Get-Cache.ps1"
 . "$here\..\PowerShellManipulation\ParseJson.ps1"
 
@@ -82,7 +82,7 @@ Describe "Invoke-OctopusOperation" {
     
     It "Should add the object to the body of the request as JSON" {
         Mock Invoke-WebRequest {} -ParameterFilter { $Body -eq "1" } -Verifiable
-        Mock Convert-ToOctopusJson { "1" } -ParameterFilter { $InputObject -eq 1 } -Verifiable
+        Mock ConvertTo-OctopusJson { "1" } -ParameterFilter { $InputObject -eq 1 } -Verifiable
         
         Invoke-OctopusOperation -Action New -ObjectType UserDefined -ApiUri "custom" -Object 1
         

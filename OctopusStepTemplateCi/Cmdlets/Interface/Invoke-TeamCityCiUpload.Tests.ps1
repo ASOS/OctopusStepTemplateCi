@@ -56,7 +56,7 @@ Describe "Invoke-TeamCityCiUpload" {
     }
     
     It "Should handle exceptions" {
-        Mock Test-OctopusConnectivity { throw "bang" } -Scope It
+        Mock Test-OctopusConnectivity { throw "bang" }
             
         { Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" } | Should Throw
     }
