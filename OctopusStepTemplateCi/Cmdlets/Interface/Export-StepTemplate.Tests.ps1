@@ -55,7 +55,14 @@ Describe "Export-StepTemplate" {
 
         It "Should export the steptemplate to a file" {
             Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1"
-           "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
+            if( (Get-Module "pester").Version -gt "3.4.0" )
+            {
+               "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
+            }
+            else
+            {
+               "TestDrive:\test.ps1" | Should Contain "steptemplate"
+            }
         }
 
         It "Should throw an exception if the file already exists" {
@@ -66,7 +73,14 @@ Describe "Export-StepTemplate" {
         It "Should overwrite the file if it already exists and -Force is specified" {
             Set-Content "TestDrive:\test.ps1" -Value "existing"
             Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" -Force
-           "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
+            if( (Get-Module "pester").Version -gt "3.4.0" )
+            {
+               "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
+            }
+            else
+            {
+               "TestDrive:\test.ps1" | Should Contain "steptemplate"
+            }
         }
     }
 
