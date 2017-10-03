@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-	Compare-Hashtable.Tests
+    Compare-Hashtable.Tests
 
 .SYNOPSIS
-	Pester tests for Compare-Hashtable.
+    Pester tests for Compare-Hashtable.
 #>
 Set-StrictMode -Version Latest
 
@@ -28,27 +28,111 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 Describe "Compare-Hashtable" {
-    It "Should return false if they are the same" {
-        Compare-Hashtable -ReferenceObject @{test = 1} -DifferenceObject @{test = 1} | Should Be $false
+
+    It "Should return `$null if both objects are null" {
+        $result = Compare-Hashtable -ReferenceObject $null -DifferenceObject $null;
+        $result | Should Be $null;
+    }
+
+    It "Should return `$null if reference object is null and difference object is an empty hashtable" {
+        $result = Compare-Hashtable -ReferenceObject $null -DifferenceObject @{};
+        $result | Should Be $null;
+    }
+
+    It "Should return `$null if reference object is an empty hashtable and difference object is null" {
+        $result = Compare-Hashtable -ReferenceObject $null -DifferenceObject @{};
+        $result | Should Be $null;
+    }
+
+    It "Should return `$null if reference object is an empty hashtable and difference object is an empty hashtable" {
+        $result = Compare-Hashtable -ReferenceObject @{} -DifferenceObject @{};
+        $result | Should Be $null;
+    }
+
+    It "Should return `$null if reference object is the same as difference object" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"="bbb";"ccc"="ddd"} -DifferenceObject @{"aaa"="bbb";"ccc"="ddd"};
+        $result | Should Be $null;
+    }
+
+    It "Should return a result if reference object object has additional keys" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"="bbb";"ccc"="ddd"} -DifferenceObject @{"aaa"="bbb"};
+        $result | Should Not Be $null;
+        $result.Length | Should Be 1;
+        $result[0].Key | Should Be "ccc";
+        $result[0].Value | Should Be "ddd";
+        $result[0].SideIndicator | Should Be "<=";
+    }
+
+    It "Should return a result if difference object object has additional keys" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"="bbb"} -DifferenceObject @{"aaa"="bbb";"ccc"="ddd"};
+        $result | Should Not Be $null;
+        $result.Length | Should Be 1;
+        $result[0].Key | Should Be "ccc";
+        $result[0].Value | Should Be "ddd";
+        $result[0].SideIndicator | Should Be "=>";
     }
     
-    It "Should return true if the ref object has additional keys" {
-        Compare-Hashtable -ReferenceObject @{test = 1; extra = 2} -DifferenceObject @{test = 1} | Should Be $true
+    It "Should return a result if the objects have the same key with different values" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"="bbb";"ccc"="ddd"} -DifferenceObject @{"aaa"="bbb";"ccc"="eee"};
+        $result | Should Not Be $null;
+        $result.Length | Should Be 2;
+        $result[0].Key | Should Be "ccc";
+        $result[0].Value | Should Be "eee";
+        $result[0].SideIndicator | Should Be "=>";
+        $result[1].Key | Should Be "ccc";
+        $result[1].Value | Should Be "ddd";
+        $result[1].SideIndicator | Should Be "<=";
     }
-    
-    It "Should return true if the diff object has additional keys" {
-        Compare-Hashtable -ReferenceObject @{test = 1} -DifferenceObject @{test = 1; extra = 2} | Should Be $true
+
+    It "Should return a result if reference object's entry value is null" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"=$null} -DifferenceObject @{"aaa"="bbb"};
+        $result | Should Not Be $null;
+        $result.Length | Should Be 2;
+        $result[0].Key | Should Be "aaa";
+        $result[0].Value | Should Be "bbb";
+        $result[0].SideIndicator | Should Be "=>";
+        $result[1].Key | Should Be "aaa";
+        $result[1].Value | Should Be $null;
+        $result[1].SideIndicator | Should Be "<=";
     }
-    
-    It "Should return true if the objects have the same key with different values" {
-        Compare-Hashtable -ReferenceObject @{test = 1} -DifferenceObject @{test = 2} | Should Be $true
+
+    It "Should return a result if difference object's entry value is null" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"="bbb"} -DifferenceObject @{"aaa"=$null};
+        $result | Should Not Be $null;
+        $result.Length | Should Be 2;
+        $result[0].Key | Should Be "aaa";
+        $result[0].Value | Should Be $null;
+        $result[0].SideIndicator | Should Be "=>";
+        $result[1].Key | Should Be "aaa";
+        $result[1].Value | Should Be "bbb";
+        $result[1].SideIndicator | Should Be "<=";
     }
-    
-    It "Should return false if the objects have a hashtable in them which is the same" {
-        Compare-Hashtable -ReferenceObject @{test = @{test2 = 1}} -DifferenceObject @{test = @{test2 = 1}} | Should Be $false
+
+    It "Should return `$null if both object's entries are null" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"=$null} -DifferenceObject @{"aaa"=$null};
+        $result | Should Be $null;
     }
-    
-    It "Should return true if the objects have a hashtable in them which is different" {
-        Compare-Hashtable -ReferenceObject @{test = @{test2 = 1}} -DifferenceObject @{test = @{test2 = 2}} | Should Be $true
+
+    It "Should return `$null if both object's entries are empty hashtables" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"=@{}} -DifferenceObject @{"aaa"=@{}};
+        $result | Should Be $null;
     }
+
+    It "Should return `$null if both object's entries are populated hashtables" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"=@{"bbb"="ccc"}} -DifferenceObject @{"aaa"=@{"bbb"="ccc"}};
+        $result | Should Be $null;
+    }
+
+    It "Should return a result if both object's entries are different hashtables" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"="bbb"} -DifferenceObject @{"aaa"=$null};
+        $result | Should Not Be $null;
+        $result.Length | Should Be 2;
+        $result[0].Key | Should Be "aaa";
+        $result[0].Value | Should Be $null;
+        $result[0].SideIndicator | Should Be "=>";
+        $result[1].Key | Should Be "aaa";
+        $result[1].Value | Should Be "bbb";
+        $result[1].SideIndicator | Should Be "<=";
+    }
+
 }
