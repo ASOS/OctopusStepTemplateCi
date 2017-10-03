@@ -28,44 +28,57 @@ function ParseJsonString
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [string] $json
     )
 
     # Internalised functions necessary to parse JSON output from .NET serializer to PowerShell Objects
-    function ParseItem($jsonItem) {
-        if($jsonItem.PSObject.TypeNames -match "Array") {
-            return ParseJsonArray($jsonItem)
+    function ParseItem($jsonItem)
+    {
+        if( $jsonItem -eq $null )
+	{
+            return "null";
         }
-        elseif($jsonItem.PSObject.TypeNames -match "Dictionary") {
-            return ParseJsonObject([HashTable]$jsonItem)
+        elseif( $jsonItem.PSObject.TypeNames -match "Array" )
+	{
+            return ParseJsonArray($jsonItem);
         }
-        else {
+        elseif( $jsonItem.PSObject.TypeNames -match "Dictionary" )
+	{
+            return ParseJsonObject([HashTable]$jsonItem);
+        }
+        else
+	{
             return $jsonItem
         }
     }
 
-    function ParseJsonObject($jsonObj) {
-        $result = New-Object -TypeName PSCustomObject
-        foreach ($key in $jsonObj.Keys) {
+    function ParseJsonObject($jsonObj)
+    {
+        $result = New-Object -TypeName PSCustomObject;
+        foreach( $key in $jsonObj.Keys )
+	{
             $item = $jsonObj[$key]
-            if ($item) {
-                    $parsedItem = ParseItem $item
-            } else {
-                    $parsedItem = $null
+            if( $item -eq $null )
+            {
+                $parsedItem = $null;
             }
-            $result | Add-Member -MemberType NoteProperty -Name $key -Value $parsedItem
+	    else
+	    {
+                $parsedItem = ParseItem $item;
+            }
+            $result | Add-Member -MemberType NoteProperty -Name $key -Value $parsedItem;
         }
-        return $result
+        return $result;
     }
 
-    function ParseJsonArray($jsonArray) {
-        $result = @()
+    function ParseJsonArray($jsonArray)
+    {
+        $result = @();
         $jsonArray | ForEach-Object {
-            $result += , (ParseItem $_)
+            $result += , (ParseItem $_);
         }
-        return $result
+        return $result;
     }
 
     # .NET JSON Serializer
