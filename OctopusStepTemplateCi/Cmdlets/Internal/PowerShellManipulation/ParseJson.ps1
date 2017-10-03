@@ -32,16 +32,20 @@ function ParseJsonString
         [string] $json
     )
 
+    $ErrorActionPreference = "Stop";
+    Set-StrictMode -Version "Latest";
+
     # Internalised functions necessary to parse JSON output from .NET serializer to PowerShell Objects
     function ParseItem($jsonItem)
     {
         if( $jsonItem -eq $null )
 	{
-            return "null";
+            return $null;
         }
         elseif( $jsonItem.PSObject.TypeNames -match "Array" )
 	{
-            return ParseJsonArray($jsonItem);
+            $result = ParseJsonArray $jsonItem;
+            return @(, $result);
         }
         elseif( $jsonItem.PSObject.TypeNames -match "Dictionary" )
 	{
@@ -69,16 +73,17 @@ function ParseJsonString
             }
             $result | Add-Member -MemberType NoteProperty -Name $key -Value $parsedItem;
         }
-        return $result;
+        return @(, $result);
     }
 
     function ParseJsonArray($jsonArray)
     {
         $result = @();
-        $jsonArray | ForEach-Object {
-            $result += , (ParseItem $_);
+        foreach( $jsonItem in $jsonArray )
+        {
+            $result += ParseItem $jsonItem;
         }
-        return $result;
+        return @(, $result);
     }
 
     # .NET JSON Serializer
@@ -87,6 +92,19 @@ function ParseJsonString
     $script:javaScriptSerializer.MaxJsonLength = [System.Int32]::MaxValue
     $script:javaScriptSerializer.RecursionLimit = 99
 
-    $config = $javaScriptSerializer.DeserializeObject($json)
-    return ParseItem($config)
+    $config = $javaScriptSerializer.DeserializeObject($json);
+
+    $result = ParseItem($config);
+
+    # $result will be an empty array if the input was "[]", but powershell converts this to
+    # $null when it gets returned from a function. e.g.:
+    #
+    #   function Get-EmptyArray { return @(); }
+    #   write-host ((Get-EmptyArray) -eq $null);
+    #
+    # so we need to wrap the return value in a "sacrifical array" instead to make sure powershell
+    # returns the value unmodified.
+
+    return @(, $result);
+
 }

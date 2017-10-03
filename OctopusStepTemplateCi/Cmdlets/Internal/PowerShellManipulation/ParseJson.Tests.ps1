@@ -54,12 +54,30 @@ Describe "ParseJson" {
 
     It "should convert a null value" {
         $result = ParseJsonString -json "null";
-        $result | Should Be 'null';
+        $result | Should Be $null;
     }
 
-    It "should not mangle empty strings into nulls" {
+    It "should convert an empty string" {
         $result = ParseJsonString -json "{ `"DefaultValue`" : `"`" }";
         $result.DefaultValue | Should Be "";
+    }
+
+    It "should convert an empty array" {
+        $result = ParseJsonString -json "[]";
+        # n.b. can't use pipline because it unrolls arrays
+        Should -ActualValue $result BeOfType [System.Array];
+        $result.Length | Should Be 0;
+    }
+
+    It "should convert a populated array" {
+        $result = ParseJsonString -json "[10, 2, 30, 40]";
+        # n.b. can't use pipline because it unrolls arrays
+        Should -ActualValue $result BeOfType [System.Array];
+        $result.Length | Should Be 4;
+        $result[0]     | Should Be 10;
+        $result[1]     | Should Be 20;
+        $result[2]     | Should Be 30;
+        $result[3]     | Should Be 40;
     }
 
     Context "When not using the pipeline" {
