@@ -113,25 +113,29 @@ Describe "Compare-Hashtable" {
         $result | Should Be $null;
     }
 
-    It "Should return `$null if both object's entries are empty hashtables" {
+    It "Should return `$null if both object's entries are empty nested hashtables" {
         $result = Compare-Hashtable -ReferenceObject @{"aaa"=@{}} -DifferenceObject @{"aaa"=@{}};
         $result | Should Be $null;
     }
 
-    It "Should return `$null if both object's entries are populated hashtables" {
+    It "Should return `$null if both object's entries are populated nested hashtables" {
         $result = Compare-Hashtable -ReferenceObject @{"aaa"=@{"bbb"="ccc"}} -DifferenceObject @{"aaa"=@{"bbb"="ccc"}};
         $result | Should Be $null;
     }
 
-    It "Should return a result if both object's entries are different hashtables" {
-        $result = Compare-Hashtable -ReferenceObject @{"aaa"="bbb"} -DifferenceObject @{"aaa"=$null};
+    It "Should return a result if both object's entries are different nested hashtables" {
+        $result = Compare-Hashtable -ReferenceObject @{"aaa"=@{"bbb"="ccc"}} -DifferenceObject @{"aaa"=@{"ddd"="eee"}};
         $result | Should Not Be $null;
         $result.Length | Should Be 2;
         $result[0].Key | Should Be "aaa";
-        $result[0].Value | Should Be $null;
+        $result[0].Value.Count | Should Be 1;
+        @($result[0].Value.Keys)[0] | Should Be "ddd";
+        @($result[0].Value.Values)[0] | Should Be "eee";
         $result[0].SideIndicator | Should Be "=>";
-        $result[1].Key | Should Be "aaa";
-        $result[1].Value | Should Be "bbb";
+        $result[1].Key | Should Be "ddd";
+        $result[1].Value.Count | Should Be 1;
+        @($result[1].Value.Key)[0] | Should Be "bbb";
+        @($result[1].Value.Value)[0] | Should Be "ccc";
         $result[1].SideIndicator | Should Be "<=";
     }
 

@@ -70,7 +70,7 @@ Describe "ParseJson" {
     }
 
     It "should convert a populated array" {
-        $result = ParseJsonString -json "[10, 2, 30, 40]";
+        $result = ParseJsonString -json "[10, 20, 30, 40]";
         # n.b. can't use pipline because it unrolls arrays
         Should -ActualValue $result BeOfType [System.Array];
         $result.Length | Should Be 4;
