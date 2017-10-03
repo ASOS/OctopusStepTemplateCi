@@ -16,7 +16,7 @@ limitations under the License.
 
 <#
 .NAME
-	Invoke-PesterForTeamCity
+    Invoke-PesterForTeamCity
 
 .SYNOPSIS
     Invokes Pester's tests, handles the results file and teamcity integration to link the results file into team city and returns the passed & failed tests count  
@@ -29,16 +29,31 @@ function Invoke-PesterForTeamCity {
         [switch]$SuppressPesterOutput
     )
 
-    $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml -Quiet:$SuppressPesterOutput
-    
+    if( $SuppressPesterOutput )
+    {
+        if( (Get-Module "pester").Version -gt "3.4.0" )
+        {
+            $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml -Show "None"
+        }
+        else
+        {
+            $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml -Quiet:$SuppressPesterOutput
+        }
+    }
+    else
+    {
+        $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml
+    }
+
     #update the test-suit name so that teamcity displays it better. otherwise, all test suites are called "Pester"
     Update-XPathValue -Path $TestResultsFile -XPath '//test-results/test-suite/@name' -Value $TestName
 
     #tell teamcity to import the test results. Cant use the xml report processor feature of TeamCity, due to aysnc issues around updating the test suite name
     Write-TeamCityMessage "##teamcity[importData type='nunit' path='$TestResultsFile' verbose='true']"
     
-    New-Object -TypeName PSObject -Property @{
-        Passed = $testResult.PassedCount
-        Failed = $testResult.FailedCount
-    }
+    return New-Object -TypeName PSObject -Property @{
+        "Passed" = $testResult.PassedCount
+        "Failed" = $testResult.FailedCount
+    };
+
 }
