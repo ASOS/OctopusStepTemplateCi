@@ -16,17 +16,18 @@ limitations under the License.
 
 <#
 .NAME
-	Invoke-PesterForTeamCity
+	Invoke-PesterForCi
 
 .SYNOPSIS
     Invokes Pester's tests, handles the results file and teamcity integration to link the results file into team city and returns the passed & failed tests count  
 #>
-function Invoke-PesterForTeamCity {
+function Invoke-PesterForCi {
     param (
         $TestName,
         $Script,
         $TestResultsFile,
-        [switch]$SuppressPesterOutput
+        [switch]$SuppressPesterOutput,
+        [ValidateSet("TeamCity","Jenkins","Bamboo","TFS","Other")]$CiTool = "Other"
     )
 
     $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml -Quiet:$SuppressPesterOutput
@@ -35,7 +36,10 @@ function Invoke-PesterForTeamCity {
     Update-XPathValue -Path $TestResultsFile -XPath '//test-results/test-suite/@name' -Value $TestName
 
     #tell teamcity to import the test results. Cant use the xml report processor feature of TeamCity, due to aysnc issues around updating the test suite name
-    Write-TeamCityMessage "##teamcity[importData type='nunit' path='$TestResultsFile' verbose='true']"
+    if ($CiTool -eq "TeamCity"){
+        Write-TeamCityMessage "##teamcity[importData type='nunit' path='$TestResultsFile' verbose='true']"
+    }
+    
     
     New-Object -TypeName PSObject -Property @{
         Passed = $testResult.PassedCount
