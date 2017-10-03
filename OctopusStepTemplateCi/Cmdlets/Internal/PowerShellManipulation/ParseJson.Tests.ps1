@@ -51,7 +51,19 @@ $jsonArrayTestData = @"
 "@
 
 Describe "ParseJson" {
+
+    It "should convert a null value" {
+        $result = ParseJsonString -json "null";
+        $result | Should Be 'null';
+    }
+
+    It "should not mangle empty strings into nulls" {
+        $result = ParseJsonString -json "{ `"DefaultValue`" : `"`" }";
+        $result.DefaultValue | Should Be "";
+    }
+
     Context "When not using the pipeline" {
+
         $res_obj = ParseJsonString -json $jsonObjectTestData
 
         It "should return a PSObject" {
@@ -69,9 +81,11 @@ Describe "ParseJson" {
             ($res_arr[1] | Get-Member).Name -icontains 'bar' | Should Be $true
             $res_arr[1].bar.foo | Should Be 'barfoo'
         }
+
     }
     
     Context "When using the pipeline" {
+
         It "should return a PSObject" {
             $jsonObjectTestData | ParseJsonString | Should BeOfType PSCustomObject
         }
@@ -86,5 +100,7 @@ Describe "ParseJson" {
             (($jsonArrayTestData | ParseJsonString)[1] | Get-Member).Name -icontains 'bar' | Should Be $true
             ($jsonArrayTestData | ParseJsonString)[1].bar.foo | Should Be 'barfoo'
         }
+
     }
+
 }
