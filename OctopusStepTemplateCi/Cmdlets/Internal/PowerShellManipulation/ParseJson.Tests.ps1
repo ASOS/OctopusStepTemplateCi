@@ -51,7 +51,37 @@ $jsonArrayTestData = @"
 "@
 
 Describe "ParseJson" {
+
+    It "should convert a null value" {
+        $result = ParseJsonString -json "null";
+        $result | Should Be $null;
+    }
+
+    It "should convert an empty string" {
+        $result = ParseJsonString -json "{ `"DefaultValue`" : `"`" }";
+        $result.DefaultValue | Should Be "";
+    }
+
+    It "should convert an empty array" {
+        $result = ParseJsonString -json "[]";
+        # n.b. can't use pipline because it unrolls arrays
+        Should -ActualValue $result BeOfType [System.Array];
+        $result.Length | Should Be 0;
+    }
+
+    It "should convert a populated array" {
+        $result = ParseJsonString -json "[10, 20, 30, 40]";
+        # n.b. can't use pipline because it unrolls arrays
+        Should -ActualValue $result BeOfType [System.Array];
+        $result.Length | Should Be 4;
+        $result[0]     | Should Be 10;
+        $result[1]     | Should Be 20;
+        $result[2]     | Should Be 30;
+        $result[3]     | Should Be 40;
+    }
+
     Context "When not using the pipeline" {
+
         $res_obj = ParseJsonString -json $jsonObjectTestData
 
         It "should return a PSObject" {
@@ -69,9 +99,11 @@ Describe "ParseJson" {
             ($res_arr[1] | Get-Member).Name -icontains 'bar' | Should Be $true
             $res_arr[1].bar.foo | Should Be 'barfoo'
         }
+
     }
     
     Context "When using the pipeline" {
+
         It "should return a PSObject" {
             $jsonObjectTestData | ParseJsonString | Should BeOfType PSCustomObject
         }
@@ -86,5 +118,7 @@ Describe "ParseJson" {
             (($jsonArrayTestData | ParseJsonString)[1] | Get-Member).Name -icontains 'bar' | Should Be $true
             ($jsonArrayTestData | ParseJsonString)[1].bar.foo | Should Be 'barfoo'
         }
+
     }
+
 }

@@ -16,27 +16,93 @@ limitations under the License.
 
 <#
 .NAME
-	New-StepTemplateObject
+    New-StepTemplateObject
 
 .SYNOPSIS
     Creates a new step template object
 #>
-function New-StepTemplateObject {
-    param (
-        $Path
+function New-StepTemplateObject
+{
+
+    param
+    (
+        [Parameter(Mandatory=$true)]
+        [string] $Path
     )
 
-    New-Object -TypeName PSObject -Property (@{
-        'Name' = Get-VariableFromScriptFile -Path $Path -VariableName StepTemplateName
-        'Description' = Get-VariableFromScriptFile -Path $Path -VariableName StepTemplateDescription
-        'ActionType' = 'Octopus.Script'
-        'Properties' = @{
-            'Octopus.Action.Script.ScriptBody' = Get-ScriptBody -Path $Path
-            'Octopus.Action.Script.Syntax' = 'PowerShell'
+    $stepTemplateName = Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateName";
+    if( ($stepTemplateName -ne $null) -and
+        ($stepTemplateName -isnot [string]) )
+    {
+        throw new-object System.InvalidOperationException("The '`$StepTemplateName' variable in file '$Path' does not evaluate to a string.");
+    }
+
+    $stepTemplateDescription = Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateDescription";
+    if( ($stepTemplateDescription -ne $null) -and
+        ($stepTemplateDescription -isnot [string]) )
+    {
+        throw new-object System.InvalidOperationException("The '`StepTemplateDescription' variable in file '$Path' does not evaluate to a string.");
+    }
+
+    $stepTemplateParameters = @(Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateParameters");
+    if( ($stepTemplateParameters -isnot [array]) -or
+        (($stepTemplateParameters | where-object { $_ -isnot [hashtable] }) -ne $null)  )
+    {
+        throw new-object System.InvalidOperationException("The '`$StepTemplateParameters' variable in file '$Path' does not evaluate to an array of hashtables.");
+    }
+
+    # read the step template from file
+    $stepTemplate = new-object -TypeName "PSObject" `
+                               -Property @{
+                                   "Name"        = $stepTemplateName
+                                   "Description" = $stepTemplateDescription
+                                   "ActionType"  = "Octopus.Script"
+                                   "Properties"  = @{
+                                       "Octopus.Action.Script.ScriptBody" = Get-ScriptBody -Path $Path
+                                       "Octopus.Action.Script.Syntax"     = "PowerShell"
+                                   }
+                                   "Parameters"  = $stepTemplateParameters
+                                   "SensitiveProperties" = @{}
+                                   "`$Meta"      = @{ "Type" = "ActionTemplate" }
+                                   "Version"     = 1
+                               };
+
+    # Octopus cleans up some of the Parameter properties when a step template is uploaded.
+    # this means that when it is downloaded again for comparison against the local template
+    # it won't match, and will be considered "different", which will trigger an other upload.
+    # we'll try to fix up some Parameter properties so that they round-trip properly
+    $propertyNames = @( "Label", "HelpText", "DefaultValue" );
+    foreach( $parameter in $stepTemplate.Parameters )
+    {
+	foreach( $propertyName in $propertyNames )
+        {
+            if( $parameter.ContainsKey($propertyName) )
+            {
+
+                if( $parameter[$propertyName] -eq $null )
+                {
+                    # Octopus converts null values into an empty string when a step template is uploaded
+                    $parameter[$propertyName] = "";
+                }
+                elseif( $parameter[$propertyName] -is [string] )
+                {
+                    if( -not [string]::IsNullOrEmpty($parameter[$propertyName]) )
+                    {
+                        # Octopus trims property values when  a step template is uploaded
+                        $parameter[$propertyName] = $parameter[$propertyName].Trim();
+                    }
+                }
+                elseif( $parameter[$propertyName] -is [bool] )
+                {
+                    # Octopus ignores booleans, so we'll convert them to string representations instead
+                    $parameter[$propertyName] = $parameter[$propertyName].ToString();
+                }
+
             }
-        'Parameters' = @(Get-VariableFromScriptFile -Path $Path -VariableName StepTemplateParameters)
-        'SensitiveProperties' = @{}
-        '$Meta' = @{'Type' = 'ActionTemplate'}
-        'Version' = 1
-    })
+        }
+    }
+
+    # return the result;
+    return $stepTemplate;
+
 }

@@ -16,19 +16,33 @@ limitations under the License.
 
 <#
 .NAME
-	Convert-PSObjectToHashTable
+    Convert-PSObjectToHashTable
 
 .SYNOPSIS
     Converts a 'PSObject' which the parameters in a step template are into a hashtable
 #>
-function Convert-PSObjectToHashTable {
-    param (
-        $InputObject
+function Convert-PSObjectToHashTable
+{
+
+    param
+    (
+        [Parameter(Mandatory=$false)]
+        [PSCustomObject] $InputObject
     )
     
-    $output = @{}
-    $InputObject | Get-Member -MemberType *Property | % { 
-        $output[$_.Name] = $InputObject.($_.Name)
-    } 
-    $output
+    if( $InputObject -eq $null )
+    {
+        return $null;
+    }
+
+    $output = @{};
+
+    $members = Get-Member -InputObject $InputObject -MemberType *Property;
+    foreach( $member in  $members)
+    {
+        $output[$member.Name] = $InputObject.($member.Name);
+    }
+
+    return $output;
+
 }

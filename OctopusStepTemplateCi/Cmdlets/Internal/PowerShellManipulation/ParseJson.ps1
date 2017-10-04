@@ -28,44 +28,62 @@ function ParseJsonString
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory=$false, ValueFromPipeline=$true)]
         [string] $json
     )
 
+    $ErrorActionPreference = "Stop";
+    Set-StrictMode -Version "Latest";
+
     # Internalised functions necessary to parse JSON output from .NET serializer to PowerShell Objects
-    function ParseItem($jsonItem) {
-        if($jsonItem.PSObject.TypeNames -match "Array") {
-            return ParseJsonArray($jsonItem)
+    function ParseItem($jsonItem)
+    {
+        if( $jsonItem -eq $null )
+	{
+            return $null;
         }
-        elseif($jsonItem.PSObject.TypeNames -match "Dictionary") {
-            return ParseJsonObject([HashTable]$jsonItem)
+        elseif( $jsonItem.PSObject.TypeNames -match "Array" )
+	{
+            $result = ParseJsonArray $jsonItem;
+            return @(, $result);
         }
-        else {
+        elseif( $jsonItem.PSObject.TypeNames -match "Dictionary" )
+	{
+            return ParseJsonObject([HashTable]$jsonItem);
+        }
+        else
+	{
             return $jsonItem
         }
     }
 
-    function ParseJsonObject($jsonObj) {
-        $result = New-Object -TypeName PSCustomObject
-        foreach ($key in $jsonObj.Keys) {
+    function ParseJsonObject($jsonObj)
+    {
+        $result = New-Object -TypeName PSCustomObject;
+        foreach( $key in $jsonObj.Keys )
+	{
             $item = $jsonObj[$key]
-            if ($item) {
-                    $parsedItem = ParseItem $item
-            } else {
-                    $parsedItem = $null
+            if( $item -eq $null )
+            {
+                $parsedItem = $null;
             }
-            $result | Add-Member -MemberType NoteProperty -Name $key -Value $parsedItem
+	    else
+	    {
+                $parsedItem = ParseItem $item;
+            }
+            $result | Add-Member -MemberType NoteProperty -Name $key -Value $parsedItem;
         }
-        return $result
+        return @(, $result);
     }
 
-    function ParseJsonArray($jsonArray) {
-        $result = @()
-        $jsonArray | ForEach-Object {
-            $result += , (ParseItem $_)
+    function ParseJsonArray($jsonArray)
+    {
+        $result = @();
+        foreach( $jsonItem in $jsonArray )
+        {
+            $result += ParseItem $jsonItem;
         }
-        return $result
+        return @(, $result);
     }
 
     # .NET JSON Serializer
@@ -74,6 +92,19 @@ function ParseJsonString
     $script:javaScriptSerializer.MaxJsonLength = [System.Int32]::MaxValue
     $script:javaScriptSerializer.RecursionLimit = 99
 
-    $config = $javaScriptSerializer.DeserializeObject($json)
-    return ParseItem($config)
+    $config = $javaScriptSerializer.DeserializeObject($json);
+
+    $result = ParseItem($config);
+
+    # $result will be an empty array if the input was "[]", but powershell converts this to
+    # $null when it gets returned from a function. e.g.:
+    #
+    #   function Get-EmptyArray { return @(); }
+    #   write-host ((Get-EmptyArray) -eq $null);
+    #
+    # so we need to wrap the return value in a "sacrifical array" instead to make sure powershell
+    # returns the value unmodified.
+
+    return @(, $result);
+
 }
