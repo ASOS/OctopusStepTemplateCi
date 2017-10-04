@@ -29,9 +29,16 @@ function Invoke-PesterForTeamCity {
         [switch]$SuppressPesterOutput
     )
 
+    $pesterModule = Get-Module "pester";
+    if( $pesterModule -eq $null )
+    {
+        Import-Module -Name "pester" -ErrorAction "Stop";
+        $pesterModule = Get-Module "pester";
+    }
+
     if( $SuppressPesterOutput )
     {
-        if( (Get-Module "pester").Version -gt "3.4.0" )
+        if( $pesterModule.Version -gt "3.4.0" )
         {
             $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml -Show "None"
         }
