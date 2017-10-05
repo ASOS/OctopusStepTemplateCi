@@ -27,12 +27,12 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\..\..\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBody.ps1"
+. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1"
 
 Describe "New-ScriptModuleObject" {
     It "Should return a new object with the name from the script file" {
         Mock Get-VariableFromScriptFile { "test name" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "ScriptModuleName" } -Verifiable
-        Mock Get-ScriptBody {}
+        Mock Get-ScriptBodyFromScriptFile {}
         
         New-ScriptModuleObject -Path "TestDrive:\file.ps1" | % Name | Should Be "Octopus.Script.Module[test name]"
         
@@ -41,7 +41,7 @@ Describe "New-ScriptModuleObject" {
     
     It "Should return a new object with the value as the body of the script file" {
         Mock Get-VariableFromScriptFile {}
-        Mock Get-ScriptBody { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" } -Verifiable
+        Mock Get-ScriptBodyFromScriptFile { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" } -Verifiable
         
         New-ScriptModuleObject -Path "TestDrive:\file.ps1" | % Value | Should Be "test script"
         

@@ -27,11 +27,11 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\..\..\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBody.ps1"
+. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1"
 
 Describe "New-StepTemplateObject" {
 
-    Mock Get-ScriptBody {}
+    Mock Get-ScriptBodyFromScriptFile {}
     Mock Get-VariableFromScriptFile {}
 
     It "Should return a new object with the name from the script file" {
@@ -51,7 +51,7 @@ Describe "New-StepTemplateObject" {
     }
 
     It "Should return a new object with the property Octopus.Action.Script.ScriptBody from the script file" {      
-        Mock Get-ScriptBody { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" } -Verifiable
+        Mock Get-ScriptBodyFromScriptFile { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" } -Verifiable
         New-StepTemplateObject -Path "TestDrive:\file.ps1" | % Properties | % 'Octopus.Action.Script.ScriptBody' | Should Be "test script"
         Assert-VerifiableMocks
     }

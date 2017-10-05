@@ -58,7 +58,7 @@ function New-StepTemplateObject
                                    "Description" = $stepTemplateDescription
                                    "ActionType"  = "Octopus.Script"
                                    "Properties"  = @{
-                                       "Octopus.Action.Script.ScriptBody" = Get-ScriptBody -Path $Path
+                                       "Octopus.Action.Script.ScriptBody" = Get-ScriptBodyFromScriptFile -Path $Path
                                        "Octopus.Action.Script.Syntax"     = "PowerShell"
                                    }
                                    "Parameters"  = $stepTemplateParameters

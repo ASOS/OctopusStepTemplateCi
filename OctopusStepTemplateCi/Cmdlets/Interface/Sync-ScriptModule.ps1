@@ -76,7 +76,7 @@ function Sync-ScriptModule {
         Invoke-OctopusOperation -Action Update -ObjectType UserDefined -ApiUri $scriptModuleVariableSet.Links.Variables  -Object $scriptModule | Out-Null
         $result.UploadCount++
     } else {
-        $moduleScript = Get-ScriptBody -Path $Path
+        $moduleScript = Get-ScriptBodyFromScriptFile -Path $Path
         if  ($scriptModule.Variables[0].Value -ne $moduleScript) {
             Write-TeamCityMessage "Script module '$moduleName' has changed. Updating"
 

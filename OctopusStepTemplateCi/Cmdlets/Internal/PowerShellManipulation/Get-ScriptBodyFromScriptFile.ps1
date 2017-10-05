@@ -16,12 +16,12 @@ limitations under the License.
 
 <#
 .NAME
-	Get-ScriptBody
+    Get-ScriptBodyFromScriptFile
 
 .SYNOPSIS
     Returns the powershell script with the metadata variables removed
 #>
-function Get-ScriptBody {
+function Get-ScriptBodyFromScriptFile {
     param (
        $Path
     )

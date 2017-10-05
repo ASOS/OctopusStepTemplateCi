@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-	Get-ScriptBody.Tests
+    Get-ScriptBodyFromScriptFile.Tests
 
 .SYNOPSIS
-	Pester tests for Get-ScriptBody.
+    Pester tests for Get-ScriptBodyFromScriptFile.
 #>
 Set-StrictMode -Version Latest
 
@@ -28,7 +28,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\Get-VariableStatement.ps1"
 
-Describe "Get-ScriptBody" {
+Describe "Get-ScriptBodyFromScriptFile" {
     Context "Script module" {
         BeforeEach {
         $tempFile = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), "scriptmodule.ps1") # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
@@ -44,7 +44,7 @@ function test {
         }
     
         It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {         
-            Get-ScriptBody -Path $tempFile | % Replace "`n" "" | % Replace "`r" "" | % Replace " " "" | Should Be "functiontest{}"
+            Get-ScriptBodyFromScriptFile -Path $tempFile | % Replace "`n" "" | % Replace "`r" "" | % Replace " " "" | Should Be "functiontest{}"
         } 
     }
     
@@ -64,7 +64,7 @@ function test {
         }
     
         It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {         
-            Get-ScriptBody -Path $tempFile | % Replace "`n" "" | % Replace "`r" "" | % Replace " " "" | Should Be "functiontest{}"
+            Get-ScriptBodyFromScriptFile -Path $tempFile | % Replace "`n" "" | % Replace "`r" "" | % Replace " " "" | Should Be "functiontest{}"
         } 
     }
 }

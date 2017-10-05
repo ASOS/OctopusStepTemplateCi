@@ -30,12 +30,12 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\Compare-Hashtable.ps1"
 . "$here\..\ConvertTo-OctopusJson.ps1"
 . "$here\..\..\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBody.ps1"
+. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1"
 
 Describe "Compare-StepTemplate" {
     Mock Get-VariableFromScriptFile { "test name" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "StepTemplateName" }
     Mock Get-VariableFromScriptFile { "test description" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "StepTemplateDescription" }
-    Mock Get-ScriptBody { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" }
+    Mock Get-ScriptBodyFromScriptFile { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" }
     Mock Get-VariableFromScriptFile { @{Name = "test" } } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "StepTemplateParameters" }
         
     BeforeEach {        

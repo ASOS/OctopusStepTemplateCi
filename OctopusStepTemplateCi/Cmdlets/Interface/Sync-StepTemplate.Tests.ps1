@@ -34,7 +34,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\TeamCity\Write-TeamCityMessage.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableStatement.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-ScriptBody.ps1"
+. "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Convert-HashTableToPSCustomObject.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Compare-Hashtable.ps1"
 

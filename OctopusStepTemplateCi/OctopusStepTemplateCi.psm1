@@ -46,7 +46,7 @@ Set-StrictMode -Version Latest
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Invoke-OctopusOperation.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Reset-Cache.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Test-OctopusConnectivity.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBody.ps1')"
+. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptFile.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableStatement.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\ParseJson.ps1')"
