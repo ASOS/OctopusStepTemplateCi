@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-	Get-VariableStatement.Tests
+    Get-VariableStatementFromScriptFile.Tests
 
 .SYNOPSIS
-	Pester tests for Get-VariableStatement.
+    Pester tests for Get-VariableStatementFromScriptFile.
 #>
 Set-StrictMode -Version Latest
 
@@ -27,7 +27,7 @@ $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
-Describe "Get-VariableStatement" {
+Describe "Get-VariableStatementFromScriptFile" {
     BeforeEach {
         $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
         Set-Content $tempFile @"
@@ -42,14 +42,14 @@ function test {
     }
     
     It "Should return the variable statement from a powershell script" {
-        Get-VariableStatement -Path $tempFile -VariableName "myTestVariable" -Type Statement | Should Be "`$myTestVariable = 'some value'" 
+        Get-VariableStatementFromScriptFile -Path $tempFile -VariableName "myTestVariable" -Type Statement | Should Be "`$myTestVariable = 'some value'" 
     }
     
     It "Should return the value of the variable statement from a powershell script" {
-        Get-VariableStatement -Path $tempFile -VariableName "myTestVariable" -Type Value | Should Be "'some value'" 
+        Get-VariableStatementFromScriptFile -Path $tempFile -VariableName "myTestVariable" -Type Value | Should Be "'some value'" 
     }
     
     It "Should return nothing if the variable doesnt exist" {
-        Get-VariableStatement -Path $tempFile -VariableName "null" -Type Value | Should Be $null
+        Get-VariableStatementFromScriptFile -Path $tempFile -VariableName "null" -Type Value | Should Be $null
     }
 }

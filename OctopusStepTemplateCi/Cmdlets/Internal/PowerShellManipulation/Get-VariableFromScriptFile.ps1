@@ -28,7 +28,7 @@ function Get-VariableFromScriptFile {
         [switch]$DontResolveVariable
     )
 
-    $variableValue = Get-VariableStatement -Path $Path -VariableName $VariableName -Type Value
+    $variableValue = Get-VariableStatementFromScriptFile -Path $Path -VariableName $VariableName -Type Value
     if ($null -eq $variableValue) {
         throw "File '$Path' does not contain metadata variable '$variableName'"
     }

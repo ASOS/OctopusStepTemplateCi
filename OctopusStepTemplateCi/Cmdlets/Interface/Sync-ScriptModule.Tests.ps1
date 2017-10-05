@@ -11,6 +11,8 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
+
+
 limitations under the License.
 #>
 
@@ -32,7 +34,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\Octopus\ScriptModules\New-ScriptModuleVariableSetObject.ps1"
 . "$here\..\Internal\TeamCity\Write-TeamCityMessage.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-VariableStatement.ps1"
+. "$here\..\Internal\PowerShellManipulation\Get-VariableStatementFromScriptFile.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1"
 
 Describe "Sync-ScriptModule" {

@@ -16,12 +16,12 @@ limitations under the License.
 
 <#
 .NAME
-	Get-VariableStatement
+    Get-VariableStatementFromScriptFile
 
 .SYNOPSIS
     Returns the variable assignment statement for a given variable name that is in a powershell script file
 #>
-function Get-VariableStatement {
+function Get-VariableStatementFromScriptFile {
     param (
         $Path,
         $VariableName,

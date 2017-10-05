@@ -30,12 +30,12 @@ function Get-ScriptBodyFromScriptFile {
     $metadataToRemove = {@()}.Invoke()
     
     if ($fileName.EndsWith(".scriptmodule.ps1")) {
-       $metadataToRemove.Add((Get-VariableStatement -Path $Path -VariableName ScriptModuleName))
-       $metadataToRemove.Add((Get-VariableStatement -Path $Path -VariableName ScriptModuleDescription))
+       $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName ScriptModuleName))
+       $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName ScriptModuleDescription))
     } elseif ($fileName.EndsWith(".steptemplate.ps1")) {
-        $metadataToRemove.Add((Get-VariableStatement -Path $Path -VariableName StepTemplateName))
-        $metadataToRemove.Add((Get-VariableStatement -Path $Path -VariableName StepTemplateDescription))
-        $metadataToRemove.Add((Get-VariableStatement -Path $Path -VariableName StepTemplateParameters))
+        $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName StepTemplateName))
+        $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName StepTemplateDescription))
+        $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName StepTemplateParameters))
     }
     
     $content = Get-Content -Path $Path -Raw 
