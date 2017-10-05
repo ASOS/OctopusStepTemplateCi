@@ -29,6 +29,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\Get-VariableStatementFromScriptFile.ps1"
 
 Describe "Get-VariableFromScriptFile" {
+
     BeforeEach {
         $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
         Set-Content $tempFile @"
@@ -38,6 +39,7 @@ function test {
 }
 "@
     }
+
     AfterEach {
         Remove-Item $tempFile
     }

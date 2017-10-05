@@ -21,31 +21,28 @@ limitations under the License.
 .SYNOPSIS
     Returns the variable assignment statement for a given variable name that is in a powershell script file
 #>
-function Get-VariableStatementFromScriptFile {
-    param (
-        $Path,
-        $VariableName,
-        [ValidateSet("Statement", "Value")]$Type = "Statement"
+function Get-VariableStatementFromScriptFile
+{
+
+    param
+    (
+
+        [Parameter(Mandatory=$true)]
+        [string] $Path,
+
+        [Parameter(Mandatory=$true)]
+        [string] $VariableName,
+
+        [Parameter(Mandatory=$false)]
+        [ValidateSet("Statement", "Value")]
+        [string] $Type = "Statement"
+
     )
 
-    $tokens = $null
-    $parseErrors = $null
-    $ast = [System.Management.Automation.Language.Parser]::ParseFile($Path, [ref] $tokens, [ref] $parseErrors)
+    $script = Get-Content -LiteralPath $Path -Raw;
 
-    $filter = {
-        $args[0] -is [System.Management.Automation.Language.AssignmentStatementAst] -and
-        $args[0].Left -is [System.Management.Automation.Language.VariableExpressionAst] -and
-        $args[0].Left.VariablePath.UserPath -eq $VariableName
-    }
+    $result = Get-VariableStatementFromScriptText -Script $script -VariableName $VariableName -Type $Type;
 
-    $variableStatement = $ast.Find($filter, $true)
-    
-    if ($variableStatement -eq $null) {
-        return $null
-    }
+    return $result;
 
-    switch ($Type) {
-        Statement { return $variableStatement | % Extent | % Text }
-        Value { return $variableStatement | % Right | % Extent | % Text }
-    }
 }

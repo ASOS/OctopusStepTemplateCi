@@ -29,26 +29,31 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\Get-VariableStatementFromScriptFile.ps1"
 
 Describe "Get-ScriptBodyFromScriptFile" {
+
     Context "Script module" {
+
         BeforeEach {
-        $tempFile = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), "scriptmodule.ps1") # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
-        Set-Content $tempFile @"
+            $tempFile = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), "scriptmodule.ps1") # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
+            Set-Content $tempFile @"
 function test {
     `$ScriptModuleName = 'name'
     `$ScriptModuleDescription = 'description'
 }
 "@
         }
+
         AfterEach {
             Remove-Item $tempFile
         }
-    
-        It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {         
+
+        It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {
             Get-ScriptBodyFromScriptFile -Path $tempFile | % Replace "`n" "" | % Replace "`r" "" | % Replace " " "" | Should Be "functiontest{}"
         } 
+
     }
-    
+
     Context "Step template" {
+
         BeforeEach {
         $tempFile = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), "steptemplate.ps1") # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
         Set-Content $tempFile @"
@@ -59,12 +64,15 @@ function test {
 }
 "@
         }
+
         AfterEach {
             Remove-Item $tempFile
         }
-    
-        It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {         
+
+        It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {
             Get-ScriptBodyFromScriptFile -Path $tempFile | % Replace "`n" "" | % Replace "`r" "" | % Replace " " "" | Should Be "functiontest{}"
         } 
+
     }
+
 }

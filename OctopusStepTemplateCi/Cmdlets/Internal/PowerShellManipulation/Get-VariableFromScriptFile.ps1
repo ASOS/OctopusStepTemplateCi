@@ -16,27 +16,31 @@ limitations under the License.
 
 <#
 .NAME
-	Get-VariableFromScriptFile
+    Get-VariableFromScriptFile
 
 .SYNOPSIS
     Returns the variable statement or variable value from a powershell script file
 #>
-function Get-VariableFromScriptFile {
-    param ( 
-        $Path,
-        $VariableName,
-        [switch]$DontResolveVariable
+function Get-VariableFromScriptFile
+{
+
+    param
+    (
+        [Parameter(Mandatory=$true)]
+        [string] $Path,
+
+        [Parameter(Mandatory=$true)]
+        [string] $VariableName,
+
+        [Parameter(Mandatory=$false)]
+        [switch] $DontResolveVariable
+
     )
 
-    $variableValue = Get-VariableStatementFromScriptFile -Path $Path -VariableName $VariableName -Type Value
-    if ($null -eq $variableValue) {
-        throw "File '$Path' does not contain metadata variable '$variableName'"
-    }
+    $script = Get-Content -LiteralPath $Path -Raw;
 
-    $scriptBlock = [ScriptBlock]::Create($variableValue)
-    if ($DontResolveVariable) {
-        return $scriptBlock
-    } else {
-        return ($scriptBlock.Invoke())
-    } 
+    $result = Get-VariableFromScriptText -Script $script -VariableName $VariableName -DontResolveVariable:$DontResolveVariable;
+
+    return $result;
+
 }

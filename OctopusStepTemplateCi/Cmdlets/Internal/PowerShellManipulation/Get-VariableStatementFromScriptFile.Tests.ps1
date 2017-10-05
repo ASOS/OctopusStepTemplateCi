@@ -28,6 +28,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 Describe "Get-VariableStatementFromScriptFile" {
+
     BeforeEach {
         $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
         Set-Content $tempFile @"
@@ -37,6 +38,7 @@ function test {
 }
 "@
     }
+
     AfterEach {
         Remove-Item $tempFile
     }
@@ -52,4 +54,5 @@ function test {
     It "Should return nothing if the variable doesnt exist" {
         Get-VariableStatementFromScriptFile -Path $tempFile -VariableName "null" -Type Value | Should Be $null
     }
+
 }

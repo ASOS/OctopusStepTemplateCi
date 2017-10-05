@@ -21,29 +21,28 @@ limitations under the License.
 .SYNOPSIS
     Returns the powershell script with the metadata variables removed
 #>
-function Get-ScriptBodyFromScriptFile {
-    param (
-       $Path
+function Get-ScriptBodyFromScriptFile
+{
+
+    param
+    (
+
+        [Parameter(Mandatory=$true)]
+        [string] $Path
+
     )
     
-    $fileName = Split-Path $Path -Leaf
-    $metadataToRemove = {@()}.Invoke()
-    
-    if ($fileName.EndsWith(".scriptmodule.ps1")) {
-       $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName ScriptModuleName))
-       $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName ScriptModuleDescription))
-    } elseif ($fileName.EndsWith(".steptemplate.ps1")) {
-        $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName StepTemplateName))
-        $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName StepTemplateDescription))
-        $metadataToRemove.Add((Get-VariableStatementFromScriptFile -Path $Path -VariableName StepTemplateParameters))
+    $script = Get-Content -LiteralPath $Path -Raw;
+
+    if( $Path.EndsWith(".scriptmodule.ps1") )
+    {
+        $result = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
     }
-    
-    $content = Get-Content -Path $Path -Raw 
-    $metadataToRemove | ? { $null -ne $_ } | % {
-        $content = $content.Replace($_, "")
+    elseif( $Path.EndsWith(".steptemplate.ps1") )
+    {
+        $result = Get-ScriptBodyFromScriptText -Script $script -Type "StepTemplate";
     }
-    
-    $content = $content.Trim()
-    
-    return $content
+
+    return $result;
+
 }
