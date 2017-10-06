@@ -41,7 +41,7 @@ Describe 'Step template parameters' {
     }
 
     Context "Step template should not contain unused parameters" {
-        $scriptBody = Get-ScriptBody $sut
+        $scriptBody = Get-ScriptBodyFromScriptFile $sut
 
         $variables = Get-VariableFromScriptFile $sut "StepTemplateParameters"
         foreach($variable in $variables)
@@ -84,7 +84,7 @@ Describe 'Step template parameters' {
     }
 
     Context "Step template parameters for '$filename' should contain all required fields" {
-        $scriptBody = Get-ScriptBody $sut
+        $scriptBody = Get-ScriptBodyFromScriptFile $sut
 
         $variables = Get-VariableFromScriptFile $sut "StepTemplateParameters"
 
@@ -112,7 +112,7 @@ Describe 'Step template parameters' {
     }
 
     Context "Step template '$filename' should not contain undeclared parameters" {
-        $scriptBody = Get-ScriptBody $sut
+        $scriptBody = Get-ScriptBodyFromScriptFile $sut
         $variables = Get-VariableFromScriptFile $sut "StepTemplateParameters"
 
         $matches = [regex]::matches($scriptBody, "\`$OctopusParameters\[['`"].*['`"]\]")
