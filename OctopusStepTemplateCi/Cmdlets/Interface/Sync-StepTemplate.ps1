@@ -37,58 +37,72 @@ limitations under the License.
 .OUTPUTS
     None.
 #>
-function Sync-StepTemplate {
+function Sync-StepTemplate
+{
+
     [CmdletBinding()]
     [OutputType("System.Collections.Hashtable")]
-    param (
-        [Parameter(Mandatory=$true)][ValidateScript({ Test-Path $_ })][System.String]$Path,
-        [Parameter(Mandatory=$false)][System.Management.Automation.SwitchParameter]$UseCache
+    param
+    (
+
+        [Parameter(Mandatory=$true)]
+        [ValidateScript({ Test-Path $_ })]
+        [string] $Path,
+
+        [Parameter(Mandatory=$false)]
+        [switch] $UseCache
+
     )
+
+    $templateName = Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateName";
+    $stepTemplate = Invoke-OctopusOperation -Action Get -ObjectType ActionTemplates -ObjectId "All" -UseCache:$UseCache | ? Name -eq $templateName;
+
+    $result = @{ "UploadCount" = 0 };
     
-    $templateName = Get-VariableFromScriptFile -Path $Path -VariableName StepTemplateName
-    $stepTemplate =  Invoke-OctopusOperation -Action Get -ObjectType ActionTemplates -ObjectId "All" -UseCache:$UseCache | ? Name -eq $templateName
-    
-    $result = @{UploadCount = 0} 
-    
-    $newStepTemplate = New-StepTemplateObject -Path $Path
-    if ($null -eq $stepTemplate) {
-        Write-TeamCityMessage "Step template '$templateName' does not exist. Creating"
-        
-        $stepTemplate = Invoke-OctopusOperation -Action New -ObjectType ActionTemplates -Object $newStepTemplate
-        $result.UploadCount++
-    } else {
-        $stepTemplate.Properties = Convert-PSObjectToHashTable $stepTemplate.Properties
+    $newStepTemplate = New-StepTemplateObject -Path $Path;
+    if( $null -eq $stepTemplate )
+    {
+        Write-TeamCityMessage "Step template '$templateName' does not exist. Creating";
+        $stepTemplate = Invoke-OctopusOperation -Action "New" -ObjectType "ActionTemplates" -Object $newStepTemplate;
+        $result.UploadCount++;
+    }
+    else
+    {
+        $stepTemplate.Properties = Convert-PSObjectToHashTable $stepTemplate.Properties;
         $stepTemplate.Parameters = @($stepTemplate.Parameters | % {
-            $newParameter = Convert-PSObjectToHashTable $_
-            $newParameter.DisplaySettings = Convert-PSObjectToHashTable $newParameter.DisplaySettings
-            $newParameter
+            $newParameter = Convert-PSObjectToHashTable $_;
+            $newParameter.DisplaySettings = Convert-PSObjectToHashTable $newParameter.DisplaySettings;
+            return $newParameter;
         })
 
         # Strip out unneccessary keys such as Id and links.
-        Try {
-            $keysToRemove = $stepTemplate.Parameters.Keys | Select -Unique | ? {$_ -notin ("DefaultValue", "Label", "HelpText", "Name", "DisplaySettings")}
-
-            foreach ($key in $keysToRemove) {
-                $paramCount = ($stepTemplate.Parameters.Count) - 1
-                while ($paramCount -ge 0) {
-                    ($stepTemplate.Parameters[$paramCount]).Remove($key)
-                    $paramCount = $paramCount - 1
+        try
+	{
+            $keysToRemove = $stepTemplate.Parameters.Keys | Select -Unique | ? {$_ -notin ("DefaultValue", "Label", "HelpText", "Name", "DisplaySettings")};
+            foreach( $key in $keysToRemove )
+            {
+                $paramCount = ($stepTemplate.Parameters.Count) - 1;
+                while( $paramCount -ge 0 )
+	        {
+                    ($stepTemplate.Parameters[$paramCount]).Remove($key);
+                    $paramCount = $paramCount - 1;
                 }
             }
         }
-        Catch {
-            Write-Verbose "No parameter keys to remove"
-        }      
+        catch
+        {
+            Write-Verbose "No parameter keys to remove";
+        }
 
-        if (Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate) {
-            Write-TeamCityMessage "Script template '$templateName' has changed. Updating"
-
-            $newStepTemplate.Version = $stepTemplate.Version + 1
-
-            $stepTemplate = Invoke-OctopusOperation -Action Update -ObjectType ActionTemplates -ObjectId $stepTemplate.Id -Object $newStepTemplate
-            $result.UploadCount++
+        if( Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate )
+        {
+            Write-TeamCityMessage "Script template '$templateName' has changed. Updating";
+            $newStepTemplate.Version = $stepTemplate.Version + 1;
+            $stepTemplate = Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId $stepTemplate.Id -Object $newStepTemplate;
+            $result.UploadCount++;
         }
     }
-    
-    $result
+
+    return $result;
+
 }

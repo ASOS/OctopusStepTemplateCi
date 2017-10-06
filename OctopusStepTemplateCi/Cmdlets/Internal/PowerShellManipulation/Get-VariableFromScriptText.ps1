@@ -16,18 +16,19 @@ limitations under the License.
 
 <#
 .NAME
-    Get-VariableFromScriptFile
+    Get-VariableFromScriptText
 
 .SYNOPSIS
-    Returns the variable statement or variable value from a powershell script file
+    Returns the variable statement or variable value from a powershell script
 #>
-function Get-VariableFromScriptFile
+function Get-VariableFromScriptText
 {
 
     param
     (
+
         [Parameter(Mandatory=$true)]
-        [string] $Path,
+        [string] $Script,
 
         [Parameter(Mandatory=$true)]
         [string] $VariableName,
@@ -37,10 +38,22 @@ function Get-VariableFromScriptFile
 
     )
 
-    $script = Get-Content -LiteralPath $Path -Raw;
+    $variableValue = Get-VariableStatementFromScriptText -Script $Script -VariableName $VariableName -Type "Value";
 
-    $result = Get-VariableFromScriptText -Script $script -VariableName $VariableName -DontResolveVariable:$DontResolveVariable;
+    if( $null -eq $variableValue )
+    {
+        throw "Script does not contain a variable '$variableName'";
+    }
 
-    return $result;
+    $scriptBlock = [ScriptBlock]::Create($variableValue);
+
+    if( $DontResolveVariable )
+    {
+        return $scriptBlock;
+    }
+    else
+    {
+        return ($scriptBlock.Invoke());
+    } 
 
 }

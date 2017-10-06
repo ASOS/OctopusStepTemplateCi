@@ -16,30 +16,32 @@ limitations under the License.
 
 <#
 .NAME
-    Get-VariableFromScriptFile
+    Get-ScriptBodyFromScriptFile
 
 .SYNOPSIS
-    Returns the variable statement or variable value from a powershell script file
+    Returns the powershell script with the metadata variables removed
 #>
-function Get-VariableFromScriptFile
+function Get-ScriptBodyFromScriptFile
 {
 
     param
     (
-        [Parameter(Mandatory=$true)]
-        [string] $Path,
 
         [Parameter(Mandatory=$true)]
-        [string] $VariableName,
-
-        [Parameter(Mandatory=$false)]
-        [switch] $DontResolveVariable
+        [string] $Path
 
     )
-
+    
     $script = Get-Content -LiteralPath $Path -Raw;
 
-    $result = Get-VariableFromScriptText -Script $script -VariableName $VariableName -DontResolveVariable:$DontResolveVariable;
+    if( $Path.EndsWith(".scriptmodule.ps1") )
+    {
+        $result = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
+    }
+    elseif( $Path.EndsWith(".steptemplate.ps1") )
+    {
+        $result = Get-ScriptBodyFromScriptText -Script $script -Type "StepTemplate";
+    }
 
     return $result;
 
