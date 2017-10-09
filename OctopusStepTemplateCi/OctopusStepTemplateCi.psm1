@@ -40,7 +40,7 @@ Set-StrictMode -Version Latest
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Compare-Hashtable.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Convert-PSObjectToHashTable.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\New-StepTemplateObject.ps1')"
+. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\ConvertTo-OctopusJson.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Get-Cache.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Invoke-OctopusOperation.ps1')"

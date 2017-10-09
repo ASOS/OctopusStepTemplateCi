@@ -30,7 +30,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\Octopus\Invoke-OctopusOperation.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Convert-PSObjectToHashTable.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\New-StepTemplateObject.ps1"
+. "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
 . "$here\..\Internal\TeamCity\Write-TeamCityMessage.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1"
@@ -42,14 +42,31 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\Octopus\StepTemplates\Compare-Hashtable.ps1"
 
 Describe "Sync-StepTemplate" {
-    BeforeEach {
-        $tempFile = "{0}\test.steptemplate.ps1" -f [System.IO.Path]::GetTempPath() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
-        New-StepTemplate -Name "test" -Path ([System.IO.Path]::GetTempPath())
-    }
-    AfterEach {
-        Remove-Item $tempFile
-    }
-    
+
+    Mock -CommandName "Get-Content" `
+         -MockWith {
+             return @'
+function test {
+    $StepTemplateName = "name"
+    $StepTemplateDescription = "description"
+    $StepTemplateParameters = @(
+        @{
+            "Name" = "myParameterName"
+            "Label" = "myParameterLabel"
+            "HelpText" = "myParameterHelpText"
+            "DefaultValue" = "myDefaultValue"
+            "DisplaySettings" = @{}
+        }
+    )
+}
+'@;
+         };
+
+    Mock -CommandName "Invoke-OctopusOperation" `
+         -MockWith {
+             throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
+         };
+
     Mock Write-TeamCityMessage {} 
     
     Context "Testing for uploads" {
@@ -57,8 +74,8 @@ Describe "Sync-StepTemplate" {
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "ActionTemplates" -and $ObjectId -eq "All" } 
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "New" -and $ObjectType -eq "ActionTemplates" } -Verifiable
             
-            Sync-StepTemplate -Path $tempFile
-            
+            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+            $result.UploadCount | Should be 1;
             Assert-VerifiableMocks
         }
         
@@ -67,8 +84,8 @@ Describe "Sync-StepTemplate" {
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" } -Verifiable
             Mock Compare-StepTemplate { $true } -Verifiable
             
-            Sync-StepTemplate -Path $tempFile
-            
+            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+            $result.UploadCount | Should be 1;
             Assert-VerifiableMocks
         }
         
@@ -77,8 +94,8 @@ Describe "Sync-StepTemplate" {
             Mock Compare-StepTemplate { $false } 
             Mock Convert-PSObjectToHashTable { @{ DisplaySettings = @{} } } -Verifiable
             
-            Sync-StepTemplate -Path $tempFile
-            
+            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+            $result.UploadCount | Should be 1;
             Assert-VerifiableMocks
         }
         
@@ -86,7 +103,8 @@ Describe "Sync-StepTemplate" {
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "ActionTemplates" -and $ObjectId -eq "All" } 
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "New" -and $ObjectType -eq "ActionTemplates" }
             
-            Sync-StepTemplate -Path $tempFile | % UploadCount | Should Be 1
+            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+            $result.UploadCount | Should Be 1;
         }
         
         It "Should return an upload count for each create/upload operation" {
@@ -94,13 +112,14 @@ Describe "Sync-StepTemplate" {
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" }
             Mock Compare-StepTemplate { $true }
             
-            Sync-StepTemplate -Path $tempFile | % UploadCount | Should Be 1
+            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+            $result.UploadCount | Should Be 1;
         }
     }
     Context "Testing for NOT uploading" {
         It "Should not upload a step template which is identical" {
             Mock Invoke-OctopusOperation {
-                $oldTemplate = New-StepTemplateObject -Path $tempFile
+                $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
                 $oldTemplate.Parameters = Convert-HashTableToPsCustomObject $oldTemplate.Parameters
                 $oldTemplate.Properties = Convert-HashTableToPsCustomObject $oldTemplate.Properties
                 $oldTemplate.Parameters.DisplaySettings = New-Object PSCustomObject
@@ -109,11 +128,12 @@ Describe "Sync-StepTemplate" {
             } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "ActionTemplates" -and $ObjectId -eq "All" } 
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "New" -and $ObjectType -eq "ActionTemplates" }
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" }
-            (Sync-StepTemplate -Path $tempFile).UploadCount | Should be 0
+            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+            $result.UploadCount | Should Be 0;
         }
         It "Should not upload a step template which differs only in the parameter ID" {
             Mock Invoke-OctopusOperation {
-                $oldTemplate = New-StepTemplateObject -Path $tempFile
+                $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
                 $oldTemplate.Parameters = Convert-HashTableToPsCustomObject $oldTemplate.Parameters
                 $oldTemplate.Properties = Convert-HashTableToPsCustomObject $oldTemplate.Properties
                 $oldTemplate.Parameters.DisplaySettings = New-Object PSCustomObject
@@ -123,7 +143,8 @@ Describe "Sync-StepTemplate" {
             } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "ActionTemplates" -and $ObjectId -eq "All" } 
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "New" -and $ObjectType -eq "ActionTemplates" }
             Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" }
-            (Sync-StepTemplate -Path $tempFile).UploadCount | Should be 0
+            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+            $result.UploadCount | Should Be 0;
         }           
     }
 }

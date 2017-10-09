@@ -46,7 +46,6 @@ function Sync-StepTemplate
     (
 
         [Parameter(Mandatory=$true)]
-        [ValidateScript({ Test-Path $_ })]
         [string] $Path,
 
         [Parameter(Mandatory=$false)]
@@ -54,12 +53,14 @@ function Sync-StepTemplate
 
     )
 
-    $templateName = Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateName";
-    $stepTemplate = Invoke-OctopusOperation -Action Get -ObjectType ActionTemplates -ObjectId "All" -UseCache:$UseCache | ? Name -eq $templateName;
+    $newStepTemplate = Read-StepTemplate -Path $Path;
+    $templateName = $newStepTemplate.Name;
+
+    $stepTemplates = Invoke-OctopusOperation -Action "Get" -ObjectType "ActionTemplates" -ObjectId "All" -UseCache:$UseCache;
+    $stepTemplate  = $stepTemplates | where-object { $_.Name -eq $templateName };
 
     $result = @{ "UploadCount" = 0 };
     
-    $newStepTemplate = New-StepTemplateObject -Path $Path;
     if( $null -eq $stepTemplate )
     {
         Write-TeamCityMessage "Step template '$templateName' does not exist. Creating";
