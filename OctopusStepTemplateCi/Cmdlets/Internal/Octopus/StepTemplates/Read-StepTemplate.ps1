@@ -58,7 +58,7 @@ function Read-StepTemplate
     $stepTemplateScriptBody = Get-ScriptBodyFromScriptText -Script $script -Type "StepTemplate";
 
     # read the step template from file
-    $stepTemplate = new-object -TypeName "PSObject" `
+    $stepTemplate = new-object -TypeName "PSCustomObject" `
                                -Property @{
                                    "Name"        = $stepTemplateName
                                    "Description" = $stepTemplateDescription
