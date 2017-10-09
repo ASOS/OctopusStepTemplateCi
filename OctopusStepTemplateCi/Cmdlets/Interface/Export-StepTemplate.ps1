@@ -53,7 +53,7 @@ function Export-StepTemplate {
     )
     
     $resolvedPath = Resolve-Path -Path $Path
-    $stepTemplate = ConvertTo-OctopusJson (New-StepTemplateObject -Path $resolvedPath)
+    $stepTemplate = ConvertTo-OctopusJson (Read-StepTemplate -Path $resolvedPath)
     
     switch ($PSCmdlet.ParameterSetName) {
         "File" {
