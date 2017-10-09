@@ -27,7 +27,7 @@ Set-StrictMode -Version Latest
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
-. "$here\..\Internal\Octopus\StepTemplates\New-StepTemplateObject.ps1"
+. "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
 . "$here\..\Internal\Octopus\ConvertTo-OctopusJson.ps1"
 
 Describe "Export-StepTemplate" {
@@ -38,7 +38,7 @@ Describe "Export-StepTemplate" {
         }
     }
 
-    Mock New-StepTemplateObject { "steptemplate" }
+    Mock Read-StepTemplate { "steptemplate" }
     Mock ConvertTo-OctopusJson { "steptemplate" }
     Set-Content "TestDrive:\steptemplate.ps1" "steptemplate" 
     

@@ -46,7 +46,6 @@ function Sync-ScriptModule
     (
 
         [Parameter(Mandatory=$true)]
-        [ValidateScript({ Test-Path $_ })]
         [string] $Path,
 
         [Parameter(Mandatory=$false)]
@@ -54,17 +53,21 @@ function Sync-ScriptModule
 
     )
 
-    $moduleName = Get-VariableFromScriptFile -Path $Path -VariableName "ScriptModuleName";
-    $moduleDescription = Get-VariableFromScriptFile -Path $Path -VariableName "ScriptModuleDescription";
+    $newVariableSet = Read-ScriptModuleVariableSet -Path $Path;
+
+    $script = Get-Content -LiteralPath $Path -Raw;
+    $moduleName = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleName";
+    $moduleDescription = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleDescription";
 
     $result = @{ "UploadCount" = 0 };
 
-    $scriptModuleVariableSet = Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "All" -UseCache:$UseCache | ? Name -eq $moduleName
+    $scriptModuleVariableSets = Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "All" -UseCache:$UseCache;
+    $scriptModuleVariableSet  = $scriptModuleVariableSets | where-object { $_.Name -eq $moduleName };
 
     if( $null -eq $scriptModuleVariableSet )
     {
         Write-TeamCityMessage "VariableSet for script module '$moduleName' does not exist. Creating";
-        $scriptModuleVariableSet = Invoke-OctopusOperation -Action "New" -ObjectType "LibraryVariableSets" -Object (New-ScriptModuleVariableSetObject -Path $Path)
+        $scriptModuleVariableSet = Invoke-OctopusOperation -Action "New" -ObjectType "LibraryVariableSets" -Object $newVariableSet;
         $result.UploadCount++;
     }
     elseif( $scriptModuleVariableSet.Description -ne $moduleDescription )
@@ -81,7 +84,7 @@ function Sync-ScriptModule
     {
         Write-TeamCityMessage "Script module '$moduleName' does not exist. Creating";
         $scriptModule.Variables += New-ScriptModuleObject -Path $Path;
-        $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables  -Object $scriptModule;
+        $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
         $result.UploadCount++;
     }
     else

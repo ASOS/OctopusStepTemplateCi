@@ -16,49 +16,55 @@ limitations under the License.
 
 <#
 .NAME
-    New-StepTemplateObject
+    Read-StepTemplate
 
 .SYNOPSIS
-    Creates a new step template object
+    Reads a step template from a powershell script file
 #>
-function New-StepTemplateObject
+function Read-StepTemplate
 {
 
     param
     (
+
         [Parameter(Mandatory=$true)]
         [string] $Path
+
     )
 
-    $stepTemplateName = Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateName";
+    $script = Get-Content -LiteralPath $Path -Raw;
+
+    $stepTemplateName = Get-VariableFromScriptText -Script $script -VariableName "StepTemplateName";
     if( ($stepTemplateName -ne $null) -and
         ($stepTemplateName -isnot [string]) )
     {
         throw new-object System.InvalidOperationException("The '`$StepTemplateName' variable in file '$Path' does not evaluate to a string.");
     }
 
-    $stepTemplateDescription = Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateDescription";
+    $stepTemplateDescription = Get-VariableFromScriptText -Script $script -VariableName "StepTemplateDescription";
     if( ($stepTemplateDescription -ne $null) -and
         ($stepTemplateDescription -isnot [string]) )
     {
         throw new-object System.InvalidOperationException("The '`StepTemplateDescription' variable in file '$Path' does not evaluate to a string.");
     }
 
-    $stepTemplateParameters = @(Get-VariableFromScriptFile -Path $Path -VariableName "StepTemplateParameters");
+    $stepTemplateParameters = @(Get-VariableFromScriptText -Script $script -VariableName "StepTemplateParameters");
     if( ($stepTemplateParameters -isnot [array]) -or
         (($stepTemplateParameters | where-object { $_ -isnot [hashtable] }) -ne $null)  )
     {
         throw new-object System.InvalidOperationException("The '`$StepTemplateParameters' variable in file '$Path' does not evaluate to an array of hashtables.");
     }
 
+    $stepTemplateScriptBody = Get-ScriptBodyFromScriptText -Script $script -Type "StepTemplate";
+
     # read the step template from file
-    $stepTemplate = new-object -TypeName "PSObject" `
+    $stepTemplate = new-object -TypeName "PSCustomObject" `
                                -Property @{
                                    "Name"        = $stepTemplateName
                                    "Description" = $stepTemplateDescription
                                    "ActionType"  = "Octopus.Script"
                                    "Properties"  = @{
-                                       "Octopus.Action.Script.ScriptBody" = Get-ScriptBodyFromScriptFile -Path $Path
+                                       "Octopus.Action.Script.ScriptBody" = $stepTemplateScriptBody
                                        "Octopus.Action.Script.Syntax"     = "PowerShell"
                                    }
                                    "Parameters"  = $stepTemplateParameters
