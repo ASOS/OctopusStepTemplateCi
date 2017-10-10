@@ -89,7 +89,7 @@ function Sync-ScriptModule
     }
     else
     {
-        $moduleScript = Get-ScriptBodyFromScriptFile -Path $Path;
+        $moduleScript = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
         if( $scriptModule.Variables[0].Value -ne $moduleScript )
         {
             Write-TeamCityMessage "Script module '$moduleName' has changed. Updating"
