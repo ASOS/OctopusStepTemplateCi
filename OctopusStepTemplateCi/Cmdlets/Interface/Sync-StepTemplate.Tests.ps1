@@ -159,7 +159,7 @@ function test {
     }
 
     Context "when a step template has not changed" {
-fs
+
         Mock -CommandName "Invoke-OctopusOperation" `
              -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
              -MockWith {
