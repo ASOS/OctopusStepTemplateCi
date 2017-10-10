@@ -28,11 +28,17 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 
 Describe "Convert-PSObjectToHashTable" {
+
     It "Should return a hashtable" {
-       Convert-PSObjectToHashTable -InputObject (New-Object -TypeName PSObject -Property (@{test = 1})) | % GetType | % Name | Should Be 'hashtable'
+        $input = New-Object -TypeName PSObject -Property @{ "test" = 1 };
+        $result = Convert-PSObjectToHashTable -InputObject $input;
+        $result | Should BeOfType [hashtable];
     }
     
     It "Should convert all the properties into the hashtable" {
-       Convert-PSObjectToHashTable -InputObject (New-Object -TypeName PSObject -Property (@{test = 1})) | % test | Should Be 1
+        $input = New-Object -TypeName PSObject -Property @{ "test" = 1 };
+        $result = Convert-PSObjectToHashTable -InputObject $input;
+        $result["test"] | Should Be 1;
     }
+
 }

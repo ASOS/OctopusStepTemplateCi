@@ -38,7 +38,7 @@ function Convert-PSObjectToHashTable
     $output = @{};
 
     $members = Get-Member -InputObject $InputObject -MemberType *Property;
-    foreach( $member in  $members)
+    foreach( $member in $members )
     {
         $output[$member.Name] = $InputObject.($member.Name);
     }

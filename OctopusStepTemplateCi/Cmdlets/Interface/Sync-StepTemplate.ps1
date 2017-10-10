@@ -102,6 +102,7 @@ function Sync-StepTemplate
             $stepTemplate = Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId $stepTemplate.Id -Object $newStepTemplate;
             $result.UploadCount++;
         }
+
     }
 
     return $result;

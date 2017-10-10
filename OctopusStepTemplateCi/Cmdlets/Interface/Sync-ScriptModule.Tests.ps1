@@ -40,67 +40,213 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "Sync-ScriptModule" {
 
-    BeforeEach {
-        $tempFile = "{0}\test.scriptmodule.ps1" -f [System.IO.Path]::GetTempPath() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
-        New-ScriptModule -Name "test" -Path ([System.IO.Path]::GetTempPath())
-    }
-
-    AfterEach {
-        Remove-Item $tempFile
-    }
-    
     Mock -CommandName "Get-Content" `
          -MockWith {
              return @'
-$ScriptModuleName = "name"
-$ScriptModuleDescription = "description"
-
-write-host "test message";
+function test {
+    $ScriptModuleName = "name"
+    $ScriptModuleDescription = "description"
+    write-host "test message"
+}
 '@;
          };
 
+    Mock -CommandName "Invoke-OctopusOperation" `
+         -MockWith {
+             throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
+         };
+
     Mock Write-TeamCityMessage {} 
+
+    Context "when variable set does not exist" {
     
-    It "Should upload the VariableSet for the script module if it does not exist" {
-        Mock Invoke-OctopusOperation { @{ Name = "another test" } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "LibraryVariableSets" -and $ObjectId -eq "All" }
-        Mock Invoke-OctopusOperation { @{ Links = @{ Variables = "script module" } } } -ParameterFilter { $Action -eq "New" -and $ObjectType -eq "LibraryVariableSets" } -Verifiable
-        Mock Invoke-OctopusOperation { @{ Variables = @() } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "UserDefined" } 
-        Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "UserDefined" }        
-        Sync-ScriptModule -Path $tempFile
-        Assert-VerifiableMocks
+        It "Should upload the VariableSet for the script module if it does not exist" {
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+		 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                 -MockWith { return @{ Name = "another name" } } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "LibraryVariableSets") } `
+                 -MockWith { return @{ "Links" = @{ "Variables" = "script module" } }; } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                 -MockWith { return @{ "Variables" = @() }; } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
+                 -MockWith {} `
+                 -Verifiable;
+
+            $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
+            $result.UploadCount | Should Be 2;
+
+            Assert-VerifiableMocks;
+
+        }
+
     }
     
-    It "Should upload the script module if it does not exist" {
-        Mock Invoke-OctopusOperation { @{ Name = "test"; Description = "test description"; Links = @{ Variables = "script module" } } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "LibraryVariableSets" -and $ObjectId -eq "All" }
-        Mock Invoke-OctopusOperation { @{ Variables = @() } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "UserDefined" } 
-        Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "UserDefined" }  -Verifiable
-        Sync-ScriptModule -Path $tempFile
-        Assert-VerifiableMocks
+    Context "when script module does not exist" {
+
+        It "Should upload the script module if it does not exist" {
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                 -MockWith {
+                     return @{
+                         "Name" = "name"
+                         "Description" = "description"
+                         "Links" = @{ "Variables" = "script module" }
+                     };
+                  } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                 -MockWith { @{ Variables = @() } } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
+                 -MockWith {}  `
+                 -Verifiable;
+
+            $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
+            $result.UploadCount | Should Be 1;
+
+            Assert-VerifiableMocks;
+
+        }
+
     }
     
-    It "Should upload an updated VariableSet for the script module if it has changed" {
-        Mock Invoke-OctopusOperation { @{ Name = "test"; Description = "different description"; Links = @{ Variables = "script module"; Self = "variableset" } } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "LibraryVariableSets" -and $ObjectId -eq "All" }
-        Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "UserDefined" -and $ApiUri -eq "variableset" } -Verifiable
-        Mock Invoke-OctopusOperation { @{ Variables = @() } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "UserDefined" } 
-        Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "UserDefined" -and $ApiUri -eq "script module" }
-        Sync-ScriptModule -Path $tempFile
-        Assert-VerifiableMocks
+    Context "when variable set has changed" {
+
+        It "Should upload an updated VariableSet for the script module if it has changed" {
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                 -MockWith {
+                    return @{
+                        "Name" = "name"
+                        "Description" = "new description"
+                        "Links" = @{ "Variables" = "script module"; "Self" = "variableset" }
+                    };
+                 } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") -and ($ApiUri -eq "variableset") } `
+                 -MockWith {} `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                 -MockWith {
+                    return @{
+                        "Variables" = @(
+                            @{
+                                "Value" = @'
+function test {
+    
+    
+    write-host "test message"
+}
+'@
+                            }
+                        )
+                    };
+                 } `
+                 -Verifiable;
+
+            $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
+            $result.UploadCount | Should Be 1;
+
+            Assert-VerifiableMocks;
+
+        }
+
     }
     
-    It "Should upload an updated script module if it has changed" {
-        Mock Invoke-OctopusOperation { @{ Name = "test"; Description = "test description"; Links = @{ Variables = "script module" } } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "LibraryVariableSets" -and $ObjectId -eq "All" }
-        Mock Invoke-OctopusOperation { @{ Variables = @( @{ Value = "a different script" } ) } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "UserDefined" } 
-        Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "UserDefined" }  -Verifiable
-        Sync-ScriptModule -Path $tempFile
-        Assert-VerifiableMocks
-    }
-    
-    It "Should return an upload count for each create/upload operation" {
-        Mock Invoke-OctopusOperation { @{ Name = "test"; Description = "different description"; Links = @{ Variables = "script module"; Self = "variableset" } } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "LibraryVariableSets" -and $ObjectId -eq "All" }
-        Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "UserDefined" -and $ApiUri -eq "variableset" } -Verifiable
-        Mock Invoke-OctopusOperation { @{ Variables = @( @{ Value = "a different script" } ) } } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "UserDefined" } 
-        Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "UserDefined" }
-        Sync-ScriptModule -Path $tempFile | % UploadCount | Should Be 2
+    Context "when script module has changed" {
+
+        It "Should upload an updated script module if it has changed" {
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                 -MockWith {
+                     return @{
+                        "Name" = "name"
+                        "Description" = "description"
+                        "Links" = @{ "Variables" = "script module" }
+                     };
+                  } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and( $ObjectType -eq "UserDefined") }  `
+                 -MockWith { return @{ "Variables" = @( @{ "Value" = "a different script" } ) }; } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
+                 -MockWith {} `
+                 -Verifiable;
+
+            $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
+            $result.UploadCount | Should Be 1;
+
+            Assert-VerifiableMocks;
+
+        }
+
     }
 
+    Context "when nothing has changed" {
+
+        It "Should not upload if nothing has changed" {
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                 -MockWith {
+                    return @{
+                        "Name" = "name"
+                        "Description" = "description"
+                        "Links" = @{ "Variables" = "script module"; "Self" = "variableset" }
+                    };
+                 } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                 -MockWith {
+                    return @{
+                        "Variables" = @(
+                            @{
+                                "Value" = @'
+function test {
+    
+    
+    write-host "test message"
+}
+'@
+                            }
+                        )
+                    };
+                 } `
+                 -Verifiable;
+
+            $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
+            $result.UploadCount | Should Be 0;
+
+            Assert-VerifiableMocks;
+
+        }
+
+    }
 }
