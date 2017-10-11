@@ -36,9 +36,9 @@ Describe "Read-ScriptModuleVariableSet" {
          -MockWith {
              return @'
 function test {
-    $ScriptModuleName = "name"
-    $ScriptModuleDescription = "description"
-    write-host "test"
+    $ScriptModuleName = "name";
+    $ScriptModuleDescription = "description";
+    write-host "test";
 }
 '@
          };

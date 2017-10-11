@@ -24,16 +24,26 @@ limitations under the License.
 param ([System.String] $sut, [System.String] $TestResultsFile, [System.Collections.Hashtable]$Settings)
 Set-StrictMode -Version Latest
 
-Describe 'Script Module parameters' {
- 	Context "Script Module contains metadata parameters" {
-        $filename = Split-Path -Leaf $sut
+Describe "Script Module parameters" {
 
-		It "Script Module '$filename' should contain metadata variable `$ScriptModuleName" {
-			{ Get-VariableFromScriptFile $sut "ScriptModuleName" } | Should Not Throw
-		}
+    $filename = Split-Path -Leaf $sut;
+
+    Context "Script Module contains metadata parameters" {
+
+        It "Script Module '$filename' should contain metadata variable `$ScriptModuleName" {
+            {
+                $script = Get-Content -LiteralPath $sut -Raw;
+                $result = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleName";
+            } | Should Not Throw;
+        }
 
         It "Script Module '$filename' should contain metadata variable `$ScriptModuleDescription" {
-			{ Get-VariableFromScriptFile $sut "ScriptModuleDescription" } | Should Not Throw
-		}
+            {
+                $script = Get-Content -LiteralPath $sut -Raw;
+                $result = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleDescription";
+            } | Should Not Throw;
+        }
+
     }
+
 }

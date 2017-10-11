@@ -83,7 +83,7 @@ function Sync-ScriptModule
     if( $scriptModule.Variables.Count -eq 0 )
     {
         Write-TeamCityMessage "Script module '$moduleName' does not exist. Creating";
-        $scriptModule.Variables += New-ScriptModuleObject -Path $Path;
+        $scriptModule.Variables += Read-ScriptModule -Path $Path;
         $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
         $result.UploadCount++;
     }

@@ -16,12 +16,12 @@ limitations under the License.
 
 <#
 .NAME
-    Read-ScriptModuleVariableSet
+    Read-ScriptModule
 
 .SYNOPSIS
-    Reads a script module variable set from a powershell script file
+    Reads a script module from a powershell script file
 #>
-function Read-ScriptModuleVariableSet
+function Read-ScriptModule
 {
 
     param
@@ -40,21 +40,16 @@ function Read-ScriptModuleVariableSet
     {
         throw new-object System.InvalidOperationException("The '`$ScriptModuleName' variable in file '$Path' does not evaluate to a string.");
     }
+    $scriptModuleName = "Octopus.Script.Module[$scriptModuleName]";
 
-    $scriptModuleDescription = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleDescription";
-    if( ($scriptModuleDescription -ne $null) -and
-        ($scriptModuleDescription -isnot [string]) )
-    {
-        throw new-object System.InvalidOperationException("The '`ScriptModuleDescription' variable in file '$Path' does not evaluate to a string.");
-    }
+    $scriptModuleScriptBody = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
 
-    $variableSet = new-object -TypeName "PSCustomObject" `
-                              -Property @{
-                                  "ContentType" = "ScriptModule"
-                                  "Name"        = $scriptModuleName
-                                  "Description" = $scriptModuleDescription
-    };
+    $scriptModule = new-object -TypeName "PSCustomObject" `
+                               -Property @{
+                                   "Name"  = $scriptModuleName
+                                   "Value" = $scriptModuleScriptBody
+                               };
 
-    return $variableSet;
+    return $scriptModule;
 
 }
