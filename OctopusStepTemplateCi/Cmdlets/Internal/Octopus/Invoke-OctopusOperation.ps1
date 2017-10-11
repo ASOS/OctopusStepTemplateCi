@@ -103,7 +103,7 @@ function Invoke-OctopusOperation
         $response = Invoke-WebRequest -Uri $uri -Method $method -Body $requestBody -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
     }
 
-    $result = $response | % Content | ParseJsonString;
+    $result = ConvertFrom-OctopusJson -InputObject $response.Content;
         
     if( $UseCache )
     {

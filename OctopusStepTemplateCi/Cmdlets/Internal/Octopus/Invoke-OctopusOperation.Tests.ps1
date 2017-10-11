@@ -26,8 +26,9 @@ Set-StrictMode -Version Latest
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
-. "$here\Test-OctopusConnectivity.ps1"
+. "$here\ConvertFrom-OctopusJson.ps1"
 . "$here\ConvertTo-OctopusJson.ps1"
+. "$here\Test-OctopusConnectivity.ps1"
 . "$here\Get-Cache.ps1"
 . "$here\..\PowerShellManipulation\ParseJson.ps1"
 
@@ -37,10 +38,7 @@ Describe "Invoke-OctopusOperation" {
     $env:OctopusApiKey = "secret";
 
     Mock -CommandName "Invoke-WebRequest" `
-         -MockWith {};
-
-    Mock -CommandName "ParseJsonString" `
-         -MockWith {};
+         -MockWith { return @{ "Content" = "" }; };
 
     Mock -CommandName "Get-Cache" `
          -MockWith { return @{}; };
@@ -48,7 +46,7 @@ Describe "Invoke-OctopusOperation" {
     It "Should call Test-OctopusConnectivity" {
 
         Mock -CommandName "Test-OctopusConnectivity" `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
         
         Invoke-OctopusOperation -Action "Get" -ObjectType "UserDefined";
@@ -61,17 +59,17 @@ Describe "Invoke-OctopusOperation" {
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets" } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { $Uri -eq "http://example.local/api/ActionTemplates" } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { $Uri -eq "http://example.local/custom" } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
         
         Invoke-OctopusOperation -Action "New" -ObjectType "LibraryVariableSets";
@@ -86,12 +84,12 @@ Describe "Invoke-OctopusOperation" {
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { ($Uri -eq "http://example.local/api/LibraryVariableSets/1") -and ($Method -eq "GET") } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { ($Uri -eq "http://example.local/api/ActionTemplates/2") -and ($Method -eq "PUT") } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
@@ -105,17 +103,17 @@ Describe "Invoke-OctopusOperation" {
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { ($Uri -eq "http://example.local/api/LibraryVariableSets/1") -and ($Method -eq "GET") } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { ($Uri -eq "http://example.local/api/ActionTemplates/2") -and ($Method -eq "PUT") } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { ($Uri -eq "http://example.local/custom") -and ($Method -eq "POST") } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
@@ -130,7 +128,7 @@ Describe "Invoke-OctopusOperation" {
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { $Body -eq "1" } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
 
         Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom" -Object 1;
@@ -149,7 +147,7 @@ Describe "Invoke-OctopusOperation" {
 
         Mock -CommandName "Invoke-WebRequest" `
              -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets/1" } `
-             -MockWith {} `
+             -MockWith { return @{ "Content" = "" }; } `
              -Verifiable;
         
         Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;

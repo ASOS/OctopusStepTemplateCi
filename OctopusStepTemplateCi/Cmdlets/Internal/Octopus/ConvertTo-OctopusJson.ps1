@@ -27,7 +27,7 @@ function ConvertTo-OctopusJson
     (
 
         [Parameter(Mandatory=$false)]
-        [object] $Inputobject,
+        [object] $InputObject,
 
         [Parameter(Mandatory=$false)]
         [string] $Indent = [string]::Empty

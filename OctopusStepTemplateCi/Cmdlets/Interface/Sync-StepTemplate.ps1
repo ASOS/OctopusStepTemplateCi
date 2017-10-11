@@ -69,12 +69,6 @@ function Sync-StepTemplate
     }
     else
     {
-        $stepTemplate.Properties = Convert-PSObjectToHashTable $stepTemplate.Properties;
-        $stepTemplate.Parameters = @($stepTemplate.Parameters | % {
-            $newParameter = Convert-PSObjectToHashTable $_;
-            $newParameter.DisplaySettings = Convert-PSObjectToHashTable $newParameter.DisplaySettings;
-            return $newParameter;
-        })
 
         # Strip out unneccessary keys such as Id and links.
         try

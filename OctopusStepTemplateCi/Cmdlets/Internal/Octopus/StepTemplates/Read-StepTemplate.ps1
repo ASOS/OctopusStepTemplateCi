@@ -58,20 +58,21 @@ function Read-StepTemplate
     $stepTemplateScriptBody = Get-ScriptBodyFromScriptText -Script $script -Type "StepTemplate";
 
     # read the step template from file
-    $stepTemplate = new-object -TypeName "PSCustomObject" `
-                               -Property @{
-                                   "Name"        = $stepTemplateName
-                                   "Description" = $stepTemplateDescription
-                                   "ActionType"  = "Octopus.Script"
-                                   "Properties"  = @{
-                                       "Octopus.Action.Script.ScriptBody" = $stepTemplateScriptBody
-                                       "Octopus.Action.Script.Syntax"     = "PowerShell"
-                                   }
-                                   "Parameters"  = $stepTemplateParameters
-                                   "SensitiveProperties" = @{}
-                                   "`$Meta"      = @{ "Type" = "ActionTemplate" }
-                                   "Version"     = 1
-                               };
+    $stepTemplate = @{
+                        "Name"        = $stepTemplateName
+                        "Description" = $stepTemplateDescription
+                        "ActionType"  = "Octopus.Script"
+                        "Version"     = 1
+                        "Properties"  = @{
+                            "Octopus.Action.Script.ScriptBody" = $stepTemplateScriptBody
+                            "Octopus.Action.Script.Syntax"     = "PowerShell"
+                        }
+                        "Parameters"  = $stepTemplateParameters
+                        "SensitiveProperties" = @{}
+                        "`$Meta"      = @{
+			    "Type" = "ActionTemplate"
+                        }
+                    };
 
     # Octopus cleans up some of the Parameter properties when a step template is uploaded.
     # this means that when it is downloaded again for comparison against the local template

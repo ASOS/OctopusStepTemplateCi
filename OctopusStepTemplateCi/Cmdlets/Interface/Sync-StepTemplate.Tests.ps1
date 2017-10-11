@@ -92,14 +92,15 @@ function test {
              -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
              -MockWith {
                  return @(, @(
-                     new-object PSCustomObject -Property ([ordered] @{
+                     @{
                          "Id"          = "ActionTemplates-1"
-                         "Version"     = 1
                          "Name"        = "name"
                          "Description" = "new description"
-                         "Properties"  = new-object PSCustomObject
+                         "ActionType"  = "Octopus.Script"
+                         "Version"     = 1
+                         "Properties"  = @{}
                          "Parameters"  = @()
-                     })
+                     }
                  ));
              } `
              -Verifiable;;
@@ -123,21 +124,22 @@ function test {
              -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
              -MockWith {
                  return @(, @(
-                     new-object PSCustomObject -Property ([ordered] @{
+                     @{
                          "Id"          = "ActionTemplates-1"
-                         "Version"     = 1
                          "Name"        = "name"
                          "Description" = "description"
-                         "Properties"  = new-object PSCustomObject -Property ([ordered] @{
+                         "ActionType"  = "Octopus.Script"
+                         "Version"     = 1
+                         "Properties"  = @{
                              "Octopus.Action.Script.ScriptBody" = "function test {
     
     
     
 }"
                              "Octopus.Action.Script.Syntax" = "PowerShell"
-                         })
+                         }
                          "Parameters"  = @()
-                     })
+                     }
                  ));
              } `
              -Verifiable;
@@ -161,29 +163,33 @@ function test {
              -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
              -MockWith {
                  return @(, @(
-                     new-object PSCustomObject -Property ([ordered] @{
+                     @{
                          "Id"          = "ActionTemplates-1"
-                         "Version"     = 1
                          "Name"        = "name"
                          "Description" = "description"
-                         "Properties"  = new-object PSCustomObject -Property ([ordered] @{
+                         "ActionType"  = "Octopus.Script"
+                         "Version"     = 1
+                         "Properties"  = @{
                              "Octopus.Action.Script.ScriptBody" = "function test {
     
     
     
 }"
                              "Octopus.Action.Script.Syntax" = "PowerShell"
-                         })
+                         }
                          "Parameters"  = @(
-                              new-object PSCustomObject -Property ([ordered] @{
+                             @{
                                  "Name" = "myParameterName"
                                  "Label" = "myParameterLabel"
                                  "HelpText" = "myParameterHelpText"
                                  "DefaultValue" = "myDefaultValue"
-                                 "DisplaySettings" = new-object PSCustomObject
-                             })
+                                 "DisplaySettings" = @{}
+                             }
                          )
-                     })
+                        "`$Meta"      = @{
+			    "Type" = "ActionTemplate"
+                        }
+                     }
                  ));
              } `
              -Verifiable;
@@ -199,19 +205,27 @@ function test {
     Context "when a template differs only by parameter ids" {
 
         It "Should not upload a step template which differs only in the parameter ID" {
-            Mock Invoke-OctopusOperation {
-                $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
-                $oldTemplate.Parameters = Convert-HashTableToPsCustomObject $oldTemplate.Parameters
-                $oldTemplate.Properties = Convert-HashTableToPsCustomObject $oldTemplate.Properties
-                $oldTemplate.Parameters.DisplaySettings = New-Object PSCustomObject
-                $oldTemplate | Add-Member -MemberType 'NoteProperty' -Name 'Id' -Value 'Test-Id'
-                $oldTemplate.Parameters | Add-Member -MemberType 'NoteProperty' -Name 'Id' -Value '1234'
-                return $oldTemplate
-            } -ParameterFilter { $Action -eq "Get" -and $ObjectType -eq "ActionTemplates" -and $ObjectId -eq "All" } 
-            Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "New" -and $ObjectType -eq "ActionTemplates" }
-            Mock Invoke-OctopusOperation {} -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" }
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+	         -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+		 -MockWith {
+                     $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
+                     $oldTemplate.Add("Id", "Test-Id");
+                     $oldTemplate.Parameters[0].Add("Id", "1234");
+                     return $oldTemplate;
+                 };
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
+                 -MockWith {};
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" } `
+                 -MockWith {};
+
             $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
             $result.UploadCount | Should Be 0;
+
         }
 
     }
