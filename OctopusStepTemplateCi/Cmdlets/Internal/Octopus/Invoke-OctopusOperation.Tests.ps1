@@ -30,7 +30,6 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\ConvertTo-OctopusJson.ps1"
 . "$here\Test-OctopusConnectivity.ps1"
 . "$here\Get-Cache.ps1"
-. "$here\..\PowerShellManipulation\ParseJson.ps1"
 
 Describe "Invoke-OctopusOperation" {
 

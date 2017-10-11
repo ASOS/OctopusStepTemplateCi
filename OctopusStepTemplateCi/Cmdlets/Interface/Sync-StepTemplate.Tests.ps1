@@ -28,14 +28,12 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\New-StepTemplate.ps1"
 . "$here\..\Internal\Octopus\Invoke-OctopusOperation.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Convert-PSObjectToHashTable.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
 . "$here\..\Internal\TeamCity\Write-TeamCityMessage.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Convert-HashTableToPSCustomObject.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Compare-Hashtable.ps1"
 
 Describe "Sync-StepTemplate" {
