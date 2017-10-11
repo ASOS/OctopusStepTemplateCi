@@ -16,35 +16,49 @@ limitations under the License.
 
 <#
 .NAME
-	New-ScriptModuleObject.Tests
+    Read-ScriptModule.Tests
 
 .SYNOPSIS
-	Pester tests for New-ScriptModuleObject.
+    Pester tests for Read-ScriptModule.
 #>
 Set-StrictMode -Version Latest
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
-. "$here\..\..\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1"
+. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
+. "$here\..\..\PowerShellManipulation\Get-VariableFromScriptText.ps1"
+. "$here\..\..\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
 
-Describe "New-ScriptModuleObject" {
+Describe "Read-ScriptModule" {
+
+    Mock -CommandName "Get-Content" `
+         -MockWith {
+             return @'
+function test {
+    $ScriptModuleName = "name";
+    $ScriptModuleDescription = "description";
+    write-host "test";
+}
+'@;
+         };
+
     It "Should return a new object with the name from the script file" {
-        Mock Get-VariableFromScriptFile { "test name" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "ScriptModuleName" } -Verifiable
-        Mock Get-ScriptBodyFromScriptFile {}
-        
-        New-ScriptModuleObject -Path "TestDrive:\file.ps1" | % Name | Should Be "Octopus.Script.Module[test name]"
-        
-        Assert-VerifiableMocks
+        $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
+        $result.Name | Should Be "Octopus.Script.Module[name]";
+        Assert-VerifiableMocks;
     }
     
     It "Should return a new object with the value as the body of the script file" {
-        Mock Get-VariableFromScriptFile {}
-        Mock Get-ScriptBodyFromScriptFile { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" } -Verifiable
-        
-        New-ScriptModuleObject -Path "TestDrive:\file.ps1" | % Value | Should Be "test script"
-        
-        Assert-VerifiableMocks
+        $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
+        $result.Value | Should Be @'
+function test {
+    ;
+    ;
+    write-host "test";
+}
+'@;
+        Assert-VerifiableMocks;
     }
+
 }

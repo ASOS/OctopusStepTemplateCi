@@ -28,14 +28,11 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\New-ScriptModule.ps1"
 . "$here\..\Internal\Octopus\Invoke-OctopusOperation.ps1"
-. "$here\..\Internal\Octopus\ScriptModules\New-ScriptModuleObject.ps1"
+. "$here\..\Internal\Octopus\ScriptModules\Read-ScriptModule.ps1"
 . "$here\..\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.ps1"
 . "$here\..\Internal\TeamCity\Write-TeamCityMessage.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-VariableStatementFromScriptFile.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptFile.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
 
 Describe "Sync-ScriptModule" {
