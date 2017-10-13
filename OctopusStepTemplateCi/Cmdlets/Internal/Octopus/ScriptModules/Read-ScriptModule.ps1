@@ -44,11 +44,10 @@ function Read-ScriptModule
 
     $scriptModuleScriptBody = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
 
-    $scriptModule = new-object -TypeName "PSCustomObject" `
-                               -Property @{
-                                   "Name"  = $scriptModuleName
-                                   "Value" = $scriptModuleScriptBody
-                               };
+    $scriptModule = @{
+                        "Name"  = $scriptModuleName
+                        "Value" = $scriptModuleScriptBody
+                    };
 
     return $scriptModule;
 

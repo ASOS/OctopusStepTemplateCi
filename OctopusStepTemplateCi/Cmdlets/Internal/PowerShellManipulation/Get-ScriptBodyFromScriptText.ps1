@@ -64,5 +64,5 @@ function Get-ScriptBodyFromScriptText
     $newScript = $newScript.Trim();
 
     return $newScript;
-x
+
 }

@@ -48,12 +48,11 @@ function Read-ScriptModuleVariableSet
         throw new-object System.InvalidOperationException("The '`ScriptModuleDescription' variable in file '$Path' does not evaluate to a string.");
     }
 
-    $variableSet = new-object -TypeName "PSCustomObject" `
-                              -Property @{
-                                  "ContentType" = "ScriptModule"
-                                  "Name"        = $scriptModuleName
-                                  "Description" = $scriptModuleDescription
-    };
+    $variableSet = @{
+                       "ContentType" = "ScriptModule"
+                       "Name"        = $scriptModuleName
+                       "Description" = $scriptModuleDescription
+                   };
 
     return $variableSet;
 

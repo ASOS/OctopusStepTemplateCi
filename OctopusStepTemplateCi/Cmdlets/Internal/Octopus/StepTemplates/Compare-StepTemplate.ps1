@@ -28,10 +28,10 @@ function Compare-StepTemplate
     (
 
         [Parameter(Mandatory=$true)]
-        [PSCustomObject] $OldTemplate,
+        [hashtable] $OldTemplate,
 
         [Parameter(Mandatory=$true)]
-        [PSCustomObject] $NewTemplate
+        [hashtable] $NewTemplate
 
     )
 

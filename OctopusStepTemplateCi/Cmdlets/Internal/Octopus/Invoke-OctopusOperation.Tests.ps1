@@ -26,79 +26,137 @@ Set-StrictMode -Version Latest
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
-. "$here\Test-OctopusConnectivity.ps1"
+. "$here\ConvertFrom-OctopusJson.ps1"
 . "$here\ConvertTo-OctopusJson.ps1"
+. "$here\Test-OctopusConnectivity.ps1"
 . "$here\Get-Cache.ps1"
-. "$here\..\PowerShellManipulation\ParseJson.ps1"
 
 Describe "Invoke-OctopusOperation" {
-    Mock Invoke-WebRequest {}
-    Mock ParseJsonString {}
-    $Env:OctopusUri = "http://example.local"
-    $Env:OctopusApiKey = "secret"
-    Mock Get-Cache { @{} }
+
+    $env:OctopusUri    = "http://example.local";
+    $env:OctopusApiKey = "secret";
+
+    Mock -CommandName "Invoke-WebRequest" `
+         -MockWith { return @{ "Content" = "" }; };
+
+    Mock -CommandName "Get-Cache" `
+         -MockWith { return @{}; };
     
     It "Should call Test-OctopusConnectivity" {
-        Mock Test-OctopusConnectivity {} -Verifiable
+
+        Mock -CommandName "Test-OctopusConnectivity" `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
         
-        Invoke-OctopusOperation -Action Get -ObjectType UserDefined
-        
-        Assert-VerifiableMocks
+        Invoke-OctopusOperation -Action "Get" -ObjectType "UserDefined";
+
+        Assert-VerifiableMocks;
+
     }
     
     It "Should construct the uri based on the object type" {
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets" } -Verifiable
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/api/ActionTemplates" } -Verifiable
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/custom" } -Verifiable
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets" } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { $Uri -eq "http://example.local/api/ActionTemplates" } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { $Uri -eq "http://example.local/custom" } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
         
-        Invoke-OctopusOperation -Action New -ObjectType LibraryVariableSets
-        Invoke-OctopusOperation -Action New -ObjectType ActionTemplates
-        Invoke-OctopusOperation -Action New -ObjectType UserDefined -ApiUri "custom"
+        Invoke-OctopusOperation -Action "New" -ObjectType "LibraryVariableSets";
+        Invoke-OctopusOperation -Action "New" -ObjectType "ActionTemplates";
+        Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMocks;
+
     }
     
     It "Should include the id in get or update requests" {
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets/1" } -Verifiable
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/api/ActionTemplates/2" } -Verifiable
-        
-        Invoke-OctopusOperation -Action Get -ObjectType LibraryVariableSets -ObjectId "1"
-        Invoke-OctopusOperation -Action Update -ObjectType ActionTemplates -ObjectId "2"
-        
-        Assert-VerifiableMocks
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { ($Uri -eq "http://example.local/api/LibraryVariableSets/1") -and ($Method -eq "GET") } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { ($Uri -eq "http://example.local/api/ActionTemplates/2") -and ($Method -eq "PUT") } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
+        Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
+
+        Assert-VerifiableMocks;
+
     }
     
     It "Should use the appropriate http method based on the type of request" {
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets/1" -and $Method -eq "GET" } -Verifiable
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/api/ActionTemplates/2" -and $Method -eq "PUT" } -Verifiable
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/custom" -and $Method -eq "POST" } -Verifiable
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { ($Uri -eq "http://example.local/api/LibraryVariableSets/1") -and ($Method -eq "GET") } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { ($Uri -eq "http://example.local/api/ActionTemplates/2") -and ($Method -eq "PUT") } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { ($Uri -eq "http://example.local/custom") -and ($Method -eq "POST") } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
+        Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
+        Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
         
-        Invoke-OctopusOperation -Action Get -ObjectType LibraryVariableSets -ObjectId "1"
-        Invoke-OctopusOperation -Action Update -ObjectType ActionTemplates -ObjectId "2"
-        Invoke-OctopusOperation -Action New -ObjectType UserDefined -ApiUri "custom"
-        
-        Assert-VerifiableMocks
+        Assert-VerifiableMocks;
+
     }
     
     It "Should add the object to the body of the request as JSON" {
-        Mock Invoke-WebRequest {} -ParameterFilter { $Body -eq "1" } -Verifiable
-        Mock ConvertTo-OctopusJson { "1" } -ParameterFilter { $InputObject -eq 1 } -Verifiable
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { $Body -eq "1" } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
+
+        Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom" -Object 1;
         
-        Invoke-OctopusOperation -Action New -ObjectType UserDefined -ApiUri "custom" -Object 1
-        
-        Assert-VerifiableMocks
+        Assert-VerifiableMocks;
+
     }
     
     It "Should use the cache if 'UseCache' is specified" {
-        $cache = @{}
-        Mock Get-Cache { $cache } -Verifiable
-        Mock Invoke-WebRequest {} -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets/1" } -Verifiable
+
+        $cache = @{};
+
+        Mock -CommandName "Get-Cache" `
+             -MockWith { return $cache; } `
+             -Verifiable;
+
+        Mock -CommandName "Invoke-WebRequest" `
+             -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets/1" } `
+             -MockWith { return @{ "Content" = "" }; } `
+             -Verifiable;
         
-        Invoke-OctopusOperation -Action Get -ObjectType LibraryVariableSets -ObjectId "1" -UseCache
-        Invoke-OctopusOperation -Action Get -ObjectType LibraryVariableSets -ObjectId "1" -UseCache
+        Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
+        Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
         
-        Assert-VerifiableMocks
-        $cache.Count | Should Be 1
-        Assert-MockCalled Invoke-WebRequest -Exactly 1 -Scope It
+        Assert-VerifiableMocks;
+
+        $cache.Count | Should Be 1;
+        Assert-MockCalled "Invoke-WebRequest" -Exactly 1 -Scope It;
+
     }
+
 }

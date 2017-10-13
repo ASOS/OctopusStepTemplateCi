@@ -16,61 +16,100 @@ limitations under the License.
 
 <#
 .NAME
-	Invoke-OctopusOperation
+    Invoke-OctopusOperation
 
 .SYNOPSIS
     Invoke's a web request against Octopus's API and returns the JSON result converted into an object 
 #>
-function Invoke-OctopusOperation {
-    param(
-        [Parameter(Mandatory=$true)][ValidateSet("Get", "New", "Update")]$Action,
-        [Parameter(Mandatory=$true)][ValidateSet("LibraryVariableSets", "ActionTemplates", "UserDefined")]$ObjectType,
-        $ObjectId,
-        $Object,
-        $ApiUri,
-        [switch]$UseCache,
-        $OctopusUri = $ENV:OctopusURI,
-        $OctopusApiKey = $ENV:OctopusApikey
+function Invoke-OctopusOperation
+{
+
+    param
+    (
+
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("Get", "New", "Update")]
+        [string] $Action,
+
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("LibraryVariableSets", "ActionTemplates", "UserDefined")]
+        [string] $ObjectType,
+
+        [Parameter(Mandatory=$false)]
+        [string] $ObjectId,
+
+        [Parameter(Mandatory=$false)]
+        [object] $Object,
+
+        [Parameter(Mandatory=$false)]
+        [string] $ApiUri,
+
+        [Parameter(Mandatory=$false)]
+        [switch] $UseCache,
+
+        [Parameter(Mandatory=$false)]
+        [string] $OctopusUri = $env:OctopusURI,
+
+        [Parameter(Mandatory=$false)]
+        [string] $OctopusApiKey = $env:OctopusApikey
+
     )
     
-    Test-OctopusConnectivity
+    Test-OctopusConnectivity;
 
-    $uri = switch ($ObjectType) {
-        "LibraryVariableSets" { "{0}/api/LibraryVariableSets" -f $OctopusUri }
-        "ActionTemplates" { "{0}/api/ActionTemplates" -f $OctopusUri }
-        "UserDefined" { "{0}/{1}" -f $OctopusUri, $ApiUri }
-    }
-    if ($ObjectType -ne "UserDefined" -and ($Action -eq "Get" -or $Action -eq "Update")) {
-        $uri = "{0}/{1}" -f $uri, $ObjectId
-    }
-    
-    $method = switch ($Action) {
-        "Get" { "GET" }
-        "New" { "POST" }
-        "Update" { "PUT" }
+    switch( $ObjectType )
+    {
+        "LibraryVariableSets" {
+            $uri = "$OctopusUri/api/LibraryVariableSets";
+        }
+        "ActionTemplates" {
+            $uri = "$OctopusUri/api/ActionTemplates";
+        }
+        "UserDefined" {
+            $uri = "$OctopusUri/$ApiUri";
+        }
     }
 
-    $cache = Get-Cache
-    $cacheKey = "$uri-$method"
-    if ($UseCache -and $cache.ContainsKey($cacheKey)) {
-        return $cache.Item($cacheKey)
+    if( ($ObjectType -in @("LibraryVariableSets", "ActionTemplates")) -and
+        ($Action -in @("Get", "Update")) )
+    {
+        $uri = "$uri/$ObjectId";
     }
-    
-    if ($null -ne $Object) {
-        $jsonObject = ConvertTo-OctopusJson -InputObject $Object
-    } else {
-        $jsonObject = $null
-    }
-    
-    #by default, only SSL3 and TLS 1.0 are supported.
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType] "Ssl3, Tls, Tls11, Tls12"
 
-    $result = Invoke-WebRequest -Uri $uri -Method $method -Body $jsonObject -Headers @{"X-Octopus-ApiKey" = $OctopusApiKey} -UseBasicParsing |  `
-        % Content | ParseJsonString
+    switch( $Action )
+    {
+        "Get"    { $method = "GET";  }
+	"New"    { $method = "POST"; }
+	"Update" { $method = "PUT";  }
+    }
+
+    $cache = Get-Cache;
+    $cacheKey = "$uri-$method";
+    if( $UseCache -and $cache.ContainsKey($cacheKey) )
+    {
+        return $cache.Item($cacheKey);
+    }
+
+    # by default, only SSL3 and TLS 1.0 are supported.
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType] "Ssl3, Tls, Tls11, Tls12";
+
+    if( $null -eq $Object )
+    {
+        $response = Invoke-WebRequest -Uri $uri -Method $method -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
+    }
+    else
+    {
+        $requestBody = ConvertTo-OctopusJson -InputObject $Object;
+        $response = Invoke-WebRequest -Uri $uri -Method $method -Body $requestBody -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
+    }
+
+    $result = ConvertFrom-OctopusJson -InputObject $response.Content;
         
-    if ($UseCache) {
-        $cache.Add($cacheKey, $result)
+    if( $UseCache )
+    {
+        $cache.Add($cacheKey, $result);
     }
     
-    $result
+    return $result;
+
 }
