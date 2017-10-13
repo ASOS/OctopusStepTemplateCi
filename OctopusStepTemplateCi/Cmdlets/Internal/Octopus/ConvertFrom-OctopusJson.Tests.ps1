@@ -88,16 +88,21 @@ Describe "ConvertFrom-OctopusJson" {
 
     It "when InputObject is an empty array" {
         $input    = "[]";
-        $expected = @();
         $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [array];
+        $actual.Length | Should Be 0;
     }
 
     It "when InputObject is a populated array" {
         $input    = "[`r`n  null,`r`n  100,`r`n  `"my string`"`r`n]";
-        $expected = @( $null, 100, "my string" );
         $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [array];
+        $actual.Length | Should Be 3;
+        $actual[0] | Should Be $null;
+        $actual[1] | Should Be 100;
+        $actual[2] | Should Be "my string";
     }
 
     It "when InputObject is an empty json object" {
@@ -118,7 +123,6 @@ Describe "ConvertFrom-OctopusJson" {
     "myObject" : { "childProperty" : "childValue" }
 }
 '@;
-        $expected = @{};
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         $actual | Should BeOfType [hashtable];
         $actual.Count | Should Be 5;
