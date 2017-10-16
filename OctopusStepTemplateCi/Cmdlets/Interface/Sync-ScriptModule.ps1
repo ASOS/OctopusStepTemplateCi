@@ -66,13 +66,13 @@ function Sync-ScriptModule
 
     if( $null -eq $scriptModuleVariableSet )
     {
-        Write-TeamCityMessage "VariableSet for script module '$moduleName' does not exist. Creating";
+        Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' does not exist. Creating";
         $scriptModuleVariableSet = Invoke-OctopusOperation -Action "New" -ObjectType "LibraryVariableSets" -Object $newVariableSet;
         $result.UploadCount++;
     }
     elseif( $scriptModuleVariableSet.Description -ne $moduleDescription )
     {
-        Write-TeamCityMessage "VariableSet for script module '$moduleName' has different metadata. Updating.";
+        Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' has different metadata. Updating.";
         $scriptModuleVariableSet.Description = $moduleDescription;
         $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Self -Object $scriptModuleVariableSet;
         $result.UploadCount++;
@@ -82,7 +82,7 @@ function Sync-ScriptModule
 
     if( $scriptModule.Variables.Count -eq 0 )
     {
-        Write-TeamCityMessage "Script module '$moduleName' does not exist. Creating";
+        Write-TeamCityBuildLogMessage "Script module '$moduleName' does not exist. Creating";
         $scriptModule.Variables += Read-ScriptModule -Path $Path;
         $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
         $result.UploadCount++;
@@ -92,13 +92,13 @@ function Sync-ScriptModule
         $moduleScript = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
         if( $scriptModule.Variables[0].Value -ne $moduleScript )
         {
-            Write-TeamCityMessage "Script module '$moduleName' has changed. Updating"
+            Write-TeamCityBuildLogMessage "Script module '$moduleName' has changed. Updating";
             $scriptModule.Variables[0].Value = $moduleScript;
             $response = Invoke-OctopusOperation -Action Update -ObjectType UserDefined -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
             $result.UploadCount++;
         }
     }
-    
+
     return $result;
 
 }

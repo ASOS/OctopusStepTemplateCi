@@ -127,9 +127,9 @@ function Invoke-TeamCityCiUpload
 
         $itemsToProcess | % {
 
-            Write-TeamCityMessage "##teamcity[blockOpened name='$($_.BaseName)']";
+            Write-TeamCityBlockOpenedMessage -BlockName $_.BaseName;
 
-            Write-TeamCityMessage "##teamcity[progressMessage 'Running tests for $($_.BaseName)']";
+            Write-TeamCityProgressMessage -Message "Running tests for $($_.BaseName)";
 
             $testResults = Invoke-OctopusScriptTestSuite -Path $_.FullName `
                                         -ResultFilesPath $BuildDirectory `
@@ -143,7 +143,7 @@ function Invoke-TeamCityCiUpload
 
             if ($testResults.Success -and $UploadIfSuccessful)
             {
-                Write-TeamCityMessage "##teamcity[progressMessage 'Starting sync of $($_.BaseName) to Octopus']"
+                Write-TeamCityProgressMessage -Message "Starting sync of $($_.BaseName) to Octopus";
 
                 $uploadCount += Get-ChildItem -Path $_.FullName -File -Recurse | % {
                     if ($_.Name -like $ScriptModuleFilter) { Sync-ScriptModule -Path $_.FullName -UseCache }
@@ -151,29 +151,29 @@ function Invoke-TeamCityCiUpload
                 } | % UploadCount | Measure-Object -Sum | % Sum
                 if( $uploadCount -gt 0 )
                 {
-                    Write-TeamCityMessage "##teamcity[progressMessage 'Uploaded $($_.BaseName) to Octopus']";
+                    Write-TeamCityProgressMessage -Message "Uploaded $($_.BaseName) to Octopus";
                 }
 
             }
 
-            Write-TeamCityMessage "##teamcity[blockClosed name='$($_.BaseName)']";
+            Write-TeamCityBlockClosedMessage -BlockName $_.BaseName;
 
         }
 
         if( $UploadIfSuccessful )
         {
-            Write-TeamCityMessage "##teamcity[buildStatus text='{build.status.text}. Scripts uploaded: $uploadCount']";
+            Write-TeamCityBuildStatusMessage -Text "{build.status.text}. Scripts uploaded: $uploadCount";
         }
 
-        Write-TeamCityMessage "$passedTests tests passed. $failedTests tests failed";
+        Write-TeamCityBuildLogMessage "$passedTests tests passed. $failedTests tests failed";
 
     }
     catch
     {
 
-        Write-TeamCityMessage $_.Exception.Message -ErrorMessage;
-        Write-TeamCityMessage $_.ScriptStackTrace -ErrorMessage;
-        throw
+        Write-TeamCityBuildLogMessage $_.Exception.Message -ErrorMessage;
+        Write-TeamCityBuildLogMessage $_.ScriptStackTrace -ErrorMessage;
+        throw;
 
     }
 
