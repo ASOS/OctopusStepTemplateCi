@@ -30,7 +30,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\Octopus\Invoke-OctopusOperation.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
-. "$here\..\Internal\TeamCity\Write-TeamCityMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
 . "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
@@ -62,7 +62,7 @@ function test {
              throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
          };
 
-    Mock Write-TeamCityMessage {} 
+    Mock Write-TeamCityBuildLogMessage {};
     
     Context "when the step template does not exist" {
 

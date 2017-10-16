@@ -34,10 +34,18 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\Octopus\Reset-Cache.ps1"
 . "$here\..\Internal\Octopus\Test-OctopusConnectivity.ps1"
 . "$here\..\Internal\TeamCity\Reset-BuildOutputDirectory.ps1"
-. "$here\..\Internal\TeamCity\Write-TeamCityMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1"
+. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1"
 
 Describe "Invoke-TeamCityCiUpload" {
-    Mock Write-TeamCityMessage {} 
+
+    Mock Write-TeamCityBuildLogMessage {}
     Mock Sync-ScriptModule { @{UploadCount = 0} }
     Mock Sync-StepTemplate { @{UploadCount = 0} }
     Mock Test-OctopusConnectivity {}

@@ -16,31 +16,35 @@ limitations under the License.
 
 <#
 .NAME
-	Write-TeamCityMessage.Tests
+    Write-TeamCityServiceMessage.Tests
 
 .SYNOPSIS
-	Pester tests for Write-TeamCityMessage.
+    Pester tests for Write-TeamCityServiceMessage.
 #>
 Set-StrictMode -Version Latest
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
+. "$here\Get-TeamCityEscapedString.ps1"
+. "$here\Get-TeamCityServiceMessage.ps1"
+. "$here\Write-TeamCityBuildLogMessage.ps1"
+. "$here\Write-TeamCityServiceMessage.ps1"
 
-Describe "Write-TeamCityMessage" {
+Describe "Write-TeamCityServiceMessage" {
+
+    Mock -CommandName "Write-Host" `
+         -MockWith {
+             throw "write-host should not be called with (`$Object='$Object')";
+         };
+
     It "Should write the message to the powershell host" {
-        Mock Write-Host {} -ParameterFilter { $Object -eq "test" } -Verifiable
-        
-        Write-TeamCityMessage -Message "test"
-        
-        Assert-VerifiableMocks
+        Mock -CommandName "Write-Host" `
+             -ParameterFilter { $Object -eq "##teamcity[test '']" } `
+             -MockWith {} `
+             -Verifiable;
+        Write-TeamCityServiceMessage -MessageName "test";
+        Assert-VerifiableMocks;
     }
-    
-    It "Should write error messages to the powershell host in a red colour" {
-        Mock Write-Host {} -ParameterFilter { $Object -eq "Error" -and $ForegroundColor -eq "Red" } -Verifiable
-        
-        Write-TeamCityMessage -Message "Error" -ErrorMessage
-        
-        Assert-VerifiableMocks
-    }
+
 }

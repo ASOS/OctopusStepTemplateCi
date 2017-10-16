@@ -19,7 +19,7 @@ limitations under the License.
     Invoke-OctopusOperation
 
 .SYNOPSIS
-    Invoke's a web request against Octopus's API and returns the JSON result converted into an object 
+    Invokes a web request against Octopus's API and returns the JSON result converted into an object
 #>
 function Invoke-OctopusOperation
 {
@@ -54,7 +54,7 @@ function Invoke-OctopusOperation
         [string] $OctopusApiKey = $env:OctopusApikey
 
     )
-    
+
     Test-OctopusConnectivity;
 
     switch( $ObjectType )
@@ -79,8 +79,8 @@ function Invoke-OctopusOperation
     switch( $Action )
     {
         "Get"    { $method = "GET";  }
-	"New"    { $method = "POST"; }
-	"Update" { $method = "PUT";  }
+        "New"    { $method = "POST"; }
+        "Update" { $method = "PUT";  }
     }
 
     $cache = Get-Cache;
@@ -104,12 +104,12 @@ function Invoke-OctopusOperation
     }
 
     $result = ConvertFrom-OctopusJson -InputObject $response.Content;
-        
+
     if( $UseCache )
     {
         $cache.Add($cacheKey, $result);
     }
-    
+
     return $result;
 
 }

@@ -16,20 +16,22 @@ limitations under the License.
 
 <#
 .NAME
-	Write-TeamCityMessage
+    Write-TeamCityBlockClosedMessage
 
 .SYNOPSIS
-    Outputs a message for TeamCity, currently using 'Write-Host' but centralised here so the implementation can be updated if needed
+    Outputs a 'blockClosed' service message for TeamCity
 #>
-function Write-TeamCityMessage {
-    param(
-        $Message,
-        [switch]$ErrorMessage
+function Write-TeamCityBlockClosedMessage
+{
+
+    param
+    (
+
+        [Parameter(Mandatory=$false)]
+        [string] $BlockName
+
     )
     
-    if ($ErrorMessage) {
-        Write-Host $Message -ForegroundColor Red
-    } else {
-        Write-Host $Message
-    }
+    Write-TeamCityServiceMessage -MessageName "blockClosed" -Values @{ "name" = $BlockName };
+
 }

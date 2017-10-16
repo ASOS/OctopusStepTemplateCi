@@ -56,7 +56,9 @@ function Invoke-PesterForTeamCity {
     Update-XPathValue -Path $TestResultsFile -XPath '//test-results/test-suite/@name' -Value $TestName
 
     #tell teamcity to import the test results. Cant use the xml report processor feature of TeamCity, due to aysnc issues around updating the test suite name
-    Write-TeamCityMessage "##teamcity[importData type='nunit' path='$TestResultsFile' verbose='true']"
+    Write-TeamCityImportDataMessage -Type  "nunit" `
+                                    -Path $TestResultsFile `
+                                    -VerboseMessage;
     
     return New-Object -TypeName PSObject -Property @{
         "Passed" = $testResult.PassedCount

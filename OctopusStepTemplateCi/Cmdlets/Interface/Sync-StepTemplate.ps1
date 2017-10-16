@@ -63,7 +63,7 @@ function Sync-StepTemplate
     
     if( $null -eq $stepTemplate )
     {
-        Write-TeamCityMessage "Step template '$templateName' does not exist. Creating";
+        Write-TeamCityBuildLogMessage "Step template '$templateName' does not exist. Creating";
         $stepTemplate = Invoke-OctopusOperation -Action "New" -ObjectType "ActionTemplates" -Object $newStepTemplate;
         $result.UploadCount++;
     }
@@ -91,10 +91,14 @@ function Sync-StepTemplate
 
         if( Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate )
         {
-            Write-TeamCityMessage "Script template '$templateName' has changed. Updating";
+            Write-TeamCityBuildLogMessage "Step template '$templateName' has changed. Updating";
             $newStepTemplate.Version = $stepTemplate.Version + 1;
             $stepTemplate = Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId $stepTemplate.Id -Object $newStepTemplate;
             $result.UploadCount++;
+        }
+        else
+        {
+            Write-TeamCityBuildLogMessage "Step template '$templateName' has not changed. Skipping.";
         }
 
     }
