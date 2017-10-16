@@ -59,7 +59,6 @@ Set-StrictMode -Version Latest
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\Write-TeamCityMessage.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Update-XPathValue.ps1')"
