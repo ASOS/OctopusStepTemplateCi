@@ -54,7 +54,7 @@ function Invoke-OctopusOperation
         [string] $OctopusApiKey = $env:OctopusApikey
 
     )
-    
+
     Test-OctopusConnectivity;
 
     switch( $ObjectType )
@@ -79,8 +79,8 @@ function Invoke-OctopusOperation
     switch( $Action )
     {
         "Get"    { $method = "GET";  }
-	"New"    { $method = "POST"; }
-	"Update" { $method = "PUT";  }
+        "New"    { $method = "POST"; }
+        "Update" { $method = "PUT";  }
     }
 
     $cache = Get-Cache;
@@ -104,12 +104,12 @@ function Invoke-OctopusOperation
     }
 
     $result = ConvertFrom-OctopusJson -InputObject $response.Content;
-        
+
     if( $UseCache )
     {
         $cache.Add($cacheKey, $result);
     }
-    
+
     return $result;
 
 }
