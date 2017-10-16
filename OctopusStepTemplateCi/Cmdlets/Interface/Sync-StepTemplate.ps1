@@ -96,6 +96,10 @@ function Sync-StepTemplate
             $stepTemplate = Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId $stepTemplate.Id -Object $newStepTemplate;
             $result.UploadCount++;
         }
+        else
+        {
+            Write-TeamCityBuildLogMessage "Step template '$templateName' has not changed. Skipping.";
+        }
 
     }
 

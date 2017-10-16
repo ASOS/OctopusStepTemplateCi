@@ -77,6 +77,10 @@ function Sync-ScriptModule
         $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Self -Object $scriptModuleVariableSet;
         $result.UploadCount++;
     }
+    else
+    {
+        Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' has not changed. Skipping.";
+    }
 
     $scriptModule = Invoke-OctopusOperation -Action "Get" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -UseCache:$UseCache
 
@@ -96,6 +100,10 @@ function Sync-ScriptModule
             $scriptModule.Variables[0].Value = $moduleScript;
             $response = Invoke-OctopusOperation -Action Update -ObjectType UserDefined -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
             $result.UploadCount++;
+        }
+        else
+        {
+            Write-TeamCityBuildLogMessage "Script module '$moduleName' has not changed. Skipping.";
         }
     }
 

@@ -19,7 +19,7 @@ limitations under the License.
     Invoke-OctopusOperation
 
 .SYNOPSIS
-    Invoke's a web request against Octopus's API and returns the JSON result converted into an object 
+    Invokes a web request against Octopus's API and returns the JSON result converted into an object
 #>
 function Invoke-OctopusOperation
 {

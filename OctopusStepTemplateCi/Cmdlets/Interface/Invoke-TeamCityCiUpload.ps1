@@ -141,20 +141,31 @@ function Invoke-TeamCityCiUpload
             $passedTests += $testResults.Passed;
             $failedTests += $testResults.Failed;
 
-            if ($testResults.Success -and $UploadIfSuccessful)
+            if( $testResults.Success )
             {
-                Write-TeamCityProgressMessage -Message "Starting sync of $($_.BaseName) to Octopus";
 
-                $uploadCount += Get-ChildItem -Path $_.FullName -File -Recurse | % {
-                    if ($_.Name -like $ScriptModuleFilter) { Sync-ScriptModule -Path $_.FullName -UseCache }
-                    elseif ($_.Name -like $StepTemplateFilter) { Sync-StepTemplate -Path $_.FullName -UseCache }
-                } | % UploadCount | Measure-Object -Sum | % Sum
-                if( $uploadCount -gt 0 )
+                if( $UploadIfSuccessful )
                 {
-                    Write-TeamCityProgressMessage -Message "Uploaded $($_.BaseName) to Octopus";
+
+                    Write-TeamCityProgressMessage -Message "Starting sync of $($_.BaseName) to Octopus";
+
+                    $uploadCount += Get-ChildItem -Path $_.FullName -File -Recurse | % {
+                        if ($_.Name -like $ScriptModuleFilter) { Sync-ScriptModule -Path $_.FullName -UseCache }
+                        elseif ($_.Name -like $StepTemplateFilter) { Sync-StepTemplate -Path $_.FullName -UseCache }
+                    } | % UploadCount | Measure-Object -Sum | % Sum;
+
+                    if( $uploadCount -gt 0 )
+                    {
+                        Write-TeamCityProgressMessage -Message "Uploaded $($_.BaseName) to Octopus";
+                    }
+
                 }
 
             }
+	    else
+	    {
+                Write-TeamCityBuildLogMessage -Message "One or more PSSciptAnalyzer tests failed. Skipping upload.";
+	    }
 
             Write-TeamCityBlockClosedMessage -BlockName $_.BaseName;
 
