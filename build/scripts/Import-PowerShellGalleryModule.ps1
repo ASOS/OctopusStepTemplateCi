@@ -30,7 +30,17 @@ function Import-PowerShellGalleryModule
             [void] [System.IO.Directory]::CreateDirectory($InstallRoot);
         }
 
-        Save-Module -Name $Name -Path $InstallRoot -RequiredVersion $Version;
+        #Save-Module -Name $Name -Path $InstallRoot -RequiredVersion $Version;
+
+        $downloadUri = "https://www.powershellgallery.com/api/v2/package/$Name/$Version";
+        $webResponse = Invoke-WebRequest $downloadUri;
+	$nupkgBytes  = $webResponse.Content;
+
+        $nupkgFilename = [System.IO.Path]::Combine($InstallRoot, "$($Name.ToLowerInvariant()).$Version.zip");
+
+	[System.IO.File]::WriteAllBytes($nupkgFilename, $nupkgBytes);
+
+        Expand-Archive -LiteralPath $nupkgFilename -DestinationPath $moduleRoot;
 
     }
 
