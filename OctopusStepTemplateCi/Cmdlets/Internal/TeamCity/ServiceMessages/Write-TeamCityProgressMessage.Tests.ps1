@@ -44,7 +44,7 @@ Describe "Write-TeamCityProgressMessage" {
              -MockWith {} `
              -Verifiable;
         Write-TeamCityProgressMessage -Message "my progress message";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }

@@ -167,7 +167,7 @@ function test {
             $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
             $result.Parameters[0].DefaultValue | Should Be "myDefaultValue";
             $result.Parameters[0].DisplaySettings.Count | Should Be 0;
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
         It "Should convert bool default values to strings" {
@@ -195,7 +195,7 @@ function test {
             $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
             $result.Parameters[0].DefaultValue | Should Be "True";
             $result.Parameters[0].DisplaySettings.Count | Should Be 0;
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }

@@ -44,7 +44,7 @@ Describe "Write-TeamCityBlockOpenedMessage" {
              -MockWith {} `
              -Verifiable;
         Write-TeamCityBlockOpenedMessage -BlockName "myBlock";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }

@@ -50,7 +50,7 @@ Describe "Invoke-OctopusOperation" {
         
         Invoke-OctopusOperation -Action "Get" -ObjectType "UserDefined";
 
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
 
     }
     
@@ -75,7 +75,7 @@ Describe "Invoke-OctopusOperation" {
         Invoke-OctopusOperation -Action "New" -ObjectType "ActionTemplates";
         Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
         
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
 
     }
     
@@ -94,7 +94,7 @@ Describe "Invoke-OctopusOperation" {
         Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
         Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
 
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
 
     }
     
@@ -119,7 +119,7 @@ Describe "Invoke-OctopusOperation" {
         Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
         Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
         
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
 
     }
     
@@ -132,7 +132,7 @@ Describe "Invoke-OctopusOperation" {
 
         Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom" -Object 1;
         
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
 
     }
     
@@ -152,7 +152,7 @@ Describe "Invoke-OctopusOperation" {
         Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
         Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
         
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
 
         $cache.Count | Should Be 1;
         Assert-MockCalled "Invoke-WebRequest" -Exactly 1 -Scope It;

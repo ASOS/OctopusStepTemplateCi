@@ -44,7 +44,7 @@ Describe "Write-TeamCityBuildStatusMessage" {
              -MockWith {} `
              -Verifiable;
         Write-TeamCityBuildStatusMessage -Text "my build status";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }

@@ -42,7 +42,7 @@ Describe "Write-TeamCityBuildLogMessage" {
              -MockWith {} `
              -Verifiable;
         Write-TeamCityBuildLogMessage -Message "##teamcity[buildStatus text='my message']";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
     It "Should write error messages to the powershell host in a red colour" {
@@ -51,7 +51,7 @@ Describe "Write-TeamCityBuildLogMessage" {
              -MockWith {} `
              -Verifiable;
         Write-TeamCityBuildLogMessage -Message "##teamcity[Error '']" -ErrorMessage;
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }

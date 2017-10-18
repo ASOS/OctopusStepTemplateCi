@@ -79,7 +79,7 @@ function test {
         It "Should upload the step template if it does not exist" {
             $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
             $result.UploadCount | Should be 1;
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }
@@ -111,7 +111,7 @@ function test {
         It "Should upload an updated step template if it has changed" {
             $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
             $result.UploadCount | Should be 1;
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }
@@ -150,7 +150,7 @@ function test {
         It "Should update the step template parameters" {
             $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
             $result.UploadCount | Should be 1;
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }
@@ -195,7 +195,7 @@ function test {
         It "Should not upload a step template which is identical" {
             $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
             $result.UploadCount | Should Be 0;
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }

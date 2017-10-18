@@ -31,6 +31,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\..\Internal\Tests\Get-ScriptValidationTestsPath.ps1"
 
 Describe "Invoke-OctopusScriptTestSuite" {
+
     New-Item "TestDrive:\test.steptemplate.ps1" -ItemType File | Out-Null
     New-Item "TestDrive:\test.steptemplate.Tests.ps1" -ItemType File | Out-Null
     New-Item "TestDrive:\test.scriptmodule.ps1" -ItemType File | Out-Null
@@ -46,7 +47,7 @@ Describe "Invoke-OctopusScriptTestSuite" {
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
     
     It "Should run the generic tests" {
@@ -55,7 +56,7 @@ Describe "Invoke-OctopusScriptTestSuite" {
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
     
     It "Should run the step template tests" {
@@ -64,7 +65,7 @@ Describe "Invoke-OctopusScriptTestSuite" {
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
     
     It "Should run the script module tests" {
@@ -73,7 +74,7 @@ Describe "Invoke-OctopusScriptTestSuite" {
         
         Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
     
     It "Should set success to false if there are any failed tests" {

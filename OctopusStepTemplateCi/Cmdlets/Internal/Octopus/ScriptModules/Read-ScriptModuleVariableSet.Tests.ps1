@@ -46,19 +46,19 @@ function test {
     It "Should return a new object with the content type of script module" {
         $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
 	$result.ContentType | Should Be "ScriptModule";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
     It "Should return a new object with the name from the script file" {
         $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
 	$result.Name | Should Be "name";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
     It "Should return a new object with the description from the script file" {
         $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
 	$result.Description | Should Be "description";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }
