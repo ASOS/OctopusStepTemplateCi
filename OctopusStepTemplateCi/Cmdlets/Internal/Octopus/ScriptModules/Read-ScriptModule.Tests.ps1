@@ -46,7 +46,7 @@ function test {
     It "Should return a new object with the name from the script file" {
         $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
         $result.Name | Should Be "Octopus.Script.Module[name]";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
     
     It "Should return a new object with the value as the body of the script file" {
@@ -58,7 +58,7 @@ function test {
     write-host "test";
 }
 '@;
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }

@@ -74,7 +74,7 @@ Describe "Invoke-TeamCityCiUpload" {
         
         Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput"
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
     
     It "Should reset the build directory before beginning" {
@@ -82,7 +82,7 @@ Describe "Invoke-TeamCityCiUpload" {
         
         Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput"
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
     
     It "Should reset the cache before beginning" {
@@ -90,7 +90,7 @@ Describe "Invoke-TeamCityCiUpload" {
         
         Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput"
         
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
     
      It "Should process the entire folder at once in batch mode" {        
@@ -125,7 +125,7 @@ Describe "Invoke-TeamCityCiUpload" {
             
             Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" -UploadIfSuccessful
             
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
          }
          
          It "Should sync the script modules" {
@@ -134,7 +134,7 @@ Describe "Invoke-TeamCityCiUpload" {
             
             Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" -UploadIfSuccessful
             
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
          }
      }
 }

@@ -40,7 +40,7 @@ Describe "New-StepTemplate" {
        "TestDrive:\test1.steptemplate.ps1" | Should Exist
    }
    
-   It "Shoul create a test file for the step template" {
+   It "Should create a test file for the step template" {
        New-StepTemplate -Name "test2" -Path "TestDrive:\"
        
        "TestDrive:\test2.steptemplate.Tests.ps1" | Should Exist

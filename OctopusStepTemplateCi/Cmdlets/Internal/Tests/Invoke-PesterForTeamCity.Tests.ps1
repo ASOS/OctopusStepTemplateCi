@@ -35,10 +35,10 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "Invoke-PesterForTeamCity" {
 
-    Mock -CommandName "Write-TeamCityBuildLogMessage" `
-         -MockWith {
-              throw "Write-TeamCityBuildLogMessage should not be called with `$Message = '$Message'";
-         };
+    #Mock -CommandName "Write-TeamCityBuildLogMessage" `
+    #     -MockWith {
+    #          throw "Write-TeamCityBuildLogMessage should not be called with `$Message = '$Message'";
+    #     };
 
     Context "validate that parameters are passed to Pester correctly" {
 
@@ -58,7 +58,7 @@ Describe "Invoke-PesterForTeamCity" {
 
         It "Invokes pester with the provided arguments" {
             $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }
@@ -80,7 +80,7 @@ Describe "Invoke-PesterForTeamCity" {
 
         It "Should update the test name so it renders correctly in TeamCity" {
             $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }
@@ -100,7 +100,7 @@ Describe "Invoke-PesterForTeamCity" {
 
         It "Should write out a teamcity message to import the test results file" {
             $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }
@@ -122,7 +122,7 @@ Describe "Invoke-PesterForTeamCity" {
             $results = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
             $results.Passed | Should Be 1;
             $results.Failed | Should Be 1;
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
         }
 
     }

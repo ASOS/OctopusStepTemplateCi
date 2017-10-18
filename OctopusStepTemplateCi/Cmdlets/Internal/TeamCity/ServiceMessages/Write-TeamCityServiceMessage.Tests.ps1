@@ -44,7 +44,7 @@ Describe "Write-TeamCityServiceMessage" {
              -MockWith {} `
              -Verifiable;
         Write-TeamCityServiceMessage -MessageName "test";
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }

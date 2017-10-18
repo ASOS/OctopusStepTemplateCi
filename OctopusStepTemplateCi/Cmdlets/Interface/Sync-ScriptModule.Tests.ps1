@@ -82,7 +82,7 @@ function test {
             $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
             $result.UploadCount | Should Be 2;
 
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
 
         }
 
@@ -116,7 +116,7 @@ function test {
             $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
             $result.UploadCount | Should Be 1;
 
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
 
         }
 
@@ -164,7 +164,7 @@ function test {
             $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
             $result.UploadCount | Should Be 1;
 
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
 
         }
 
@@ -198,7 +198,7 @@ function test {
             $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
             $result.UploadCount | Should Be 1;
 
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
 
         }
 
@@ -241,7 +241,7 @@ function test {
             $result = Sync-ScriptModule -Path "my.scriptmodule.ps1";
             $result.UploadCount | Should Be 0;
 
-            Assert-VerifiableMocks;
+            Assert-VerifiableMock;
 
         }
 

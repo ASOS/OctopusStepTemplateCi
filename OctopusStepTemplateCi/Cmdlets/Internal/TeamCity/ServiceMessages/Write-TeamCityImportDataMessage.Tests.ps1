@@ -44,7 +44,7 @@ Describe "Write-TeamCityImportDataMessage" {
              -MockWith {} `
              -Verifiable;
         Write-TeamCityImportDataMessage -Type "nunit" -Path "c:\temp\results.xml" -VerboseMessage;
-        Assert-VerifiableMocks;
+        Assert-VerifiableMock;
     }
 
 }
