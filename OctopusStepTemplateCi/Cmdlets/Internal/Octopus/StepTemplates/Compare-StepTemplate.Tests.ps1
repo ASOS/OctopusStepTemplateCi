@@ -28,7 +28,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\Compare-Hashtable.ps1"
 . "$here\Read-StepTemplate.ps1"
-. "$here\..\ConvertTo-OctopusJson.ps1"
+. "$here\..\Common\ConvertTo-OctopusJson.ps1"
 . "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
 . "$here\..\..\PowerShellManipulation\Get-VariableFromScriptText.ps1"
 . "$here\..\..\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"

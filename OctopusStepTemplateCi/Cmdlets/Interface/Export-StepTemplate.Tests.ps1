@@ -27,8 +27,8 @@ Set-StrictMode -Version Latest
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
+. "$here\..\Internal\Octopus\Common\ConvertTo-OctopusJson.ps1"
 . "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
-. "$here\..\Internal\Octopus\ConvertTo-OctopusJson.ps1"
 
 Describe "Export-StepTemplate" {
 

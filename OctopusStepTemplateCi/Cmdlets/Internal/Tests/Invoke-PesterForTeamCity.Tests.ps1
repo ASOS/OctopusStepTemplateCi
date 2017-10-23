@@ -35,10 +35,10 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "Invoke-PesterForTeamCity" {
 
-    #Mock -CommandName "Write-TeamCityBuildLogMessage" `
-    #     -MockWith {
-    #          throw "Write-TeamCityBuildLogMessage should not be called with `$Message = '$Message'";
-    #     };
+    Mock -CommandName "Write-TeamCityBuildLogMessage" `
+         -MockWith {
+              throw "Write-TeamCityBuildLogMessage should not be called with `$Message = '$Message'";
+         };
 
     Context "validate that parameters are passed to Pester correctly" {
 
