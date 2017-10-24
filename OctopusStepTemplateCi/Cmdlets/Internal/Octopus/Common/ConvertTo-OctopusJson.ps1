@@ -81,41 +81,47 @@ function ConvertTo-OctopusJson
                 [void] $json.AppendLine("[");
                 for( $i = 0; $i -lt $items.Length; $i++ )
                 {
-                    $itemJson = ConvertTo-OctopusJson -InputObject $items[$i] -Indent ($Indent + "  ");
-                    [void] $json.Append("$Indent  $itemJson");
+                    [void] $json.Append($Indent);
+                    [void] $json.Append("  ");
+                    [void] $json.Append((ConvertTo-OctopusJson -InputObject $items[$i] -Indent ($Indent + "  ")));
                     if( $i -lt ($items.Length - 1) )
                     {
                         [void] $json.Append(",");
                     }
                     [void] $json.AppendLine();
                 }
-                [void] $json.Append("$Indent]");
+                [void] $json.Append($Indent);
+                [void] $json.Append("]");
             }
             return $json.ToString();
         }
 
         { $InputObject -is [Hashtable] } {
             $json = new-object System.Text.StringBuilder;
-            $properties = @( $InputObject.GetEnumerator() );
-            if( $properties.Length -eq 0 )
+            $keys = @( $InputObject.Keys | sort-object );
+            if( $keys.Length -eq 0 )
             {
                 [void] $json.Append("{}");
             }
             else
             {
                 [void] $json.AppendLine("{");
-                for( $i = 0; $i -lt $properties.Length; $i++ )
+                for( $i = 0; $i -lt $keys.Length; $i++ )
                 {
-                    $property = $properties[$i];
-                    $propertyJson = ConvertTo-OctopusJson -InputObject $property.Value -Indent ($Indent + "  ");
-                    [void] $json.Append("$Indent  `"$($property.Name)`": $propertyJson");
-                    if( $i -lt ($properties.Length - 1) )
+		    $key = $keys[$i];
+                    [void] $json.Append($Indent);
+                    [void] $json.Append("  ");
+                    [void] $json.Append((ConvertTo-OctopusJson -InputObject $key));
+                    [void] $json.Append(": ");
+                    [void] $json.Append((ConvertTo-OctopusJson -InputObject $InputObject[$key] -Indent ($Indent + "  ")));
+                    if( $i -lt ($keys.Length - 1) )
                     {
                         [void] $json.Append(",");
                     }
                     [void] $json.AppendLine();
                 }
-                [void] $json.Append("$Indent}");
+                [void] $json.Append($Indent);
+                [void] $json.Append("}");
             }
             return $json.ToString();
         }
@@ -141,7 +147,8 @@ function ConvertTo-OctopusJson
                     }
                     [void] $json.AppendLine();
                 }
-                [void] $json.Append("$Indent}");
+                [void] $json.Append($Indent);
+                [void] $json.Append("}");
             }
             return $json.ToString();
         }

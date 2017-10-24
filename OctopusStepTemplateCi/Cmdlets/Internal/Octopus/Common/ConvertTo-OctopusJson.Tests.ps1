@@ -30,6 +30,20 @@ Describe "ConvertTo-OctopusJson" {
             | Should Be $expected;
     }
 
+    It "when InputObject is `$true" {
+        $input    = $true;
+        $expected = "true";
+        ConvertTo-OctopusJson -InputObject $input `
+            | Should Be $expected;
+    }
+
+    It "when InputObject is `$false" {
+        $input    = $false;
+        $expected = "false";
+        ConvertTo-OctopusJson -InputObject $input `
+            | Should Be $expected;
+    }
+
     It "when InputObject is an empty string" {
         $input    = [string]::Empty;
         $expected = "`"`"";
@@ -100,9 +114,41 @@ Describe "ConvertTo-OctopusJson" {
             | Should Be $expected;
     }
 
-    It "when InputObject is an empty hash table" {
+    It "when InputObject is an empty hashtable" {
         $input    = @{};
         $expected = "{}";
+        ConvertTo-OctopusJson -InputObject $input `
+            | Should Be $expected;
+    }
+
+    It "when InputObject is a populated hashtable" {
+        $input = @{
+            "myNull"     = $null
+            "myInt"      = 100
+            "myString"   = "text"
+	    "myArray"    = @( $null, 200, "string", [PSCustomObject] [ordered] @{ "nestedProperty" = "nestedValue" } )
+	    "myPsObject" = [PSCustomObject] [ordered] @{ "childProperty" = "childValue" }
+        };
+        $expected = @"
+{
+  "myArray": [
+    null,
+    200,
+    "string",
+    {
+      "nestedProperty": "nestedValue"
+    }
+  ],
+  "myInt": 100,
+  "myNull": null,
+  "myPsObject": {
+    "childProperty": "childValue"
+  },
+  "myString": "text"
+}
+"@
+        # normalize line breaks in "$expected" here-string in case they get mangled on git commit
+        if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n"); }
         ConvertTo-OctopusJson -InputObject $input `
             | Should Be $expected;
     }

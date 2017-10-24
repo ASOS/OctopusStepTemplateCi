@@ -76,7 +76,7 @@ function Read-StepTemplate
 
     # Octopus cleans up some of the Parameter properties when a step template is uploaded.
     # this means that when it is downloaded again for comparison against the local template
-    # it won't match, and will be considered "different", which will trigger an other upload.
+    # it won't match, and will be considered "different", which will trigger another upload.
     # we'll try to fix up some Parameter properties so that they round-trip properly
     $propertyNames = @( "Label", "HelpText", "DefaultValue" );
     foreach( $parameter in $stepTemplate.Parameters )
@@ -95,7 +95,7 @@ function Read-StepTemplate
                 {
                     if( -not [string]::IsNullOrEmpty($parameter[$propertyName]) )
                     {
-                        # Octopus trims property values when  a step template is uploaded
+                        # Octopus trims property values when a step template is uploaded
                         $parameter[$propertyName] = $parameter[$propertyName].Trim();
                     }
                 }

@@ -20,12 +20,28 @@ Set-StrictMode -Version "Latest";
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
+. "$here\ConvertTo-DictionaryJsonObject.ps1"
+. "$here\ConvertTo-HashtableJsonObject.ps1"
 
 Describe "ConvertFrom-OctopusJson" {
 
     It "when InputObject is a null json string" {
         $input    = "null";
         $expected = $null;
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "when InputObject is `$true" {
+        $input    = "true";
+        $expected = $true;
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "when InputObject is `$false" {
+        $input    = "false";
+        $expected = $false;
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         $actual | Should Be $expected;
     }
