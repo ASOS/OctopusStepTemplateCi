@@ -147,6 +147,8 @@ Describe "ConvertTo-PSSource" {
     "myString" = "text"
 }
 '@
+        # normalize line breaks in "$expected" here-string in case they get mangled on git commit
+        if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n"); }
         ConvertTo-PSSource -InputObject $input `
             | Should Be $expected;
     }
