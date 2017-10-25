@@ -71,10 +71,38 @@ Describe "Step template parameters" {
 
             It "ScriptBody should not overwrite input parameter '$variableName'" {
 
-                #This test is here to prevent issues where someone modifies the global part of a step template
-                #but inadvertently overwrites an octopus parameter with a local variable
-                #As we are testing at the function level rather than the whole step template level, we cant 
-                #catch this with our unit tests
+                # This test is here to prevent issues where someone modifies the global part of a step template
+                # but inadvertently overwrites an octopus parameter with a local variable
+                # As we are testing at the function level rather than the whole step template level, we can't 
+                # catch this with our unit tests
+
+                # for example:
+
+                # $StepTemplateName        = "myStepTemplateName";
+                # $StepTemplateDescription = "myStepTemplateDescription";
+                # $StepTemplateParameters  = @(
+                #    @{
+                #        "Name" = "MyParameter"
+                #        "Label" = "My Parameter Label"
+                #        "HelpText" = "My Parameter Help Text"
+                #        "DefaultValue" = $null
+                #        "DisplaySettings" = @{}
+                #    }
+                # );
+                #
+                # function Invoke-StepTemplate
+                # {
+                #     param
+                #     (
+                #         $MyParameter
+                #     )
+                #     $MyParameter = "some other value"; # <-- this assignment should cause the test to fail
+                # }
+                #
+                # if( Test-Path Variable:OctopusParameters )
+                # {
+                #     Invoke-StepTemplate -MyParameter $OctopusParameters["MyParameter"];
+                # }
 
                 $scriptBlock = $null;
                 try
