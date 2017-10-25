@@ -19,9 +19,11 @@ limitations under the License.
     Get-VariableFromScriptText.Tests
 
 .SYNOPSIS
-    Pester tests for Get-VariableFromScriptText.
+    Pester tests for Get-VariableFromScriptText
 #>
-Set-StrictMode -Version Latest
+
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
@@ -30,17 +32,169 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "Get-VariableFromScriptText" {
 
-    It "Should get the value of the variable from a script" {
+    It "Should return the value if the variable is `$null" {
         $script = @'
 function test {
-    $myTestVariable = "some value";
+    $myTestVariable = $null;
     Write-Host $myTestVariable;
 }
 '@
-        $result = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
-        $result | Should Be "some value";
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable";
+        $actual | Should Be $null;
     }
-    
+
+    It "Should return the value if the variable is `$true" {
+        $script = @'
+function test {
+    $myTestVariable = $true;
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -VariableName "myTestVariable";
+        $actual | Should Be $true;
+    }
+
+    It "Should return the value if the variable is `$false" {
+        $script = @'
+function test {
+    $myTestVariable = $false;
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -VariableName "myTestVariable";
+        $actual | Should Be $false;
+    }
+
+    It "Should return the value if the variable is a positive integer" {
+        $script = @'
+function test {
+    $myTestVariable = 100;
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+        $actual | Should Be 100;
+    }
+
+    It "Should return the value if the variable is a negative integer" {
+        $script = @'
+function test {
+    $myTestVariable = -100;
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+        $actual | Should Be -100;
+    }
+
+    It "Should return the value if the variable is an empty" {
+        $script = @'
+function test {
+    $myTestVariable = "";
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+        $actual | Should Be "";
+    }
+
+    It "Should return the value if the variable is a simple string" {
+        $script = @'
+function test {
+    $myTestVariable = "my string";
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+        $actual | Should Be "my string";
+    }
+
+    It "Should return the value if the variable is an empty array" {
+        $script = @'
+function test {
+    $myTestVariable = @();
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [array];
+        $actual.Length | Should Be 0;
+    }
+
+    It "Should return the value if the variable is an array with a single item" {
+        $script = @'
+function test {
+    $myTestVariable = @( 100 );
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [array];
+        $actual.Length | Should Be 1;
+        $actual[0] | Should Be 100;
+    }
+
+    It "Should return the value if the variable is an array with multiple items" {
+        $script = @'
+function test {
+    $myTestVariable = @( $null, 100, "my string" );
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [array];
+        $actual.Length | Should Be 3;
+        $actual[0] | Should Be $null;
+        $actual[1] | Should Be 100;
+        $actual[2] | Should Be "my string";
+    }
+
+    It "Should return the value if the variable is an empty hashtable" {
+        $script = @'
+function test {
+    $myTestVariable = @{};
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable";
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [hashtable];
+        $actual.Count | Should Be 0;
+    }
+
+    It "Should return the value if the variable is a hashtable with a single item" {
+        $script = @'
+function test {
+    $myTestVariable = @{ "myKey" = 100 };
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable";
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [hashtable];
+        $actual.Count | Should Be 1;
+        $actual["myKey"] | Should Be 100;
+    }
+
+    It "Should return the value if the variable is a hashtable with multiple items" {
+$script = @'
+function test {
+    $myTestVariable = @{ "myKey1" = $null; "myKey2" = 100; "myKey3" = "my string" };
+    Write-Host $myTestVariable;
+}
+'@
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable";
+        @(,$actual) | Should Not Be $null;
+        @(,$actual) | Should BeOfType [hashtable];
+        $actual.Count | Should Be 3;
+        $actual["myKey1"] | Should Be $null;
+        $actual["myKey2"] | Should Be 100;
+        $actual["myKey3"] | Should Be "my string";
+    }
+
     It "Should get the variable statement from a script" {
         $script = @'
 function test {
@@ -48,11 +202,10 @@ function test {
     Write-Host $myTestVariable;
 }
 '@
-
-        $result = Get-VariableFromScriptText -Script $script -Variable "myTestVariable" -DontResolveVariable;
-        $result | Should Be "`"some value`"";
+        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable" -DontResolveVariable;
+        $actual | Should Be "`"some value`"";
     }
-    
+ 
     It "Should throw an exception if the variable isn't defined" {
         $script = @'
 function test {
@@ -60,8 +213,9 @@ function test {
     Write-Host $myTestVariable;
 }
 '@
-        { Get-VariableFromScriptText -Script $script -Variable "myUndefinedVariable" } `
-            | Should Throw
+        {
+            $actual = Get-VariableFromScriptText -Script $script -Variable "myUndefinedVariable";
+        } | Should Throw;
     }
 
 }
