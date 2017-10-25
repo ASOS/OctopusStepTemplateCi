@@ -87,7 +87,7 @@ function test {
         $actual | Should Be -100;
     }
 
-    It "Should return the value if the variable is an empty" {
+    It "Should return the value if the variable is an empty string" {
         $script = @'
 function test {
     $myTestVariable = "";
