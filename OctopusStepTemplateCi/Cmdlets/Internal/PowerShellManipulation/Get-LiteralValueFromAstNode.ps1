@@ -53,7 +53,7 @@ function Get-LiteralValueFromAstNode
     {
 
         { $Node -is [System.Management.Automation.Language.ConstantExpressionAst] } {
-            # bool, int32
+            # int32
             return $Node.Value;
         }
 
@@ -65,10 +65,10 @@ function Get-LiteralValueFromAstNode
             # reverse the nested expressions so we can substitute them without tracking start positions
             $nestedExpressions = @($Node.NestedExpressions);
             [array]::Reverse($nestedExpressions);
-	    # substitute the values
+            # substitute the values
             # e.g. "[$null|$true|$false]" -> "[|True|False]";
-	    $result = $Node.Value;
-	    foreach( $nestedExpression in $nestedExpressions )
+            $result = $Node.Value;
+            foreach( $nestedExpression in $nestedExpressions )
             {
                 # work out the range to substitute
                 $relativeStart = $nestedExpression.Extent.StartOffset - $Node.Extent.StartOffset - 1;
@@ -89,7 +89,7 @@ function Get-LiteralValueFromAstNode
 
         { $Node -is [System.Management.Automation.Language.VariableExpressionAst] } {
             # only evaluate built-in literal values, not user defined variables
-	    # or built-in variables that can have different values on different systems.
+            # or built-in variables that can have different values on different systems.
             switch( $Node.VariablePath.UserPath )
             {
                 "null"  { return $null; }
@@ -117,16 +117,16 @@ function Get-LiteralValueFromAstNode
         }
 
         { $Node -is [System.Management.Automation.Language.CommandExpressionAst] } {
-	    $value = Get-LiteralValueFromAstNode -Node $Node.Expression;
-	    return @(, $value);
-	}
+            $value = Get-LiteralValueFromAstNode -Node $Node.Expression;
+            return @(, $value);
+        }
 
         { $Node -is [System.Management.Automation.Language.ArrayExpressionAst] } {
             if( $Node.StaticType -ne [System.Object[]] )
-	    {
+            {
                 # we don't handle arrays of other types of objects yet (e.g. [System.String[]])
                 throw new-object System.InvalidOperationException("Array element type not supported.");
-	    }
+            }
             # if a comma is (accidentally?) missed out between elements that are separated by
             # line-breaks, the powershell parser will create a separate sub-expression statement
             # for each group of items that *are* comma separated.
@@ -165,19 +165,19 @@ function Get-LiteralValueFromAstNode
 
         { $Node -is [System.Management.Automation.Language.HashtableAst] } {
             $result = @{};
-	    foreach( $kvp in $Node.KeyValuePairs )
+            foreach( $kvp in $Node.KeyValuePairs )
             {
                # convert the key
                $key = Get-LiteralValueFromAstNode -Node $kvp.Item1;
                # convert the value
-	       if( ($kvp.Item2 -isnot [System.Management.Automation.Language.PipelineAst]) -or
+               if( ($kvp.Item2 -isnot [System.Management.Automation.Language.PipelineAst]) -or
                    ($kvp.Item2.PipelineElements.Count -ne 1 ) )
                {
                    throw new-object System.InvalidOperationException("Hashtable expression could not be processed.");
-               }	       
+               }       
                $value = Get-LiteralValueFromAstNode -Node $kvp.Item2.PipelineElements[0];
                # append to the result set
-	       $result.Add($key, $value);
+               $result.Add($key, $value);
             }
             return @(, $result);
         }
