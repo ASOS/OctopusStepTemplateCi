@@ -109,32 +109,32 @@ function test {
         $actual | Should Be "my string";
     }
 
-    It "Should return the value if the variable is an empty array" {
-        $script = @'
-function test {
-    $myTestVariable = @();
-    Write-Host $myTestVariable;
-}
-'@
-        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
-        @(,$actual) | Should Not Be $null;
-        @(,$actual) | Should BeOfType [array];
-        $actual.Length | Should Be 0;
-    }
+#    It "Should return the value if the variable is an empty array" {
+#        $script = @'
+#function test {
+#    $myTestVariable = @();
+#    Write-Host $myTestVariable;
+#}
+#'@
+#        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+#        @(,$actual) | Should Not Be $null;
+#        @(,$actual) | Should BeOfType [array];
+#        $actual.Length | Should Be 0;
+#    }
 
-    It "Should return the value if the variable is an array with a single item" {
-        $script = @'
-function test {
-    $myTestVariable = @( 100 );
-    Write-Host $myTestVariable;
-}
-'@
-        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
-        @(,$actual) | Should Not Be $null;
-        @(,$actual) | Should BeOfType [array];
-        $actual.Length | Should Be 1;
-        $actual[0] | Should Be 100;
-    }
+#    It "Should return the value if the variable is an array with a single item" {
+#        $script = @'
+#function test {
+#    $myTestVariable = @( 100 );
+#    Write-Host $myTestVariable;
+#}
+#'@
+#        $actual = Get-VariableFromScriptText -Script $script -Variable "myTestVariable"
+#        @(,$actual) | Should Not Be $null;
+#        @(,$actual) | Should BeOfType [array];
+#        $actual.Length | Should Be 1;
+#        $actual[0] | Should Be 100;
+#    }
 
     It "Should return the value if the variable is an array with multiple items" {
         $script = @'
