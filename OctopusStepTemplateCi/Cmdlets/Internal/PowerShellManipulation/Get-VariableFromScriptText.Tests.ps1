@@ -32,7 +32,7 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "Get-VariableFromScriptText" {
 
-    It "Should return the value if the variable is `$null" {
+    It "Should return the value when the variable is `$null" {
         $script = @'
 function test {
     $myTestVariable = $null;
@@ -43,7 +43,7 @@ function test {
         $actual | Should Be $null;
     }
 
-    It "Should return the value if the variable is `$true" {
+    It "Should return the value when the variable is `$true" {
         $script = @'
 function test {
     $myTestVariable = $true;
@@ -54,7 +54,7 @@ function test {
         $actual | Should Be $true;
     }
 
-    It "Should return the value if the variable is `$false" {
+    It "Should return the value when the variable is `$false" {
         $script = @'
 function test {
     $myTestVariable = $false;
@@ -65,7 +65,7 @@ function test {
         $actual | Should Be $false;
     }
 
-    It "Should return the value if the variable is a positive integer" {
+    It "Should return the value when the variable is a positive integer" {
         $script = @'
 function test {
     $myTestVariable = 100;
@@ -76,7 +76,7 @@ function test {
         $actual | Should Be 100;
     }
 
-    It "Should return the value if the variable is a negative integer" {
+    It "Should return the value when the variable is a negative integer" {
         $script = @'
 function test {
     $myTestVariable = -100;
@@ -87,7 +87,7 @@ function test {
         $actual | Should Be -100;
     }
 
-    It "Should return the value if the variable is an empty string" {
+    It "Should return the value when the variable is an empty string" {
         $script = @'
 function test {
     $myTestVariable = "";
@@ -98,7 +98,7 @@ function test {
         $actual | Should Be "";
     }
 
-    It "Should return the value if the variable is a simple string" {
+    It "Should return the value when the variable is a simple string" {
         $script = @'
 function test {
     $myTestVariable = "my string";
@@ -109,7 +109,7 @@ function test {
         $actual | Should Be "my string";
     }
 
-#    It "Should return the value if the variable is an empty array" {
+#    It "Should return the value when the variable is an empty array" {
 #        $script = @'
 #function test {
 #    $myTestVariable = @();
@@ -122,7 +122,7 @@ function test {
 #        $actual.Length | Should Be 0;
 #    }
 
-#    It "Should return the value if the variable is an array with a single item" {
+#    It "Should return the value when the variable is an array with a single item" {
 #        $script = @'
 #function test {
 #    $myTestVariable = @( 100 );
@@ -136,7 +136,7 @@ function test {
 #        $actual[0] | Should Be 100;
 #    }
 
-    It "Should return the value if the variable is an array with multiple items" {
+    It "Should return the value when the variable is an array with multiple items" {
         $script = @'
 function test {
     $myTestVariable = @( $null, 100, "my string" );
@@ -152,7 +152,7 @@ function test {
         $actual[2] | Should Be "my string";
     }
 
-    It "Should return the value if the variable is an empty hashtable" {
+    It "Should return the value when the variable is an empty hashtable" {
         $script = @'
 function test {
     $myTestVariable = @{};
@@ -165,7 +165,7 @@ function test {
         $actual.Count | Should Be 0;
     }
 
-    It "Should return the value if the variable is a hashtable with a single item" {
+    It "Should return the value when the variable is a hashtable with a single item" {
         $script = @'
 function test {
     $myTestVariable = @{ "myKey" = 100 };
@@ -179,7 +179,7 @@ function test {
         $actual["myKey"] | Should Be 100;
     }
 
-    It "Should return the value if the variable is a hashtable with multiple items" {
+    It "Should return the value when the variable is a hashtable with multiple items" {
 $script = @'
 function test {
     $myTestVariable = @{ "myKey1" = $null; "myKey2" = 100; "myKey3" = "my string" };
@@ -206,7 +206,7 @@ function test {
         $actual | Should Be "`"some value`"";
     }
  
-    It "Should throw an exception if the variable isn't defined" {
+    It "Should throw an exception when the variable isn't defined" {
         $script = @'
 function test {
     $myTestVariable = "some value";

@@ -23,105 +23,125 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "ConvertTo-PSSource" {
 
-    It "when InputObject is null" {
+    It "Should return the value when the InputObject is `$null" {
         $input    = $null;
         $expected = "`$null";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is `$true" {
+    It "Should return the value when the InputObject is `$true" {
         $input    = $true;
         $expected = "`$true";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is `$false" {
+    It "Should return the value when the InputObject is `$false" {
         $input    = $false;
         $expected = "`$false";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is an empty string" {
-        $input    = [string]::Empty;
-        $expected = "`"`"";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
-    }
-
-    It "when InputObject is a simple string" {
-        $input    = "my simple string";
-        $expected = "`"my simple string`"";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
-    }
-
-    It "when InputObject is a string with apostrophes" {
-        $input    = "my string with 'apostrophes'";
-        $expected = "`"my string with 'apostrophes'`"";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
-    }
-
-    It "when InputObject is a string with special characters" {
-        $input    = "my \ `"string`" with `r`n special `t characters";
-        $expected = "`"my \ ```"string```" with ``r``n special ``t characters`"";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
-    }
-
-    It "when InputObject is a string with whitespace between curly brackets" {
-        $input    = "{    }";
-        $expected = "`"{    }`"";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
-    }
-
-    It "when InputObject is a string resembling the json escape sequence for an apostrophe" {
-        $input    = "\u0027";
-        $expected = "`"\u0027`"";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
-    }
-
-    It "when InputObject is a positive integer" {
+    It "Should return the value when the InputObject is a positive integer" {
         $input    = 100;
         $expected = "100";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is a negative integer" {
+    It "Should return the value when the InputObject is a negative integer" {
         $input    = -100;
         $expected = "-100";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is an empty array" {
+    It "Should return the value when the InputObject is an empty string" {
+        $input    = [string]::Empty;
+        $expected = "`"`"";
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a simple string" {
+        $input    = "my simple string";
+        $expected = "`"my simple string`"";
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string with apostrophes" {
+        $input    = "my string with 'apostrophes'";
+        $expected = "`"my string with 'apostrophes'`"";
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string with special characters" {
+        $input    = "my \ `"string`" with `r`n special `t characters";
+        $expected = "`"my \ ```"string```" with ``r``n special ``t characters`"";
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string with whitespace between curly brackets" {
+        $input    = "{    }";
+        $expected = "`"{    }`"";
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" {
+        $input    = "\u0027";
+        $expected = "`"\u0027`"";
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is an empty array" {
         $input    = @();
         $expected = "@()";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is a populated array" {
+    It "Should return the value when the InputObject is an array with a single item" {
+        $input    = @( 100 );
+        $expected = "@(`r`n    100`r`n)";
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is an array with multiple items" {
         $input    = @( $null, 100, "my string" );
         $expected = "@(`r`n    `$null,`r`n    100,`r`n    `"my string`"`r`n)";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is an empty hashtable" {
+    It "Should return the value when the InputObject is an empty hashtable" {
         $input    = @{};
         $expected = "@{}";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is a populated hashtable" {
+    It "Should return the value when the InputObject is a hashtable with a single item" {
+        $input    = @{ "myInt" = 100 };
+        $expected = @'
+@{
+    "myInt" = 100
+}
+'@
+        # normalize line breaks in "$expected" here-string in case they get mangled on git commit
+        if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n"); }
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a hashtable with multiple items" {
         $input    = @{
             "myNull"     = $null
             "myInt"      = 100
@@ -149,18 +169,18 @@ Describe "ConvertTo-PSSource" {
 '@
         # normalize line breaks in "$expected" here-string in case they get mangled on git commit
         if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n"); }
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is an empty PSCustomObject" {
+    It "Should return the value when the InputObject is an empty PSCustomObject" {
 	$input    = new-object PSCustomObject;
         $expected = "new-object PSCustomObject";
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
-    It "when InputObject is a populated PSCustomObject" {
+    It "Should return the value when the InputObject is a populated PSCustomObject" {
 	$input    = [PSCustomObject] [ordered] @{
             "myNull"     = $null
             "myInt"      = 100
@@ -188,8 +208,8 @@ new-object PSCustomObject -Property ([ordered] @{
 '@
         # normalize line breaks in "$expected" here-string in case they get mangled on git commit
         if( $expected.IndexOf("`r`n") -eq -1 ) { $expected = $expected.Replace("`n", "`r`n"); }
-        ConvertTo-PSSource -InputObject $input `
-            | Should Be $expected;
+        $actual = ConvertTo-PSSource -InputObject $input;
+        $actual | Should Be $expected;
     }
 
 }
