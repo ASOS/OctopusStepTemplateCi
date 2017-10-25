@@ -32,61 +32,61 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 Describe "Get-LiteralValueFromAstNode" {
 
     It "Should return the value when the InputObject is `$null" {
-        $commandExpression = { $null }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { $null }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be $null;
     }
 
     It "Should return the value when the InputObject is `$true" {
-        $commandExpression = { $true }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { $true }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be $true;
     }
 
     It "Should return the value when the InputObject is `$false" {
-        $commandExpression = { $false }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { $false }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be $false;
     }
 
     It "Should return the value when the InputObject is a positive integer" {
-        $commandExpression = { 100 }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { 100 }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be 100;
     }
 
     It "Should return the value when the InputObject is a negative integer" {
-        $commandExpression = { -100 }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { -100 }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be -100;
     }
 
     It "Should return the value when the InputObject is an empty string" {
-        $commandExpression = { "" }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { "" }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be "";
     }
 
     It "Should return the value when the InputObject is a simple string" {
-        $commandExpression = { "my string" }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { "my string" }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be "my string";
     }
 
     It "Should return the value when the InputObject is a simple string concatenation" {
-        $commandExpression = { "my" + " " + "string" }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { "my" + " " + "string" }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be "my string";
     }
 
     It "Should return the value when the InputObject is an expandable string" {
-        $commandExpression = { "[$null|$true|$false]" }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { "[$null|$true|$false]" }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         $actual | Should Be "[|True|False]";
     }
 
     It "Should return the value when the InputObject is an empty array" {
-        $commandExpression = { @() }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { @() }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         @(,$actual) | Should Not Be $null;
         @(,$actual) | Should BeOfType [array];
@@ -94,7 +94,7 @@ Describe "Get-LiteralValueFromAstNode" {
     }
 
     It "Should return the value when the InputObject is an array with a single item" {
-        $commandExpression = { @( 100 ) }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { @( 100 ) }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         @(,$actual) | Should Not Be $null;
         @(,$actual) | Should BeOfType [array];
@@ -103,7 +103,7 @@ Describe "Get-LiteralValueFromAstNode" {
     }
 
     It "Should return the value when the InputObject is an array with multiple items" {
-        $commandExpression = { @( $null, 100, "my string" ) }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { @( $null, 100, "my string" ) }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         @(,$actual) | Should Not Be $null;
         @(,$actual) | Should BeOfType [array];
@@ -129,7 +129,7 @@ Describe "Get-LiteralValueFromAstNode" {
     }
 
     It "Should return the value when the InputObject is an empty hashtable" {
-        $commandExpression = { @{} }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { @{} }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         @(,$actual) | Should Not Be $null;
         @(,$actual) | Should BeOfType [hashtable];
@@ -137,7 +137,7 @@ Describe "Get-LiteralValueFromAstNode" {
     }
 
     It "Should return the value when the InputObject is a hashtable with a single item" {
-        $commandExpression = { @{ "myKey" = 100 } }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { @{ "myKey" = 100 } }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         @(,$actual) | Should Not Be $null;
         @(,$actual) | Should BeOfType [hashtable];
@@ -146,7 +146,7 @@ Describe "Get-LiteralValueFromAstNode" {
     }
 
     It "Should return the value when the InputObject is a hashtable with multiple items" {
-        $commandExpression = { @{ "myKey1" = $null; "myKey2" = 100; "myKey3" = "my string" } }.Ast.EndBlock.Statements.PipelineElements[0];
+        $commandExpression = { @{ "myKey1" = $null; "myKey2" = 100; "myKey3" = "my string" } }.Ast.EndBlock.Statements[0].PipelineElements[0];
         $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
         @(,$actual) | Should Not Be $null;
         @(,$actual) | Should BeOfType [hashtable];
