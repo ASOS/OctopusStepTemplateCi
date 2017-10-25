@@ -14,6 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 #>
 
+<#
+.NAME
+   ConvertFrom-OctopusJson.Tests
+
+.SYNOPSIS
+    Pester tests for ConvertFrom-OctopusJson
+#>
+
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
@@ -25,79 +33,79 @@ $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 
 Describe "ConvertFrom-OctopusJson" {
 
-    It "when InputObject is a null json string" {
+    It "Should return the value when the InputObject is a null json string" {
         $input    = "null";
         $expected = $null;
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         $actual | Should Be $expected;
     }
 
-    It "when InputObject is `$true" {
+    It "Should return the value when the InputObject is `$true" {
         $input    = "true";
         $expected = $true;
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         $actual | Should Be $expected;
     }
 
-    It "when InputObject is `$false" {
+    It "Should return the value when the InputObject is `$false" {
         $input    = "false";
         $expected = $false;
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         $actual | Should Be $expected;
     }
 
-    It "when InputObject is an empty string" {
-        $input    = "`"`"";
-        $expected = [string]::Empty;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
-
-    It "when InputObject is a simple string" {
-        $input    = "`"my simple string`"";
-        $expected = "my simple string";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
-
-    It "when InputObject is a string with apostrophes" {
-        $input    = "`"my string with 'apostrophes'`"";
-        $expected = "my string with 'apostrophes'";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
-
-    It "when InputObject is a string with special characters" {
-        $input    = "`"my \\ \`"string\`" with \r\n special \t characters`"";
-        $expected = "my \ `"string`" with `r`n special `t characters";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
-
-    It "when InputObject is a string with whitespace between curly brackets" {
-        $input    = "`"{    }`"";
-        $expected = "{    }";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
-
-    It "when InputObject is a string resembling the json escape sequence for an apostrophe" {
-        $input    = "`"\\u0027`"";
-        $expected = "\u0027";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
-
-    It "when InputObject is a positive integer" {
+    It "Should return the value when the InputObject is a positive integer" {
         $input    = "100";
         $expected = 100;
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         $actual | Should Be $expected;
     }
 
-    It "when InputObject is a negative integer" {
+    It "Should return the value when the InputObject is a negative integer" {
         $input    = "-100";
         $expected = -100;
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is an empty string" {
+        $input    = "`"`"";
+        $expected = [string]::Empty;
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a simple string" {
+        $input    = "`"my simple string`"";
+        $expected = "my simple string";
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string with apostrophes" {
+        $input    = "`"my string with 'apostrophes'`"";
+        $expected = "my string with 'apostrophes'";
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string with special characters" {
+        $input    = "`"my \\ \`"string\`" with \r\n special \t characters`"";
+        $expected = "my \ `"string`" with `r`n special `t characters";
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string with whitespace between curly brackets" {
+        $input    = "`"{    }`"";
+        $expected = "{    }";
+        $actual = ConvertFrom-OctopusJson -InputObject $input;
+        $actual | Should Be $expected;
+    }
+
+    It "Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" {
+        $input    = "`"\\u0027`"";
+        $expected = "\u0027";
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         $actual | Should Be $expected;
     }
@@ -110,7 +118,7 @@ Describe "ConvertFrom-OctopusJson" {
         $actual.Length | Should Be 0;
     }
 
-    It "when InputObject is a populated array" {
+    It "Should return the value when the InputObject is a populated array" {
         $input    = "[`r`n  null,`r`n  100,`r`n  `"my string`"`r`n]";
         $actual = ConvertFrom-OctopusJson -InputObject $input;
         @(,$actual) | Should Not Be $null;
@@ -121,7 +129,7 @@ Describe "ConvertFrom-OctopusJson" {
         $actual[2] | Should Be "my string";
     }
 
-    It "when InputObject is an empty json object" {
+    It "Should return the value when the InputObject is an empty json object" {
         $input    = "{}";
         $expected = @{};
         $actual = ConvertFrom-OctopusJson -InputObject $input;
@@ -129,7 +137,7 @@ Describe "ConvertFrom-OctopusJson" {
         $actual.Count | Should Be 0;
     }
 
-    It "when InputObject is a nested json object" {
+    It "Should return the value when the InputObject is a nested json object" {
         $input    = @'
 {
     "myNull"   : null,
@@ -154,7 +162,7 @@ Describe "ConvertFrom-OctopusJson" {
         $actual["myObject"]["childProperty"] | Should Be "childValue";
     }
 
-    It "when InputObject is invalid json" {
+    It "Should return the value when the InputObject is invalid json" {
         { $actual = ConvertFrom-OctopusJson -InputObject "!!!!!"; } `
             | Should Throw;
     }
