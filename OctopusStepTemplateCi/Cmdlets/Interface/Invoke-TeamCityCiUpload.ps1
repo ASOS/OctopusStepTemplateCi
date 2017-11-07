@@ -110,13 +110,14 @@ function Invoke-TeamCityCiUpload
         Reset-Cache;
 
         switch( $ProcessingMode )
-	{
+        {
             "Batch" {
-                $itemsToProcess = @(Get-Item -Path $Path | ? PSIsContainer -eq $true);
+                $foldersToProcess = @(Get-Item -Path $Path | where-object { $_.PSIsContainer });
+                $itemsToProcess   = $foldersToProcess;
             }
             "Individual" {
-                $stepTemplates = @(Get-ChildItem -Path $Path -File -Recurse -Filter $StepTemplateFilter);
-		$scriptModules = @(Get-ChildItem -Path $Path -File -Recurse -Filter $ScriptModuleFilter);
+                $stepTemplates  = @(Get-ChildItem -Path $Path -File -Recurse -Filter $StepTemplateFilter);
+                $scriptModules  = @(Get-ChildItem -Path $Path -File -Recurse -Filter $ScriptModuleFilter);
                 $itemsToProcess = @($stepTemplates + $scriptModules);
             }
         }
@@ -131,27 +132,32 @@ function Invoke-TeamCityCiUpload
 
             Write-TeamCityProgressMessage -Message "Running tests for $($_.BaseName)";
 
-            $testResults = Invoke-OctopusScriptTestSuite -Path $_.FullName `
-                                        -ResultFilesPath $BuildDirectory `
-                                        -StepTemplateFilter $StepTemplateFilter `
-                                        -ScriptModuleFilter $ScriptModuleFilter `
-                                        -TestSettings $TestSettings `
-                                        -SuppressPesterOutput:$SuppressPesterOutput
+            $testResults = Invoke-OctopusScriptTestSuite -Path               $_.FullName `
+                                                         -ResultFilesPath    $BuildDirectory `
+                                                         -StepTemplateFilter $StepTemplateFilter `
+                                                         -ScriptModuleFilter $ScriptModuleFilter `
+                                                         -TestSettings       $TestSettings `
+                                                         -SuppressPesterOutput:$SuppressPesterOutput;
 
             $passedTests += $testResults.Passed;
             $failedTests += $testResults.Failed;
 
             if( $testResults.Success )
             {
-
                 if( $UploadIfSuccessful )
                 {
 
                     Write-TeamCityProgressMessage -Message "Starting sync of $($_.BaseName) to Octopus";
 
                     $uploadCount += Get-ChildItem -Path $_.FullName -File -Recurse | % {
-                        if ($_.Name -like $ScriptModuleFilter) { Sync-ScriptModule -Path $_.FullName -UseCache }
-                        elseif ($_.Name -like $StepTemplateFilter) { Sync-StepTemplate -Path $_.FullName -UseCache }
+                        if( $_.Name -like $ScriptModuleFilter )
+                        {
+                            Sync-ScriptModule -Path $_.FullName -UseCache;
+                        }
+                        elseif( $_.Name -like $StepTemplateFilter )
+                        {
+                            Sync-StepTemplate -Path $_.FullName -UseCache;
+                        }
                     } | % UploadCount | Measure-Object -Sum | % Sum;
 
                     if( $uploadCount -gt 0 )
@@ -160,12 +166,11 @@ function Invoke-TeamCityCiUpload
                     }
 
                 }
-
             }
-	    else
-	    {
+            else
+            {
                 Write-TeamCityBuildLogMessage -Message "One or more PSSciptAnalyzer tests failed. Skipping upload.";
-	    }
+            }
 
             Write-TeamCityBlockClosedMessage -BlockName $_.BaseName;
 

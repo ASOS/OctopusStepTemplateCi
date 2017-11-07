@@ -49,51 +49,80 @@ limitations under the License.
 .OUTPUTS
     None.
 #>
-function Invoke-OctopusScriptTestSuite {
+function Invoke-OctopusScriptTestSuite
+{
+
     [CmdletBinding()]
-	[OutputType("System.Collections.Hashtable")]
-    param (
-        [Parameter(Mandatory=$false)][ValidateScript({ Test-Path $_ })][System.String]$Path = $PWD,
-        [Parameter(Mandatory=$false)][ValidateScript({ Test-Path $_ })][System.String]$ResultFilesPath = $PWD,
-        [Parameter(Mandatory=$false)][ValidateNotNullOrEmpty()][System.String]$StepTemplateFilter = "*.steptemplate.ps1",
-        [Parameter(Mandatory=$false)][ValidateNotNullOrEmpty()][System.String]$ScriptModuleFilter = "*.scriptmodule.ps1",
-        [Parameter(Mandatory=$false)][ValidateNotNull()][System.Collections.Hashtable]$TestSettings = @{},
-        [Parameter(Mandatory=$false)][System.Management.Automation.SwitchParameter]$SuppressPesterOutput
+    [OutputType("System.Collections.Hashtable")]
+    param
+    (
+
+        [Parameter(Mandatory=$false)]
+        [ValidateScript({ Test-Path $_ })]
+        [string] $Path = $PWD,
+
+        [Parameter(Mandatory=$false)]
+        [ValidateScript({ Test-Path $_ })]
+        [string] $ResultFilesPath = $PWD,
+
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StepTemplateFilter = "*.steptemplate.ps1",
+
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [string] $ScriptModuleFilter = "*.scriptmodule.ps1",
+
+        [Parameter(Mandatory=$false)]
+        [ValidateNotNull()]
+        [hashtable] $TestSettings = @{},
+
+        [Parameter(Mandatory=$false)]
+        [switch] $SuppressPesterOutput
+
     )
     
-    $stepTemplates = @(Get-ChildItem -Path $Path -File -Recurse -Filter $StepTemplateFilter)
-    $scriptModules = @(Get-ChildItem -Path $Path -File -Recurse -Filter $ScriptModuleFilter)
+    $stepTemplates  = @(Get-ChildItem -Path $Path -File -Recurse -Filter $StepTemplateFilter);
+    $scriptModules  = @(Get-ChildItem -Path $Path -File -Recurse -Filter $ScriptModuleFilter);
 
-    $results = ($stepTemplates + $scriptModules) | ? Name -NotLike "*.Tests.ps1" | % {
-        $sut = $_.FullName
-        $testResultsFile = Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".TestResults.xml")
-        Invoke-PesterForTeamCity -TestName $_.Name `
-            -Script $_.FullName.Replace(".ps1", ".Tests.ps1") `
-            -TestResultsFile $testResultsFile `
-            -SuppressPesterOutput:$SuppressPesterOutput
+    $filesToProcess = @($stepTemplates + $scriptModules) | ? Name -NotLike "*.Tests.ps1";
+
+    $results = $filesToProcess | % {
+
+        $sut = $_.FullName;
+
+        $testResultsFile = Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".TestResults.xml");
+
+        Invoke-PesterForTeamCity -TestName        $_.Name `
+                                 -Script          $_.FullName.Replace(".ps1", ".Tests.ps1") `
+                                 -TestResultsFile $testResultsFile `
+                                 -SuppressPesterOutput:$SuppressPesterOutput;
         
-        Invoke-PesterForTeamCity -TestName $_.Name `
-            -Script @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\Generic\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
-            -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".generic.TestResults.xml")) `
-            -SuppressPesterOutput:$SuppressPesterOutput
+        Invoke-PesterForTeamCity -TestName        $_.Name `
+                                 -Script          @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\Generic\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
+                                 -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".generic.TestResults.xml")) `
+                                 -SuppressPesterOutput:$SuppressPesterOutput;
         
-        if ($_.Name -like $ScriptModuleFilter) {
-            Invoke-PesterForTeamCity -TestName $_.Name `
-                -Script @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\ScriptModules\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
-                -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".script-module.TestResults.xml")) `
-                -SuppressPesterOutput:$SuppressPesterOutput
+        if( $_.Name -like $ScriptModuleFilter )
+        {
+            Invoke-PesterForTeamCity -TestName        $_.Name `
+                                     -Script          @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\ScriptModules\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
+                                     -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".script-module.TestResults.xml")) `
+                                     -SuppressPesterOutput:$SuppressPesterOutput;
         }
-        elseif ($_.Name -like $StepTemplateFilter) {
-            Invoke-PesterForTeamCity -TestName $_.Name `
-                -Script @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\StepTemplates\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
-                -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".step-template.TestResults.xml")) `
-                -SuppressPesterOutput:$SuppressPesterOutput
+        elseif( $_.Name -like $StepTemplateFilter )
+        {
+            Invoke-PesterForTeamCity -TestName        $_.Name `
+                                     -Script          @(Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\StepTemplates\*.ScriptValidationTest.ps1") -File | % { @{ Path = $_.FullName; Parameters = @{ sut = $sut; TestResultsFile = $testResultsFile; Settings = $TestSettings } } }) `
+                                     -TestResultsFile (Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".step-template.TestResults.xml")) `
+                                     -SuppressPesterOutput:$SuppressPesterOutput;
         }
+
     } | Measure-Object -Sum -Property @("Passed", "Failed")
     
-    @{
-        Success = ($results | ? Property -EQ 'Failed' | % Sum | % { $_ -eq 0 })
-        Passed = ($results | ? Property -EQ 'Passed' | % Sum)
-        Failed = ($results | ? Property -EQ 'Failed' | % Sum)
+    return @{
+        "Success" = ($results | ? Property -EQ 'Failed' | % Sum | % { $_ -eq 0 })
+        "Passed"  = ($results | ? Property -EQ 'Passed' | % Sum)
+        "Failed"  = ($results | ? Property -EQ 'Failed' | % Sum)
     }
 }
