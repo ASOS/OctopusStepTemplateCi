@@ -64,13 +64,13 @@ Describe "Invoke-TeamCityCiUpload" {
     It "Should handle exceptions" {
         Mock Test-OctopusConnectivity { throw "bang" }
         {
-            Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput"
+            Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" -UploadIfSuccessful;
         } | Should Throw;
     }
 
     It "Should test octopus's connectivity before beginning" {
         Mock Test-OctopusConnectivity {} -Verifiable;
-        Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput";
+        Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" -UploadIfSuccessful;
         Assert-VerifiableMock;
     }
 
