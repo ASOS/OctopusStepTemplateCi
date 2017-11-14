@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-	Get-ScriptValidationTestsPath.Tests
+    Get-ScriptValidationTestsPath.Tests
 
 .SYNOPSIS
-	Pester tests for Get-ScriptValidationPath.
+    Pester tests for Get-ScriptValidationPath.
 #>
 
 $ErrorActionPreference = "Stop";
@@ -27,12 +27,14 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Get-ScriptValidationTestsPath" {
+    Describe "Get-ScriptValidationTestsPath" {
 
-		It "Should return the location of the Script Validation Tests" {
-			New-Item -Path "TestDrive:\ScriptValidationTests" -ItemType Directory | Out-Null
 
-			Get-ScriptValidationTestsPath | Should Match "ScriptValidationTests"
-		}
+        It "Should return the location of the Script Validation Tests" {
+            New-Item -Path "TestDrive:\ScriptValidationTests" -ItemType Directory | Out-Null;
+            Get-ScriptValidationTestsPath | Should Match "ScriptValidationTests";
+        }
+
     }
+
 }
