@@ -26,25 +26,27 @@ $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
 Describe "New-StepTemplate" {
+
    It "Should throw an exception if the step template already exists" {
-       New-Item "TestDrive:\test.steptemplate.ps1" -ItemType File | Out-Null
-       
-       { New-StepTemplate -Name "test" -Path "TestDrive:\" } | Should Throw
+       New-Item "TestDrive:\test.steptemplate.ps1" -ItemType File | Out-Null;
+       {
+           $result = New-StepTemplate -Name "test" -Path "TestDrive:\";
+       } | Should Throw;
    }
    
    It "Should create a new step template file" {
-       New-StepTemplate -Name "test1" -Path "TestDrive:\"
-       
-       "TestDrive:\test1.steptemplate.ps1" | Should Exist
+       $result = New-StepTemplate -Name "test1" -Path "TestDrive:\";
+       "TestDrive:\test1.steptemplate.ps1" | Should Exist;
    }
    
    It "Should create a test file for the step template" {
-       New-StepTemplate -Name "test2" -Path "TestDrive:\"
-       
-       "TestDrive:\test2.steptemplate.Tests.ps1" | Should Exist
+       $result = New-StepTemplate -Name "test2" -Path "TestDrive:\";
+       "TestDrive:\test2.steptemplate.Tests.ps1" | Should Exist;
    }
    
    It "Should output a message to the user" {
-       New-StepTemplate -Name "test3" -Path "TestDrive:\" | % GetType | % Name | Should Be "String"
+       $result = New-StepTemplate -Name "test3" -Path "TestDrive:\";
+       $result | Should BeOfType [string];
    }
+
 }

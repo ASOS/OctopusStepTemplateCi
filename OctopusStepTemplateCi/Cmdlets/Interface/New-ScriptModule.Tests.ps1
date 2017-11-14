@@ -17,7 +17,7 @@ limitations under the License.
 <#
 .NAME
     New-ScriptModule.Tests
-    
+
 .SYNOPSIS
     Pester tests for New-ScriptModule
 #>
@@ -26,25 +26,27 @@ $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
 Describe "New-ScriptModule" {
+
    It "Should throw an exception if the script module already exists" {
-       New-Item "TestDrive:\test.scriptmodule.ps1" -ItemType File | Out-Null
-       
-       { New-ScriptModule -Name "test" -Path "TestDrive:\" } | Should Throw
+       New-Item "TestDrive:\test.scriptmodule.ps1" -ItemType File | Out-Null;
+       {
+           $result = New-ScriptModule -Name "test" -Path "TestDrive:\";
+       } | Should Throw;
    }
-   
+
    It "Should create a new script module file" {
-       New-ScriptModule -Name "test1" -Path "TestDrive:\"
-       
-       "TestDrive:\test1.scriptmodule.ps1" | Should Exist
+       $result = New-ScriptModule -Name "test1" -Path "TestDrive:\";
+       "TestDrive:\test1.scriptmodule.ps1" | Should Exist;
    }
-   
+
    It "Should create a test file for the sccript module" {
-       New-ScriptModule -Name "test2" -Path "TestDrive:\"
-       
-       "TestDrive:\test2.scriptmodule.Tests.ps1" | Should Exist
+       $result = New-ScriptModule -Name "test2" -Path "TestDrive:\";
+       "TestDrive:\test2.scriptmodule.Tests.ps1" | Should Exist;
    }
-   
+
    It "Should output a message to the user" {
-       New-ScriptModule -Name "test3" -Path "TestDrive:\" | % GetType | % Name | Should Be "String"
+       $result = New-ScriptModule -Name "test3" -Path "TestDrive:\"
+       $result | Should BeOfType [string];
    }
+
 }

@@ -28,13 +28,14 @@ Set-StrictMode -Version "Latest";
 
 Describe "Invoke-OctopusScriptTestSuite" {
 
-    New-Item "TestDrive:\test.steptemplate.ps1" -ItemType File | Out-Null
-    New-Item "TestDrive:\test.steptemplate.Tests.ps1" -ItemType File | Out-Null
-    New-Item "TestDrive:\test.scriptmodule.ps1" -ItemType File | Out-Null
-    New-Item "TestDrive:\test.scriptmodule.Tests.ps1" -ItemType File | Out-Null
-    New-Item "TestDrive:\Generic" -ItemType Directory | Out-Null  
-    New-Item "TestDrive:\StepTemplates" -ItemType Directory | Out-Null
-    New-Item "TestDrive:\ScriptModules" -ItemType Directory | Out-Null
+    New-Item "TestDrive:\test.steptemplate.ps1" -ItemType File | Out-Null;
+    New-Item "TestDrive:\test.steptemplate.Tests.ps1" -ItemType File | Out-Null;
+    New-Item "TestDrive:\test.scriptmodule.ps1" -ItemType File | Out-Null;
+    New-Item "TestDrive:\test.scriptmodule.Tests.ps1" -ItemType File | Out-Null;
+    New-Item "TestDrive:\Generic" -ItemType Directory | Out-Null;
+    New-Item "TestDrive:\StepTemplates" -ItemType Directory | Out-Null;
+    New-Item "TestDrive:\ScriptModules" -ItemType Directory | Out-Null;
+
     Mock -CommandName "Invoke-PesterForTeamCity" `
          -ModuleName  "OctopusStepTemplateCi" `
          -MockWith {};
@@ -51,12 +52,14 @@ Describe "Invoke-OctopusScriptTestSuite" {
              -MockWith {} `
              -Verifiable;
 	     
-        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
-        
-        Assert-VerifiableMock
+        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\";
+
+        Assert-VerifiableMock;
+
     }
     
     It "Should run the generic tests" {
+
         Mock -CommandName "Invoke-PesterForTeamCity" `
              -ModuleName  "OctopusStepTemplateCi" `
              -ParameterFilter { $TestResultsFile -like "*.generic.TestResults.xml" } `
@@ -73,12 +76,14 @@ Describe "Invoke-OctopusScriptTestSuite" {
              } `
 	     -Verifiable;
         
-        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
+        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\";
         
-        Assert-VerifiableMock
+        Assert-VerifiableMock;
+
     }
     
     It "Should run the step template tests" {
+
         Mock -CommandName "Invoke-PesterForTeamCity" `
              -ModuleName  "OctopusStepTemplateCi" `
              -MockWith {} `
@@ -95,12 +100,14 @@ Describe "Invoke-OctopusScriptTestSuite" {
              } `
             -Verifiable;
         
-        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
+        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\";
         
-        Assert-VerifiableMock
+        Assert-VerifiableMock;
+
     }
     
     It "Should run the script module tests" {
+
         Mock -CommandName "Invoke-PesterForTeamCity" `
              -ModuleName  "OctopusStepTemplateCi" `
              -ParameterFilter { $TestResultsFile -like "*.script-module.TestResults.xml" } `
@@ -117,9 +124,10 @@ Describe "Invoke-OctopusScriptTestSuite" {
              } `
              -Verifiable;
         
-        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\"
+        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\";
         
-        Assert-VerifiableMock
+        Assert-VerifiableMock;
+
     }
     
     It "Should set success to false if there are any failed tests" {
@@ -134,6 +142,9 @@ Describe "Invoke-OctopusScriptTestSuite" {
                  }
              }
         
-        Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\" | % Success | Should Be $false
+        $result = Invoke-OctopusScriptTestSuite -Path "TestDrive:\" -ResultFilesPath "TestDrive:\";
+	$result.Success | Should Be $false;
+
     }
+
 }

@@ -29,8 +29,9 @@ Set-StrictMode -Version "Latest";
 Describe "Export-StepTemplate" {
 
     BeforeEach {
-        if (Test-Path "TestDrive:\test.ps1") {
-            Remove-Item "TestDrive:\test.ps1" -Force
+        if( Test-Path "TestDrive:\test.ps1" )
+        {
+            Remove-Item "TestDrive:\test.ps1" -Force;
         }
     }
 
@@ -41,55 +42,62 @@ Describe "Export-StepTemplate" {
     Mock -CommandName "ConvertTo-OctopusJson" `
          -ModuleName  "OctopusStepTemplateCi" `
          -MockWith    { return "steptemplate"; };
-    Set-Content "TestDrive:\steptemplate.ps1" "steptemplate" 
-    
+
+    Set-Content "TestDrive:\steptemplate.ps1" "steptemplate";
+
     It "Should convert the step template to json" {
-        Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1"
-        Assert-MockCalled -CommandName "ConvertTo-OctopusJson" -ModuleName "OctopusStepTemplateCi"
+        Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" -Force;
+        Assert-MockCalled -CommandName "ConvertTo-OctopusJson" -ModuleName "OctopusStepTemplateCi";
     }
 
     It "Should return a message to the user" {
-        Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" | % GetType | % Name | Should Be "string"
+        $result = Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" -Force;
+        $result | Should BeOfType [string];
     }
 
     Context "File" {
 
         It "Should export the steptemplate to a file" {
-            Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1"
+            Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" -Force;
             if( (Get-Module "pester").Version -gt "3.4.0" )
             {
-               "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
+               "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate";
             }
             else
             {
-               "TestDrive:\test.ps1" | Should Contain "steptemplate"
+               "TestDrive:\test.ps1" | Should Contain "steptemplate";
             }
         }
 
         It "Should throw an exception if the file already exists" {
-            Set-Content "TestDrive:\test.ps1" -Value "existing"
-            { Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" } | Should Throw
+            Set-Content "TestDrive:\test.ps1" -Value "existing";
+            {
+                Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1";
+            } | Should Throw;
         }
 
         It "Should overwrite the file if it already exists and -Force is specified" {
-            Set-Content "TestDrive:\test.ps1" -Value "existing"
-            Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" -Force
+            Set-Content "TestDrive:\test.ps1" -Value "existing";
+            Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1" -Force;
             if( (Get-Module "pester").Version -gt "3.4.0" )
             {
-               "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate"
+               "TestDrive:\test.ps1" | Should FileContentMatch "steptemplate";
             }
             else
             {
-               "TestDrive:\test.ps1" | Should Contain "steptemplate"
+               "TestDrive:\test.ps1" | Should Contain "steptemplate";
             }
         }
+
     }
 
     Context "Clipboard" {
+
         It "Should export the steptemplate to the system clipboard" {
-            Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportToClipboard
-            [System.Windows.Forms.Clipboard]::GetText() | Should Be "steptemplate"
+            Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportToClipboard;
+            [System.Windows.Forms.Clipboard]::GetText() | Should Be "steptemplate";
         }
+
     }
 
 }
