@@ -27,13 +27,13 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Read-StepTemplate" {
+    Describe "Read-StepTemplate" {
 
-    Context "When reading a valid script file" {
+        Context "When reading a valid script file" {
 
-        Mock -CommandName "Get-Content" `
-             -MockWith {
-                 return @'
+            Mock -CommandName "Get-Content" `
+                 -MockWith {
+                     return @'
 function test {
     $StepTemplateName = "name"
     $StepTemplateDescription = "description"
@@ -48,74 +48,74 @@ function test {
     )
 }
 '@
-             };
+                 };
 
-        It "Should return a new object with the name from the script file" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Name | Should Be "name";
-        }
+            It "Should return a new object with the name from the script file" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Name | Should Be "name";
+            }
 
-        It "Should return a new object with the description from the script file" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Description | Should Be "description";
-        }
+            It "Should return a new object with the description from the script file" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Description | Should Be "description";
+            }
 
-        It "Should return a new object with the action type of Octopus.Script" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.ActionType | Should Be "Octopus.Script";
-        }
+            It "Should return a new object with the action type of Octopus.Script" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.ActionType | Should Be "Octopus.Script";
+            }
 
-        It "Should return a new object with the property Octopus.Action.Script.ScriptBody from the script file" {
-            $expected = @'
+            It "Should return a new object with the property Octopus.Action.Script.ScriptBody from the script file" {
+                $expected = @'
 function test {
     
     
     
 }
 '@;
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Properties["Octopus.Action.Script.ScriptBody"] | Should Be $expected;
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Properties["Octopus.Action.Script.ScriptBody"] | Should Be $expected;
+            }
+
+            It "Should return a new object with the property Octopus.Action.Script.Syntax of PowerShell" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Properties["Octopus.Action.Script.Syntax"] | Should Be "PowerShell";
+            }
+
+            It "Should return a new object with the parameters from the script file" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Parameters.Count           | Should Be 1;
+                $result.Parameters[0].Name         | Should Be "myParameterName";
+                $result.Parameters[0].Label        | Should Be "myParameterLabel";
+                $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
+                $result.Parameters[0].DefaultValue | Should Be "myDefaultValue";
+                $result.Parameters[0].DisplaySettings.Count | Should Be 0;
+            }
+
+            It "Should return a new object with the SensitiveProperties an empty hashtable" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.SensitiveProperties | Should BeOfType [hashtable];
+                $result.SensitiveProperties.Count | Should Be 0;
+            }
+
+            It "Should return a new object with the metatype of ActionTemplate" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.'$Meta'.Type | Should Be "ActionTemplate";
+            }
+
+            It "Should return a new object with the version of 1" {
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Version | Should Be 1;
+            }
+
         }
 
-        It "Should return a new object with the property Octopus.Action.Script.Syntax of PowerShell" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Properties["Octopus.Action.Script.Syntax"] | Should Be "PowerShell";
-        }
+        Context "When cleaning up properties" {
 
-        It "Should return a new object with the parameters from the script file" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Parameters.Count           | Should Be 1;
-            $result.Parameters[0].Name         | Should Be "myParameterName";
-            $result.Parameters[0].Label        | Should Be "myParameterLabel";
-            $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
-            $result.Parameters[0].DefaultValue | Should Be "myDefaultValue";
-            $result.Parameters[0].DisplaySettings.Count | Should Be 0;
-        }
-
-        It "Should return a new object with the SensitiveProperties an empty hashtable" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.SensitiveProperties | Should BeOfType [hashtable];
-            $result.SensitiveProperties.Count | Should Be 0;
-        }
-
-        It "Should return a new object with the metatype of ActionTemplate" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.'$Meta'.Type | Should Be "ActionTemplate";
-        }
-
-        It "Should return a new object with the version of 1" {
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Version | Should Be 1;
-        }
-
-    }
-
-    Context "When cleaning up properties" {
-
-        It "Should convert null parameter properties to an empty string" {
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            It "Should convert null parameter properties to an empty string" {
+                Mock -CommandName "Get-Content" `
+                     -MockWith {
+                         return @'
 function test {
     $StepTemplateName = "name"
     $StepTemplateDescription = "description"
@@ -129,20 +129,20 @@ function test {
         }
     );
 '@
-                 }
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Parameters.Count           | Should Be 1;
-            $result.Parameters[0].Name         | Should Be "myParameterName";
-            $result.Parameters[0].Label        | Should Be "";
-            $result.Parameters[0].HelpText     | Should Be "";
-            $result.Parameters[0].DefaultValue | Should Be "";
-            $result.Parameters[0].DisplaySettings.Count | Should Be 0;
-        }
+                     };
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Parameters.Count           | Should Be 1;
+                $result.Parameters[0].Name         | Should Be "myParameterName";
+                $result.Parameters[0].Label        | Should Be "";
+                $result.Parameters[0].HelpText     | Should Be "";
+                $result.Parameters[0].DefaultValue | Should Be "";
+                $result.Parameters[0].DisplaySettings.Count | Should Be 0;
+            }
 
-        It "Should trim space-padded parameter properties" {
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            It "Should trim space-padded parameter properties" {
+                Mock -CommandName "Get-Content" `
+                     -MockWith {
+                         return @'
 function test {
     $StepTemplateName = "name"
     $StepTemplateDescription = "description"
@@ -156,21 +156,21 @@ function test {
         }
     );
 '@
-                 }
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Parameters.Count           | Should Be 1;
-            $result.Parameters[0].Name         | Should Be "myParameterName";
-            $result.Parameters[0].Label        | Should Be "myParameterLabel";
-            $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
-            $result.Parameters[0].DefaultValue | Should Be "myDefaultValue";
-            $result.Parameters[0].DisplaySettings.Count | Should Be 0;
-            Assert-VerifiableMock;
-        }
+                     };
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Parameters.Count           | Should Be 1;
+                $result.Parameters[0].Name         | Should Be "myParameterName";
+                $result.Parameters[0].Label        | Should Be "myParameterLabel";
+                $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
+                $result.Parameters[0].DefaultValue | Should Be "myDefaultValue";
+                $result.Parameters[0].DisplaySettings.Count | Should Be 0;
+                Assert-VerifiableMock;
+            }
 
-        It "Should convert bool default values to strings" {
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            It "Should convert bool default values to strings" {
+                Mock -CommandName "Get-Content" `
+                     -MockWith {
+                         return @'
 function test {
     $StepTemplateName = "name"
     $StepTemplateDescription = "description"
@@ -184,19 +184,19 @@ function test {
         }
     );
 '@
-                 }
-            $result = Read-StepTemplate -Path "my.steptemplate.ps1";
-            $result.Parameters.Count           | Should Be 1;
-            $result.Parameters[0].Name         | Should Be "myParameterName";
-            $result.Parameters[0].Label        | Should Be "myParameterLabel";
-            $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
-            $result.Parameters[0].DefaultValue | Should Be "True";
-            $result.Parameters[0].DisplaySettings.Count | Should Be 0;
-            Assert-VerifiableMock;
+                     };
+                $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                $result.Parameters.Count           | Should Be 1;
+                $result.Parameters[0].Name         | Should Be "myParameterName";
+                $result.Parameters[0].Label        | Should Be "myParameterLabel";
+                $result.Parameters[0].HelpText     | Should Be "myParameterHelpText";
+                $result.Parameters[0].DefaultValue | Should Be "True";
+                $result.Parameters[0].DisplaySettings.Count | Should Be 0;
+                Assert-VerifiableMock;
+            }
+
         }
 
     }
-
-}
 
 }

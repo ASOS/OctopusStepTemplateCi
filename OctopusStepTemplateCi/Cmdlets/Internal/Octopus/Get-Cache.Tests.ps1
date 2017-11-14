@@ -27,10 +27,12 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Get-Cache" {
+    Describe "Get-Cache" {
 
         It "Should return a hashtable that can be used as a cache" {
-            Get-Cache | % GetType | % Name | Should Be "hashtable"
+            Get-Cache | % GetType | % Name | Should Be "hashtable";
         }
+
     }
+
 }

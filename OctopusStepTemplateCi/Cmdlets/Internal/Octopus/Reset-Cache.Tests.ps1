@@ -16,26 +16,26 @@ limitations under the License.
 
 <#
 .NAME
-	Reset-Cache.Tests
+    Reset-Cache.Tests
 
 .SYNOPSIS
-	Pester tests for Reset-Cache.
+    Pester tests for Reset-Cache.
 #>
 
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
-Describe "Reset-Cache" {
+
+    Describe "Reset-Cache" {
 
         It "Should clear out the cache" {
-            $cache = Get-Cache
-            
-            $cache.Add("key", "value")
-            
-            Reset-Cache
-            
-            Get-Cache | % Count | Should BeExactly 0
+            $cache = Get-Cache;
+            $cache.Add("key", "value");
+            Reset-Cache;
+            Get-Cache | % Count | Should BeExactly 0;
         }
+
     }
+
 }

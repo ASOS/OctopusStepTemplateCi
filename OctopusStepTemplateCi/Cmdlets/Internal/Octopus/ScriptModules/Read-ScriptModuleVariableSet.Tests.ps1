@@ -27,37 +27,37 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Read-ScriptModuleVariableSet" {
+    Describe "Read-ScriptModuleVariableSet" {
 
-    Mock -CommandName "Get-Content" `
-         -MockWith {
-             return @'
+        Mock -CommandName "Get-Content" `
+             -MockWith {
+                 return @'
 function test {
     $ScriptModuleName = "name";
     $ScriptModuleDescription = "description";
     write-host "test";
 }
 '@
-         };
+             };
 
-    It "Should return a new object with the content type of script module" {
-        $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
-	$result.ContentType | Should Be "ScriptModule";
-        Assert-VerifiableMock;
+        It "Should return a new object with the content type of script module" {
+            $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+    	$result.ContentType | Should Be "ScriptModule";
+            Assert-VerifiableMock;
+        }
+
+        It "Should return a new object with the name from the script file" {
+            $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+    	$result.Name | Should Be "name";
+            Assert-VerifiableMock;
+        }
+
+        It "Should return a new object with the description from the script file" {
+            $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+    	$result.Description | Should Be "description";
+            Assert-VerifiableMock;
+        }
+
     }
-
-    It "Should return a new object with the name from the script file" {
-        $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
-	$result.Name | Should Be "name";
-        Assert-VerifiableMock;
-    }
-
-    It "Should return a new object with the description from the script file" {
-        $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
-	$result.Description | Should Be "description";
-        Assert-VerifiableMock;
-    }
-
-}
 
 }

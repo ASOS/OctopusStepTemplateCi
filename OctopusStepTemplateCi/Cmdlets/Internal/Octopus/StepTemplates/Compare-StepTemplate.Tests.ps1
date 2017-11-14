@@ -28,11 +28,11 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Compare-StepTemplate" {
+    Describe "Compare-StepTemplate" {
 
-    Mock -CommandName "Get-Content" `
-         -MockWith {
-             return @'
+        Mock -CommandName "Get-Content" `
+             -MockWith {
+                 return @'
 function test {
     $StepTemplateName = "name"
     $StepTemplateDescription = "description"
@@ -47,63 +47,63 @@ function test {
     )
 }
 '@;
-         };
+             };
 
-    It "Should return false if they are the same" {
-        $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
-        $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
-        $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
-        $result | Should Be $false;
-    }
+        It "Should return false if they are the same" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $false;
+        }
 
-    It "Should return true when the description is different" {
-        $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
-        $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
-        $newTemplate.Description = "new description";
-        $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
-        $result | Should Be $true;
-    }
+        It "Should return true when the description is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Description = "new description";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
 
-    It "Should return true when the Octopus.Action.Script.Syntax property is different" {
-        $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
-        $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
-        $newTemplate.Properties["Octopus.Action.Script.Syntax"] = "new syntax";
-        $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
-        $result | Should Be $true;
-    }
+        It "Should return true when the Octopus.Action.Script.Syntax property is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Properties["Octopus.Action.Script.Syntax"] = "new syntax";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
 
-    It "Should return true when the Octopus.Action.Script.ScriptBody property is different" {
-        $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
-        $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
-        $newTemplate.Properties["Octopus.Action.Script.ScriptBody"] = "new script body";
-        $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
-        $result | Should Be $true;
-    }
+        It "Should return true when the Octopus.Action.Script.ScriptBody property is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Properties["Octopus.Action.Script.ScriptBody"] = "new script body";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
     
-    It "Should return true when the number of parameters is different" {
-        $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
-        $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
-        $newTemplate.Parameters = @();
-        $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
-        $result | Should Be $true;
-    }
+        It "Should return true when the number of parameters is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Parameters = @();
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
 
-    It "Should return true when the names of parameters are different" {
-        $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
-        $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
-        $newTemplate.Parameters[0].Name = "new parameter";
-        $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
-        $result | Should Be $true;
-    }
+        It "Should return true when the names of parameters are different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Parameters[0].Name = "new parameter";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
 
-    It "Should return true when the values of parameters are different" {
-        $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
-        $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
-        $newTemplate.Parameters[0].Label = "new label"
-        $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
-        $result | Should Be $true;
-    }
+        It "Should return true when the values of parameters are different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Parameters[0].Label = "new label"
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
 
-}
+    }
 
 }
