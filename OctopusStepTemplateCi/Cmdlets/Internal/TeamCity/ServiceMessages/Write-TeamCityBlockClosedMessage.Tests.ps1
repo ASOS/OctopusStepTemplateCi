@@ -21,15 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Write-TeamCityBlockClosedMessage.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Get-TeamCityEscapedString.ps1"
-. "$here\Get-TeamCityServiceMessage.ps1"
-. "$here\Write-TeamCityBuildLogMessage.ps1"
-. "$here\Write-TeamCityServiceMessage.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Write-TeamCityBlockClosedMessage" {
 
@@ -46,5 +42,7 @@ Describe "Write-TeamCityBlockClosedMessage" {
         Write-TeamCityBlockClosedMessage -BlockName "myBlock";
         Assert-VerifiableMock;
     }
+
+}
 
 }

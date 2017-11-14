@@ -21,12 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Get-TeamCityServiceMessage
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Get-TeamCityEscapedString.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Get-TeamCityServiceMessage" {
 
@@ -87,5 +86,7 @@ Describe "Get-TeamCityServiceMessage" {
         }
 
     }
+
+}
 
 }

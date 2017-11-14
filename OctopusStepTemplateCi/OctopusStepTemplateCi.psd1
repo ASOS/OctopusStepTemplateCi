@@ -79,7 +79,22 @@ Description = 'PowerShell module to facilitate CI uploading of Octopus StepTempl
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 NestedModules = @(
-    'Pester'
+
+    "Pester",
+
+
+    <# Internal functions only used within this module #>
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1",
+    "Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.ps1"
+
 )
 
 # Functions to export from this module

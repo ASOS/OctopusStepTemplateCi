@@ -21,11 +21,11 @@ limitations under the License.
 .SYNOPSIS
 	Pester tests for Reset-BuildOutputDirectory.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Reset-BuildOutputDirectory" {
     It "Should create a new directory in the specified location" {
@@ -42,4 +42,6 @@ Describe "Reset-BuildOutputDirectory" {
         
         Get-ChildItem -Path "TestDrive:\existing" | Measure-Object | % Count | Should Be 0
     }
+}
+
 }
