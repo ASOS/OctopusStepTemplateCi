@@ -27,40 +27,41 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Get-VariableStatementFromScriptText" {
+    Describe "Get-VariableStatementFromScriptText" {
 
-    It "Should return the variable statement from a powershell script" {
-        $script = @'
+        It "Should return the variable statement from a powershell script" {
+            $script = @'
 function test {
     $myTestVariable = "some value";
     Write-Host $myTestVariable;
 }
 '@
-        $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Statement";
-        $result | Should Be "`$myTestVariable = `"some value`"";
-    }
+            $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Statement";
+            $result | Should Be "`$myTestVariable = `"some value`"";
+        }
     
-    It "Should return the value of the variable statement from a powershell script" {
-        $script = @'
+        It "Should return the value of the variable statement from a powershell script" {
+            $script = @'
 function test {
     $myTestVariable = "some value";
     Write-Host $myTestVariable;
 }
 '@
-        $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Value";
-        $result | Should Be "`"some value`"" ;
-    }
+            $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Value";
+            $result | Should Be "`"some value`"" ;
+        }
     
-    It "Should return nothing if the variable isn't defined" {
-        $script = @'
+        It "Should return nothing if the variable isn't defined" {
+            $script = @'
 function test {
     $myTestVariable = "some value";
     Write-Host $myTestVariable;
 }
 '@
-        $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myUndefinedVariable" -Type "Value";
-        $result | Should Be $null;
+            $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myUndefinedVariable" -Type "Value";
+            $result | Should Be $null;
+        }
+
     }
-}
 
 }

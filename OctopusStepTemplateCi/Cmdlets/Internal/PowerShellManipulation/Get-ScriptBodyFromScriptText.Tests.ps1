@@ -27,12 +27,12 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Get-ScriptBodyFromScriptText" {
+    Describe "Get-ScriptBodyFromScriptText" {
 
-    Context "Script module" {
+        Context "Script module" {
 
-        It "Removes the ScriptModuleName, ScriptModuleDescription variables from the script" {         
-            $script = @'
+            It "Removes the ScriptModuleName, ScriptModuleDescription variables from the script" {         
+                $script = @'
 function test
 {
     $ScriptModuleName = "name"
@@ -46,16 +46,16 @@ function test
     
 }
 '@
-            $result = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
-            $result | Should Be $expected;
-        } 
+                $result = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
+                $result | Should Be $expected;
+            } 
 
-    }
+        }
     
-    Context "Step template" {
+        Context "Step template" {
 
-        It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {         
-        $script = @'
+            It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {         
+            $script = @'
 function test
 {
     $StepTemplateName = "name"
@@ -63,7 +63,7 @@ function test
     $StepTemplateParameters = "parameters"
 }
 '@
-            $expected = @'
+                $expected = @'
 function test
 {
     
@@ -71,12 +71,12 @@ function test
     
 }
 '@
-            $result = Get-ScriptBodyFromScriptText -Script $script -Type "StepTemplate";
-            $result | Should Be $expected;
-        } 
+                $result = Get-ScriptBodyFromScriptText -Script $script -Type "StepTemplate";
+                $result | Should Be $expected;
+            } 
+
+        }
 
     }
-
-}
 
 }
