@@ -21,11 +21,9 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for New-ScriptModule
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
 Describe "New-ScriptModule" {
    It "Should throw an exception if the script module already exists" {

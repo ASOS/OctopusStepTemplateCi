@@ -22,13 +22,9 @@ limitations under the License.
     Pester tests for Export-StepTemplate
 
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\..\Internal\Octopus\Common\ConvertTo-OctopusJson.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
 Describe "Export-StepTemplate" {
 
@@ -38,13 +34,18 @@ Describe "Export-StepTemplate" {
         }
     }
 
-    Mock Read-StepTemplate { "steptemplate" }
-    Mock ConvertTo-OctopusJson { "steptemplate" }
+    Mock -CommandName "Read-StepTemplate" `
+         -ModuleName  "OctopusStepTemplateCi" `
+         -MockWith    { return "steptemplate"; };
+
+    Mock -CommandName "ConvertTo-OctopusJson" `
+         -ModuleName  "OctopusStepTemplateCi" `
+         -MockWith    { return "steptemplate"; };
     Set-Content "TestDrive:\steptemplate.ps1" "steptemplate" 
     
     It "Should convert the step template to json" {
         Export-StepTemplate -Path "TestDrive:\steptemplate.ps1" -ExportPath "TestDrive:\test.ps1"
-        Assert-MockCalled ConvertTo-OctopusJson
+        Assert-MockCalled -CommandName "ConvertTo-OctopusJson" -ModuleName "OctopusStepTemplateCi"
     }
 
     It "Should return a message to the user" {

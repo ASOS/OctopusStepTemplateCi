@@ -22,14 +22,7 @@ limitations under the License.
     OctopusStepTemplateCi Module Script
 #>
 
-Set-StrictMode -Version Latest
-
-<# Interface Functions exported in the PSD1 file #>
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Export-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Invoke-OctopusScriptTestSuite.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Invoke-TeamCityCiUpload.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-ScriptModule.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-ScriptValidationTest.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-ScriptModule.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-StepTemplate.ps1')"
+# this file left intentionally blank so the *.psd1 is imported as a "Script Module" (which pester supports)
+# rather than a "Manifest Module" (which pester does not support).
+#
+# see https://github.com/pester/Pester/issues/933 for more details

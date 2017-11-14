@@ -21,27 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Invoke-TeamCityCiUpload
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Invoke-OctopusScriptTestSuite.ps1"
-. "$here\Sync-ScriptModule.ps1"
-. "$here\Sync-StepTemplate.ps1"
-. "$here\New-StepTemplate.ps1"
-. "$here\New-ScriptModule.ps1"
-. "$here\..\Internal\Octopus\Reset-Cache.ps1"
-. "$here\..\Internal\Octopus\Test-OctopusConnectivity.ps1"
-. "$here\..\Internal\TeamCity\Reset-BuildOutputDirectory.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Invoke-TeamCityCiUpload" {
 
@@ -126,5 +110,7 @@ Describe "Invoke-TeamCityCiUpload" {
         }
 
     }
+
+}
 
 }

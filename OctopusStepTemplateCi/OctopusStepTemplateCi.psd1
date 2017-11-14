@@ -80,8 +80,17 @@ Description = 'PowerShell module to facilitate CI uploading of Octopus StepTempl
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 NestedModules = @(
 
-    "Pester",
+    #"Pester",
 
+    <# Interface Functions exported in the PSD1 file #>
+    "Cmdlets\Interface\Export-StepTemplate.ps1",
+    "Cmdlets\Interface\Invoke-OctopusScriptTestSuite.ps1",
+    "Cmdlets\Interface\Invoke-TeamCityCiUpload.ps1",
+    "Cmdlets\Interface\New-ScriptModule.ps1",
+    "Cmdlets\Interface\New-ScriptValidationTest.ps1",
+    "Cmdlets\Interface\New-StepTemplate.ps1",
+    "Cmdlets\Interface\Sync-ScriptModule.ps1",
+    "Cmdlets\Interface\Sync-StepTemplate.ps1",
 
     <# Internal functions only used within this module #>
     "Cmdlets\Internal\Octopus\Common\Compare-Hashtable.ps1",

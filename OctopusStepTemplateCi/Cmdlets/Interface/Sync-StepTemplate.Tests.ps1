@@ -21,20 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Sync-StepTemplate
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\New-StepTemplate.ps1"
-. "$here\..\Internal\Octopus\Common\Compare-Hashtable.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
-. "$here\..\Internal\Octopus\Invoke-OctopusOperation.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Sync-StepTemplate" {
 
@@ -227,5 +218,7 @@ function test {
         }
 
     }
+
+}
 
 }
