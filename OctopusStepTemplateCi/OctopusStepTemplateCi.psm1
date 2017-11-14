@@ -33,8 +33,3 @@ Set-StrictMode -Version Latest
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-StepTemplate.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-ScriptModule.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-StepTemplate.ps1')"
-
-<# Internal functions only used within this module #>
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Update-XPathValue.ps1')"

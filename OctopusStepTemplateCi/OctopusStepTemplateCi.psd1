@@ -112,7 +112,10 @@ NestedModules = @(
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1",
-    "Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.ps1"
+    "Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.ps1",
+    "Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.ps1",
+    "Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.ps1",
+    "Cmdlets\Internal\Tests\Update-XPathValue.ps1"
 
 )
 

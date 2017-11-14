@@ -21,18 +21,14 @@ limitations under the License.
 .SYNOPSIS
 	Pester tests for Get-ScriptValidationPath.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Get-ScriptValidationTestsPath" {
-	Set-Content "TestDrive:\TestModule.psm1" ". `"$here\$sut`""
-	Get-Module TestModule | Remove-Module
-	Import-Module "TestDrive:\TestModule.psm1"
 
-	InModuleScope TestModule {  
 		It "Should return the location of the Script Validation Tests" {
 			New-Item -Path "TestDrive:\ScriptValidationTests" -ItemType Directory | Out-Null
 

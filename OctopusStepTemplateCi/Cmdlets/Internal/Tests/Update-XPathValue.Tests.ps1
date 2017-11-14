@@ -21,11 +21,11 @@ limitations under the License.
 .SYNOPSIS
 	Pester tests for Update-XPathValue.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Update-XPathValue" {
     It "Should update the value at the given XPath location" {
@@ -65,4 +65,6 @@ Describe "Update-XPathValue" {
         
         Remove-Item $tempFile
     }
+}
+
 }

@@ -21,17 +21,11 @@ limitations under the License.
 .SYNOPSIS
 	Pester tests for Invoke-PesterForTeamCity.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Update-XPathValue.ps1"
-. "$here\..\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1"
-. "$here\..\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1"
-. "$here\..\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1"
-. "$here\..\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.ps1"
-. "$here\..\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Invoke-PesterForTeamCity" {
 
@@ -126,5 +120,7 @@ Describe "Invoke-PesterForTeamCity" {
         }
 
     }
+
+}
 
 }
