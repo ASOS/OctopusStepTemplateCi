@@ -21,14 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Read-StepTemplate.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
-. "$here\..\..\PowerShellManipulation\Get-VariableFromScriptText.ps1"
-. "$here\..\..\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Read-StepTemplate" {
 
@@ -199,5 +196,7 @@ function test {
         }
 
     }
+
+}
 
 }

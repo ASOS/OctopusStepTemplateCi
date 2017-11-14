@@ -35,14 +35,6 @@ Set-StrictMode -Version Latest
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-StepTemplate.ps1')"
 
 <# Internal functions only used within this module #>
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Get-Cache.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Invoke-OctopusOperation.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Reset-Cache.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Test-OctopusConnectivity.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1')"

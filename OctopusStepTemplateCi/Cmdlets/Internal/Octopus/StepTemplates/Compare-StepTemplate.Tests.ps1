@@ -21,17 +21,12 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Compare-StepTemplate.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Read-StepTemplate.ps1"
-. "$here\..\Common\Compare-Hashtable.ps1"
-. "$here\..\Common\ConvertTo-OctopusJson.ps1"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
-. "$here\..\..\PowerShellManipulation\Get-VariableFromScriptText.ps1"
-. "$here\..\..\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Compare-StepTemplate" {
 
@@ -108,5 +103,7 @@ function test {
         $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
         $result | Should Be $true;
     }
+
+}
 
 }

@@ -21,12 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Test-OctopusConnectivity.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Invoke-OctopusOperation.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Test-OctopusConnectivity" {
 
@@ -60,5 +59,7 @@ Describe "Test-OctopusConnectivity" {
             Test-OctopusConnectivity -OctopusUri "na" -OctopusApiKey "na" -TestConnection;
         } | Should Throw "Octopus Deploy Api is not responding correctly";
     }
+
+}
 
 }

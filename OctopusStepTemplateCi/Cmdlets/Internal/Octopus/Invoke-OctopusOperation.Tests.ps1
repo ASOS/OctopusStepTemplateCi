@@ -21,17 +21,11 @@ limitations under the License.
 .SYNOPSIS
 	Pester tests for Invoke-OctopusOperation.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Common\ConvertFrom-OctopusJson.ps1"
-. "$here\Common\ConvertTo-DictionaryJsonObject.ps1"
-. "$here\Common\ConvertTo-HashtableJsonObject.ps1"
-. "$here\Common\ConvertTo-OctopusJson.ps1"
-. "$here\Test-OctopusConnectivity.ps1"
-. "$here\Get-Cache.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Invoke-OctopusOperation" {
 
@@ -160,5 +154,7 @@ Describe "Invoke-OctopusOperation" {
         Assert-MockCalled "Invoke-WebRequest" -Exactly 1 -Scope It;
 
     }
+
+}
 
 }

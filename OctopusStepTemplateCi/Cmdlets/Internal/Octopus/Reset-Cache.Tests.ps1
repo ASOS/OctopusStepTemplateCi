@@ -21,18 +21,13 @@ limitations under the License.
 .SYNOPSIS
 	Pester tests for Reset-Cache.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
+InModuleScope "OctopusStepTemplateCi" {
 Describe "Reset-Cache" {
-	Set-Content "TestDrive:\TestModule.psm1" ". `"$here\$sut`"; . `"$here\Get-Cache.ps1`""
-	Get-Module TestModule | Remove-Module
-	Import-Module "TestDrive:\TestModule.psm1"
 
-	InModuleScope TestModule {
         It "Should clear out the cache" {
             $cache = Get-Cache
             
