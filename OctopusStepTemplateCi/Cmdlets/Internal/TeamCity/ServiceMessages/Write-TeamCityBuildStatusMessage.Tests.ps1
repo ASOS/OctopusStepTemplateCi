@@ -27,22 +27,22 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Write-TeamCityBuildStatusMessage" {
+    Describe "Write-TeamCityBuildStatusMessage" {
 
-    Mock -CommandName "Write-Host" `
-         -MockWith {
-             throw "write-host should not be called with (`$Object='$Object')";
-         };
-
-    It "Should write the message to the powershell host" {
         Mock -CommandName "Write-Host" `
-             -ParameterFilter { $Object -eq "##teamcity[buildStatus text='my build status']" } `
-             -MockWith {} `
-             -Verifiable;
-        Write-TeamCityBuildStatusMessage -Text "my build status";
-        Assert-VerifiableMock;
-    }
+             -MockWith {
+                 throw "write-host should not be called with (`$Object='$Object')";
+             };
 
-}
+        It "Should write the message to the powershell host" {
+            Mock -CommandName "Write-Host" `
+                 -ParameterFilter { $Object -eq "##teamcity[buildStatus text='my build status']" } `
+                 -MockWith {} `
+                 -Verifiable;
+            Write-TeamCityBuildStatusMessage -Text "my build status";
+            Assert-VerifiableMock;
+        }
+
+    }
 
 }

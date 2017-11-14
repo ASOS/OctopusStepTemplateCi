@@ -27,22 +27,22 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Write-TeamCityImportDataMessage" {
+    Describe "Write-TeamCityImportDataMessage" {
 
-    Mock -CommandName "Write-Host" `
-         -MockWith {
-             throw "write-host should not be called with (`$Object='$Object')";
-         };
-
-    It "Should write the message to the powershell host" {
         Mock -CommandName "Write-Host" `
-             -ParameterFilter { $Object -eq "##teamcity[importData path='c:\temp\results.xml' type='nunit' verbose='true']" } `
-             -MockWith {} `
-             -Verifiable;
-        Write-TeamCityImportDataMessage -Type "nunit" -Path "c:\temp\results.xml" -VerboseMessage;
-        Assert-VerifiableMock;
-    }
+             -MockWith {
+                 throw "write-host should not be called with (`$Object='$Object')";
+             };
 
-}
+        It "Should write the message to the powershell host" {
+            Mock -CommandName "Write-Host" `
+                 -ParameterFilter { $Object -eq "##teamcity[importData path='c:\temp\results.xml' type='nunit' verbose='true']" } `
+                 -MockWith {} `
+                 -Verifiable;
+            Write-TeamCityImportDataMessage -Type "nunit" -Path "c:\temp\results.xml" -VerboseMessage;
+            Assert-VerifiableMock;
+        }
+
+    }
 
 }

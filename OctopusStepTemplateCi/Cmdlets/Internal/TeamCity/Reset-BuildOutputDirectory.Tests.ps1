@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-	Reset-BuildOutputDirectory.Tests
+    Reset-BuildOutputDirectory.Tests
 
 .SYNOPSIS
-	Pester tests for Reset-BuildOutputDirectory.
+    Pester tests for Reset-BuildOutputDirectory.
 #>
 
 $ErrorActionPreference = "Stop";
@@ -27,21 +27,20 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Reset-BuildOutputDirectory" {
-    It "Should create a new directory in the specified location" {
-        Reset-BuildOutputDirectory -Path "TestDrive:\test"
-        
-        Test-Path "TestDrive:\test" | Should Be $true
+    Describe "Reset-BuildOutputDirectory" {
+
+        It "Should create a new directory in the specified location" {
+            Reset-BuildOutputDirectory -Path "TestDrive:\test";
+            Test-Path "TestDrive:\test" | Should Be $true;
+        }
+
+        It "Should delete the files within the directory if it already exists" {
+            New-Item -Path "TestDrive:\existing\" -Type Directory | Out-Null;
+            Set-Content "TestDrive:\existing\existing file.txt" "test file";
+            Reset-BuildOutputDirectory -Path "TestDrive:\existing";
+            Get-ChildItem -Path "TestDrive:\existing" | Measure-Object | % Count | Should Be 0;
+        }
+
     }
-    
-    It "Should delete the files within the directory if it already exists" {
-        New-Item -Path "TestDrive:\existing\" -Type Directory | Out-Null
-        Set-Content "TestDrive:\existing\existing file.txt" "test file"
-         
-        Reset-BuildOutputDirectory -Path "TestDrive:\existing"
-        
-        Get-ChildItem -Path "TestDrive:\existing" | Measure-Object | % Count | Should Be 0
-    }
-}
 
 }

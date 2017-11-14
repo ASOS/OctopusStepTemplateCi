@@ -27,31 +27,31 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "Write-TeamCityBuildLogMessage" {
+    Describe "Write-TeamCityBuildLogMessage" {
 
-    Mock -CommandName "Write-Host" `
-         -MockWith {
-             throw "write-host should not be called with (`$Object='$Object')";
-         };
-
-    It "Should write the message to the powershell host" {
         Mock -CommandName "Write-Host" `
-             -ParameterFilter { $Object -eq "##teamcity[buildStatus text='my message']" } `
-             -MockWith {} `
-             -Verifiable;
-        Write-TeamCityBuildLogMessage -Message "##teamcity[buildStatus text='my message']";
-        Assert-VerifiableMock;
-    }
+             -MockWith {
+                 throw "write-host should not be called with (`$Object='$Object')";
+             };
 
-    It "Should write error messages to the powershell host in a red colour" {
-        Mock -CommandName "Write-Host" `
-             -ParameterFilter { ($Object -eq "##teamcity[Error '']") -and ($ForegroundColor -eq "Red") } `
-             -MockWith {} `
-             -Verifiable;
-        Write-TeamCityBuildLogMessage -Message "##teamcity[Error '']" -ErrorMessage;
-        Assert-VerifiableMock;
-    }
+        It "Should write the message to the powershell host" {
+            Mock -CommandName "Write-Host" `
+                 -ParameterFilter { $Object -eq "##teamcity[buildStatus text='my message']" } `
+                 -MockWith {} `
+                 -Verifiable;
+            Write-TeamCityBuildLogMessage -Message "##teamcity[buildStatus text='my message']";
+            Assert-VerifiableMock;
+        }
 
-}
+        It "Should write error messages to the powershell host in a red colour" {
+            Mock -CommandName "Write-Host" `
+                 -ParameterFilter { ($Object -eq "##teamcity[Error '']") -and ($ForegroundColor -eq "Red") } `
+                 -MockWith {} `
+                 -Verifiable;
+            Write-TeamCityBuildLogMessage -Message "##teamcity[Error '']" -ErrorMessage;
+            Assert-VerifiableMock;
+        }
+
+    }
 
 }
