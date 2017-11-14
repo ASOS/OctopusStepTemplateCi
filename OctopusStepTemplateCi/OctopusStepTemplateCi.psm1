@@ -37,9 +37,9 @@ Set-StrictMode -Version Latest
 <# Internal functions only used within this module #>
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Compare-Hashtable.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1')"
+. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\Compare-Hashtable.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\ConvertTo-DictionaryJsonObject.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\ConvertTo-HashtableJsonObject.ps1')"
