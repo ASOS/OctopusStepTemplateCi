@@ -17,11 +17,9 @@ limitations under the License.
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+InModuleScope "OctopusStepTemplateCi" {
 
-Describe "ConvertTo-OctopusJson" {
+    Describe "ConvertTo-OctopusJson" {
 
     It "when InputObject is null" {
         $input    = $null;
@@ -196,5 +194,7 @@ Describe "ConvertTo-OctopusJson" {
         { ConvertTo-OctopusJson -InputObject ([System.Guid]::NewGuid()) } `
             | Should Throw "Unhandled input object type 'System.Guid'.";
     }
+
+}
 
 }

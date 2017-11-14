@@ -21,11 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Compare-Hashtable.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Compare-Hashtable" {
 
@@ -138,5 +138,7 @@ Describe "Compare-Hashtable" {
         @($result[1].Value.Values)[0] | Should Be "ccc";
         $result[1].SideIndicator | Should Be "<=";
     }
+
+}
 
 }

@@ -17,9 +17,7 @@ limitations under the License.
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "ConvertTo-HashtableJsonObject" {
 
@@ -29,5 +27,7 @@ Describe "ConvertTo-HashtableJsonObject" {
             $actual = ConvertTo-HashtableJsonObject -InputObject $input;
         } | Should Throw;
     }
+
+}
 
 }

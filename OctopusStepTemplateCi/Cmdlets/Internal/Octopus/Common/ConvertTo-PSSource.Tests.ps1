@@ -17,9 +17,7 @@ limitations under the License.
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "ConvertTo-PSSource" {
 
@@ -211,5 +209,7 @@ new-object PSCustomObject -Property ([ordered] @{
         $actual = ConvertTo-PSSource -InputObject $input;
         $actual | Should Be $expected;
     }
+
+}
 
 }

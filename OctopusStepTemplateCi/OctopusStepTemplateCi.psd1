@@ -84,6 +84,12 @@ NestedModules = @(
 
 
     <# Internal functions only used within this module #>
+    "Cmdlets\Internal\Octopus\Common\Compare-Hashtable.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-DictionaryJsonObject.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-HashtableJsonObject.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-OctopusJson.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-PSSource.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.ps1",
