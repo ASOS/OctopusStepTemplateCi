@@ -35,9 +35,6 @@ Set-StrictMode -Version Latest
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-StepTemplate.ps1')"
 
 <# Internal functions only used within this module #>
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.ps1')"
 . "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Update-XPathValue.ps1')"

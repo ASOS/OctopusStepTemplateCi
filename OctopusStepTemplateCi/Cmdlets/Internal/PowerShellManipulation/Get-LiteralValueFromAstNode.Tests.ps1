@@ -25,9 +25,7 @@ limitations under the License.
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Get-LiteralValueFromAstNode" {
 
@@ -155,5 +153,7 @@ Describe "Get-LiteralValueFromAstNode" {
         $actual["myKey2"] | Should Be 100;
         $actual["myKey3"] | Should Be "my string";
     }
+
+}
 
 }

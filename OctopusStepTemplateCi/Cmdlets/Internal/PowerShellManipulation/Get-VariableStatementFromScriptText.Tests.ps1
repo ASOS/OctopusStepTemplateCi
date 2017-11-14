@@ -21,11 +21,11 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Get-VariableStatementFromScriptText.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Get-VariableStatementFromScriptText" {
 
@@ -61,4 +61,6 @@ function test {
         $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myUndefinedVariable" -Type "Value";
         $result | Should Be $null;
     }
+}
+
 }

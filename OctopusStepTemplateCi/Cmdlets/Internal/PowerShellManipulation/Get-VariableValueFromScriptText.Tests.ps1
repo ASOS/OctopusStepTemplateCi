@@ -25,10 +25,7 @@ limitations under the License.
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Get-LiteralValueFromAstNode.ps1"
+InModuleScope "OctopusStepTemplateCi" {
 
 Describe "Get-VariableValueFromScriptText" {
 
@@ -237,5 +234,7 @@ function test {
            $actual = Get-VariableValueFromScriptText -Script $script -VariableName "myUndefinedVariable";
         } | Should Throw "Assignment statement for variable '`$myUndefinedVariable' could not be found in the specified script.";
     }
+
+}
 
 }
