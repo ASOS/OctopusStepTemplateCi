@@ -19,15 +19,15 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "ConvertTo-HashtableJsonObject" {
+    Describe "ConvertTo-HashtableJsonObject" {
 
-    It "when InputObject is not a supported type" {
-        {
-            $input  = [System.Guid]::NewGuid();
-            $actual = ConvertTo-HashtableJsonObject -InputObject $input;
-        } | Should Throw;
+        It "when InputObject is not a supported type" {
+            {
+                $input  = [System.Guid]::NewGuid();
+                $actual = ConvertTo-HashtableJsonObject -InputObject $input;
+            } | Should Throw;
+        }
+
     }
-
-}
 
 }

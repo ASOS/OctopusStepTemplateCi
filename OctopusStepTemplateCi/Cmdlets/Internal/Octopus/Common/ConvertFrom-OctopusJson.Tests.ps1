@@ -27,114 +27,114 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-Describe "ConvertFrom-OctopusJson" {
+    Describe "ConvertFrom-OctopusJson" {
 
-    It "Should return the value when the InputObject is a null json string" {
-        $input    = "null";
-        $expected = $null;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a null json string" {
+            $input    = "null";
+            $expected = $null;
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is `$true" {
-        $input    = "true";
-        $expected = $true;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is `$true" {
+            $input    = "true";
+            $expected = $true;
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is `$false" {
-        $input    = "false";
-        $expected = $false;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is `$false" {
+            $input    = "false";
+            $expected = $false;
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is a positive integer" {
-        $input    = "100";
-        $expected = 100;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a positive integer" {
+            $input    = "100";
+            $expected = 100;
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is a negative integer" {
-        $input    = "-100";
-        $expected = -100;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a negative integer" {
+            $input    = "-100";
+            $expected = -100;
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is an empty string" {
-        $input    = "`"`"";
-        $expected = [string]::Empty;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is an empty string" {
+            $input    = "`"`"";
+            $expected = [string]::Empty;
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is a simple string" {
-        $input    = "`"my simple string`"";
-        $expected = "my simple string";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a simple string" {
+            $input    = "`"my simple string`"";
+            $expected = "my simple string";
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is a string with apostrophes" {
-        $input    = "`"my string with 'apostrophes'`"";
-        $expected = "my string with 'apostrophes'";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a string with apostrophes" {
+            $input    = "`"my string with 'apostrophes'`"";
+            $expected = "my string with 'apostrophes'";
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is a string with special characters" {
-        $input    = "`"my \\ \`"string\`" with \r\n special \t characters`"";
-        $expected = "my \ `"string`" with `r`n special `t characters";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a string with special characters" {
+            $input    = "`"my \\ \`"string\`" with \r\n special \t characters`"";
+            $expected = "my \ `"string`" with `r`n special `t characters";
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is a string with whitespace between curly brackets" {
-        $input    = "`"{    }`"";
-        $expected = "{    }";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a string with whitespace between curly brackets" {
+            $input    = "`"{    }`"";
+            $expected = "{    }";
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" {
-        $input    = "`"\\u0027`"";
-        $expected = "\u0027";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should Be $expected;
-    }
+        It "Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" {
+            $input    = "`"\\u0027`"";
+            $expected = "\u0027";
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should Be $expected;
+        }
 
-    It "when InputObject is an empty array" {
-        $input    = "[]";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        @(,$actual) | Should Not Be $null;
-        @(,$actual) | Should BeOfType [array];
-        $actual.Length | Should Be 0;
-    }
+        It "when InputObject is an empty array" {
+            $input    = "[]";
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            @(,$actual) | Should Not Be $null;
+            @(,$actual) | Should BeOfType [array];
+            $actual.Length | Should Be 0;
+        }
 
-    It "Should return the value when the InputObject is a populated array" {
-        $input    = "[`r`n  null,`r`n  100,`r`n  `"my string`"`r`n]";
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        @(,$actual) | Should Not Be $null;
-        @(,$actual) | Should BeOfType [array];
-        $actual.Length | Should Be 3;
-        $actual[0] | Should Be $null;
-        $actual[1] | Should Be 100;
-        $actual[2] | Should Be "my string";
-    }
+        It "Should return the value when the InputObject is a populated array" {
+            $input    = "[`r`n  null,`r`n  100,`r`n  `"my string`"`r`n]";
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            @(,$actual) | Should Not Be $null;
+            @(,$actual) | Should BeOfType [array];
+            $actual.Length | Should Be 3;
+            $actual[0] | Should Be $null;
+            $actual[1] | Should Be 100;
+            $actual[2] | Should Be "my string";
+        }
 
-    It "Should return the value when the InputObject is an empty json object" {
-        $input    = "{}";
-        $expected = @{};
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should BeOfType [hashtable];
-        $actual.Count | Should Be 0;
-    }
+        It "Should return the value when the InputObject is an empty json object" {
+            $input    = "{}";
+            $expected = @{};
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should BeOfType [hashtable];
+            $actual.Count | Should Be 0;
+        }
 
-    It "Should return the value when the InputObject is a nested json object" {
-        $input    = @'
+        It "Should return the value when the InputObject is a nested json object" {
+            $input    = @'
 {
     "myNull"   : null,
     "myInt"    : 100,
@@ -143,26 +143,26 @@ Describe "ConvertFrom-OctopusJson" {
     "myObject" : { "childProperty" : "childValue" }
 }
 '@;
-        $actual = ConvertFrom-OctopusJson -InputObject $input;
-        $actual | Should BeOfType [hashtable];
-        $actual.Count | Should Be 5;
-        $actual["myNull"] | Should Be $null;
-        $actual["myInt"] | Should Be 100;
-        $actual["myString"] | Should Be "text";
-        @(,$actual["myArray"]) | Should BeOfType [array];
-        $actual["myArray"].Length | Should Be 3;
-        $actual["myArray"][0] | Should Be $null;
-        $actual["myArray"][1] | Should Be 200;
-        $actual["myArray"][2] | Should Be "string";
-        $actual["myObject"] | Should BeOfType [hashtable];
-        $actual["myObject"]["childProperty"] | Should Be "childValue";
-    }
+            $actual = ConvertFrom-OctopusJson -InputObject $input;
+            $actual | Should BeOfType [hashtable];
+            $actual.Count | Should Be 5;
+            $actual["myNull"] | Should Be $null;
+            $actual["myInt"] | Should Be 100;
+            $actual["myString"] | Should Be "text";
+            @(,$actual["myArray"]) | Should BeOfType [array];
+            $actual["myArray"].Length | Should Be 3;
+            $actual["myArray"][0] | Should Be $null;
+            $actual["myArray"][1] | Should Be 200;
+            $actual["myArray"][2] | Should Be "string";
+            $actual["myObject"] | Should BeOfType [hashtable];
+            $actual["myObject"]["childProperty"] | Should Be "childValue";
+        }
 
-    It "Should return the value when the InputObject is invalid json" {
-        { $actual = ConvertFrom-OctopusJson -InputObject "!!!!!"; } `
-            | Should Throw;
-    }
+        It "Should return the value when the InputObject is invalid json" {
+            { $actual = ConvertFrom-OctopusJson -InputObject "!!!!!"; } `
+                | Should Throw;
+        }
 
-}
+    }
 
 }
