@@ -21,32 +21,34 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Get-TeamCityEscapedString.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Get-TeamCityEscapedString" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    It "Should escape a null value" {
-        $result = Get-TeamCityEscapedString -Value $null;
-        $result | Should Be "";
-    }
+    Describe "Get-TeamCityEscapedString" {
 
-    It "Should escape an empty string" {
-        $result = Get-TeamCityEscapedString -Value "";
-        $result | Should Be "";
-    }
+        It "Should escape a null value" {
+            $result = Get-TeamCityEscapedString -Value $null;
+            $result | Should Be "";
+        }
 
-    It "Should escape a string containing no special characters" {
-        $result = Get-TeamCityEscapedString -Value "my string";
-        $result | Should Be "my string";
-    }
+        It "Should escape an empty string" {
+            $result = Get-TeamCityEscapedString -Value "";
+            $result | Should Be "";
+        }
 
-    It "Should escape a string containing special characters" {
-        $result = Get-TeamCityEscapedString -Value "my | string [ with ] special ' characters `r and `n line `n breaks";
-        $result | Should Be "my || string |[ with |] special |' characters |r and |n line |n breaks";
+        It "Should escape a string containing no special characters" {
+            $result = Get-TeamCityEscapedString -Value "my string";
+            $result | Should Be "my string";
+        }
+
+        It "Should escape a string containing special characters" {
+            $result = Get-TeamCityEscapedString -Value "my | string [ with ] special ' characters `r and `n line `n breaks";
+            $result | Should Be "my || string |[ with |] special |' characters |r and |n line |n breaks";
+        }
+
     }
 
 }

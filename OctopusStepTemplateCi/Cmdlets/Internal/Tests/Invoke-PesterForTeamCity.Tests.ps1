@@ -16,113 +16,109 @@ limitations under the License.
 
 <#
 .NAME
-	Invoke-PesterForTeamCity.Tests
+    Invoke-PesterForTeamCity.Tests
 
 .SYNOPSIS
-	Pester tests for Invoke-PesterForTeamCity.
+    Pester tests for Invoke-PesterForTeamCity.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Update-XPathValue.ps1"
-. "$here\..\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1"
-. "$here\..\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1"
-. "$here\..\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1"
-. "$here\..\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.ps1"
-. "$here\..\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Invoke-PesterForTeamCity" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    Mock -CommandName "Write-TeamCityBuildLogMessage" `
-         -MockWith {
-              throw "Write-TeamCityBuildLogMessage should not be called with `$Message = '$Message'";
-         };
+    Describe "Invoke-PesterForTeamCity" {
 
-    Context "validate that parameters are passed to Pester correctly" {
+        Mock -CommandName "Write-TeamCityBuildLogMessage" `
+             -MockWith {
+                  throw "Write-TeamCityBuildLogMessage should not be called with `$Message = '$Message'";
+             };
 
-        Mock -CommandName "Invoke-Pester" `
-             -ParameterFilter { $Script -eq "TestDrive:\test.Tests.ps1" -and $OutputFile -eq "TestDrive:\results.xml" } `
-             -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; } `
-             -Verifiable;
+        Context "validate that parameters are passed to Pester correctly" {
 
-        Mock -CommandName "Update-XPathValue" `
-             -MockWith {} `
-             -Verifiable;
+            Mock -CommandName "Invoke-Pester" `
+                 -ParameterFilter { $Script -eq "TestDrive:\test.Tests.ps1" -and $OutputFile -eq "TestDrive:\results.xml" } `
+                 -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; } `
+                 -Verifiable;
 
-        Mock -CommandName "Write-TeamCityImportDataMessage" `
-             -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
-             -MockWith {} `
-             -Verifiable;
+            Mock -CommandName "Update-XPathValue" `
+                 -MockWith {} `
+                 -Verifiable;
 
-        It "Invokes pester with the provided arguments" {
-            $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
-            Assert-VerifiableMock;
+            Mock -CommandName "Write-TeamCityImportDataMessage" `
+                 -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
+                 -MockWith {} `
+                 -Verifiable;
+
+            It "Invokes pester with the provided arguments" {
+                $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
+                Assert-VerifiableMock;
+            }
+
         }
 
-    }
+        Context "validate that the test name is updated for TeamCity" {
 
-    Context "validate that the test name is updated for TeamCity" {
+            Mock -CommandName "Invoke-Pester" `
+                 -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; };
 
-        Mock -CommandName "Invoke-Pester" `
-	     -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; };
+            Mock -CommandName "Update-XPathValue" `
+                 -ParameterFilter { ($Path -eq "TestDrive:\results.xml") -and ($XPath -eq '//test-results/test-suite/@name') -and ($Value -eq "test") } `
+                 -MockWith {} `
+                 -Verifiable;
 
-        Mock -CommandName "Update-XPathValue" `
-             -ParameterFilter { ($Path -eq "TestDrive:\results.xml") -and ($XPath -eq '//test-results/test-suite/@name') -and ($Value -eq "test") } `
-             -MockWith {} `
-             -Verifiable;
+            Mock -CommandName "Write-TeamCityImportDataMessage" `
+                 -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
+                 -MockWith {} `
+                 -Verifiable;
 
-        Mock -CommandName "Write-TeamCityImportDataMessage" `
-             -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
-             -MockWith {} `
-             -Verifiable;
+            It "Should update the test name so it renders correctly in TeamCity" {
+                $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
+                Assert-VerifiableMock;
+            }
 
-        It "Should update the test name so it renders correctly in TeamCity" {
-            $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
-            Assert-VerifiableMock;
         }
 
-    }
+        Context "validate that a TeamCity importData message is written" {
 
-    Context "validate that a TeamCity importData message is written" {
+            Mock -CommandName "Invoke-Pester" `
+                 -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; };
 
-        Mock -CommandName "Invoke-Pester" `
-             -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; };
+            Mock -CommandName "Update-XPathValue" `
+                 -MockWith {};
 
-        Mock -CommandName "Update-XPathValue" `
-             -MockWith {};
+            Mock -CommandName "Write-TeamCityImportDataMessage" `
+                 -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
+                 -MockWith {} `
+                 -Verifiable;
 
-        Mock -CommandName "Write-TeamCityImportDataMessage" `
-             -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
-             -MockWith {} `
-             -Verifiable;
+            It "Should write out a teamcity message to import the test results file" {
+                $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
+                Assert-VerifiableMock;
+            }
 
-        It "Should write out a teamcity message to import the test results file" {
-            $result = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
-            Assert-VerifiableMock;
         }
 
-    }
+        Context "validate that the return value is correct" {
 
-    Context "validate that the return value is correct" {
+            Mock -CommandName "Invoke-Pester" `
+                 -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; };
 
-        Mock -CommandName "Invoke-Pester" `
-             -MockWith { return @{ "PassedCount" = 1; "FailedCount" = 1 }; };
+            Mock -CommandName "Update-XPathValue" `
+                 -MockWith {};
 
-        Mock -CommandName "Update-XPathValue" `
-             -MockWith {};
+            Mock -CommandName "Write-TeamCityImportDataMessage" `
+                 -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
+                 -MockWith {} `
+                 -Verifiable;
 
-        Mock -CommandName "Write-TeamCityImportDataMessage" `
-             -ParameterFilter { ($Type -eq "nunit") -and ($Path -eq "TestDrive:\results.xml") -and ($VerboseMessage -eq $true) } `
-             -MockWith {} `
-             -Verifiable;
+            It "Should return a hashtable containing the passed and failed count" {
+                $results = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
+                $results.Passed | Should Be 1;
+                $results.Failed | Should Be 1;
+                Assert-VerifiableMock;
+            }
 
-        It "Should return a hashtable containing the passed and failed count" {
-            $results = Invoke-PesterForTeamCity -TestName "test" -Script "TestDrive:\test.Tests.ps1" -TestResultsFile "TestDrive:\results.xml";
-            $results.Passed | Should Be 1;
-            $results.Failed | Should Be 1;
-            Assert-VerifiableMock;
         }
 
     }

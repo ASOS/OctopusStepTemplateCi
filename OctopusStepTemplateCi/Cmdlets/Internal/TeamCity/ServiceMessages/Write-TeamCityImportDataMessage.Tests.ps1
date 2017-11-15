@@ -21,30 +21,28 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Write-TeamCityImportDataMessage.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Get-TeamCityEscapedString.ps1"
-. "$here\Get-TeamCityServiceMessage.ps1"
-. "$here\Write-TeamCityBuildLogMessage.ps1"
-. "$here\Write-TeamCityServiceMessage.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Write-TeamCityImportDataMessage" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    Mock -CommandName "Write-Host" `
-         -MockWith {
-             throw "write-host should not be called with (`$Object='$Object')";
-         };
+    Describe "Write-TeamCityImportDataMessage" {
 
-    It "Should write the message to the powershell host" {
         Mock -CommandName "Write-Host" `
-             -ParameterFilter { $Object -eq "##teamcity[importData path='c:\temp\results.xml' type='nunit' verbose='true']" } `
-             -MockWith {} `
-             -Verifiable;
-        Write-TeamCityImportDataMessage -Type "nunit" -Path "c:\temp\results.xml" -VerboseMessage;
-        Assert-VerifiableMock;
+             -MockWith {
+                 throw "write-host should not be called with (`$Object='$Object')";
+             };
+
+        It "Should write the message to the powershell host" {
+            Mock -CommandName "Write-Host" `
+                 -ParameterFilter { $Object -eq "##teamcity[importData path='c:\temp\results.xml' type='nunit' verbose='true']" } `
+                 -MockWith {} `
+                 -Verifiable;
+            Write-TeamCityImportDataMessage -Type "nunit" -Path "c:\temp\results.xml" -VerboseMessage;
+            Assert-VerifiableMock;
+        }
+
     }
 
 }

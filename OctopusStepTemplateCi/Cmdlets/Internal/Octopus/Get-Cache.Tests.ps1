@@ -21,20 +21,18 @@ limitations under the License.
 .SYNOPSIS
 	Pester tests for Get-Cache.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Get-Cache" {
-	Set-Content "TestDrive:\TestModule.psm1" ". `"$here\$sut`""
-	Get-Module TestModule | Remove-Module
-	Import-Module "TestDrive:\TestModule.psm1"
+InModuleScope "OctopusStepTemplateCi" {
 
-	InModuleScope TestModule {
+    Describe "Get-Cache" {
+
         It "Should return a hashtable that can be used as a cache" {
-            Get-Cache | % GetType | % Name | Should Be "hashtable"
+            Get-Cache | % GetType | % Name | Should Be "hashtable";
         }
+
     }
+
 }

@@ -21,37 +21,37 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Write-TeamCityBuildLogMessage.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Get-TeamCityEscapedString.ps1"
-. "$here\Write-TeamCityBuildLogMessage.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Write-TeamCityBuildLogMessage" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    Mock -CommandName "Write-Host" `
-         -MockWith {
-             throw "write-host should not be called with (`$Object='$Object')";
-         };
+    Describe "Write-TeamCityBuildLogMessage" {
 
-    It "Should write the message to the powershell host" {
         Mock -CommandName "Write-Host" `
-             -ParameterFilter { $Object -eq "##teamcity[buildStatus text='my message']" } `
-             -MockWith {} `
-             -Verifiable;
-        Write-TeamCityBuildLogMessage -Message "##teamcity[buildStatus text='my message']";
-        Assert-VerifiableMock;
-    }
+             -MockWith {
+                 throw "write-host should not be called with (`$Object='$Object')";
+             };
 
-    It "Should write error messages to the powershell host in a red colour" {
-        Mock -CommandName "Write-Host" `
-             -ParameterFilter { ($Object -eq "##teamcity[Error '']") -and ($ForegroundColor -eq "Red") } `
-             -MockWith {} `
-             -Verifiable;
-        Write-TeamCityBuildLogMessage -Message "##teamcity[Error '']" -ErrorMessage;
-        Assert-VerifiableMock;
+        It "Should write the message to the powershell host" {
+            Mock -CommandName "Write-Host" `
+                 -ParameterFilter { $Object -eq "##teamcity[buildStatus text='my message']" } `
+                 -MockWith {} `
+                 -Verifiable;
+            Write-TeamCityBuildLogMessage -Message "##teamcity[buildStatus text='my message']";
+            Assert-VerifiableMock;
+        }
+
+        It "Should write error messages to the powershell host in a red colour" {
+            Mock -CommandName "Write-Host" `
+                 -ParameterFilter { ($Object -eq "##teamcity[Error '']") -and ($ForegroundColor -eq "Red") } `
+                 -MockWith {} `
+                 -Verifiable;
+            Write-TeamCityBuildLogMessage -Message "##teamcity[Error '']" -ErrorMessage;
+            Assert-VerifiableMock;
+        }
+
     }
 
 }

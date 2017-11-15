@@ -21,44 +21,47 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Get-VariableStatementFromScriptText.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Get-VariableStatementFromScriptText" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    It "Should return the variable statement from a powershell script" {
-        $script = @'
+    Describe "Get-VariableStatementFromScriptText" {
+
+        It "Should return the variable statement from a powershell script" {
+            $script = @'
 function test {
     $myTestVariable = "some value";
     Write-Host $myTestVariable;
 }
 '@
-        $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Statement";
-        $result | Should Be "`$myTestVariable = `"some value`"";
-    }
+            $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Statement";
+            $result | Should Be "`$myTestVariable = `"some value`"";
+        }
     
-    It "Should return the value of the variable statement from a powershell script" {
-        $script = @'
+        It "Should return the value of the variable statement from a powershell script" {
+            $script = @'
 function test {
     $myTestVariable = "some value";
     Write-Host $myTestVariable;
 }
 '@
-        $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Value";
-        $result | Should Be "`"some value`"" ;
-    }
+            $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myTestVariable" -Type "Value";
+            $result | Should Be "`"some value`"" ;
+        }
     
-    It "Should return nothing if the variable isn't defined" {
-        $script = @'
+        It "Should return nothing if the variable isn't defined" {
+            $script = @'
 function test {
     $myTestVariable = "some value";
     Write-Host $myTestVariable;
 }
 '@
-        $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myUndefinedVariable" -Type "Value";
-        $result | Should Be $null;
+            $result = Get-VariableStatementFromScriptText -Script $script -VariableName "myUndefinedVariable" -Type "Value";
+            $result | Should Be $null;
+        }
+
     }
+
 }

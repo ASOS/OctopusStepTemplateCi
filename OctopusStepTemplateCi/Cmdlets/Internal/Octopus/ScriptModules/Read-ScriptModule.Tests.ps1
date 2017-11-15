@@ -21,44 +21,43 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Read-ScriptModule.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
-. "$here\..\..\PowerShellManipulation\Get-VariableFromScriptText.ps1"
-. "$here\..\..\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Read-ScriptModule" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    Mock -CommandName "Get-Content" `
-         -MockWith {
-             return @'
+    Describe "Read-ScriptModule" {
+
+        Mock -CommandName "Get-Content" `
+             -MockWith {
+                 return @'
 function test {
     $ScriptModuleName = "name";
     $ScriptModuleDescription = "description";
     write-host "test";
 }
 '@;
-         };
+             };
 
-    It "Should return a new object with the name from the script file" {
-        $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
-        $result.Name | Should Be "Octopus.Script.Module[name]";
-        Assert-VerifiableMock;
-    }
+        It "Should return a new object with the name from the script file" {
+            $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
+            $result.Name | Should Be "Octopus.Script.Module[name]";
+            Assert-VerifiableMock;
+        }
     
-    It "Should return a new object with the value as the body of the script file" {
-        $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
-        $result.Value | Should Be @'
+        It "Should return a new object with the value as the body of the script file" {
+            $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
+            $result.Value | Should Be @'
 function test {
     ;
     ;
     write-host "test";
 }
 '@;
-        Assert-VerifiableMock;
+            Assert-VerifiableMock;
+        }
+
     }
 
 }

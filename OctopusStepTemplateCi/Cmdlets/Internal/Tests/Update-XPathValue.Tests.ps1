@@ -16,53 +16,46 @@ limitations under the License.
 
 <#
 .NAME
-	Update-XPathValue.Tests
+    Update-XPathValue.Tests
 
 .SYNOPSIS
-	Pester tests for Update-XPathValue.
+    Pester tests for Update-XPathValue.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Update-XPathValue" {
-    It "Should update the value at the given XPath location" {
-        $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
-        
-        Set-Content $tempFile "<results>original</results>"
-        
-        Update-XPathValue -Path $tempFile -XPath "//results" -Value "replacement"
-        
-        Get-Content $tempFile | Should Be "<results>replacement</results>"
-        
-        Remove-Item $tempFile
-    }
+InModuleScope "OctopusStepTemplateCi" {
+
+    Describe "Update-XPathValue" {
+
+        It "Should update the value at the given XPath location" {
+            $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
+            Set-Content $tempFile "<results>original</results>"
+            Update-XPathValue -Path $tempFile -XPath "//results" -Value "replacement"
+            Get-Content $tempFile | Should Be "<results>replacement</results>"
+            Remove-Item $tempFile
+        }
     
-    It "Should update attributes at the given XPath location" {
-        $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
-        
-        Set-Content $tempFile "<results attr=`"old`">original</results>"
-        
-        Update-XPathValue -Path $tempFile -XPath "//results/@attr" -Value "new"
-        
-        Get-Content $tempFile | Should Be "<results attr=`"new`">original</results>"
-        
-        Remove-Item $tempFile
-    }
+        It "Should update attributes at the given XPath location" {
+            $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
+            Set-Content $tempFile "<results attr=`"old`">original</results>"
+            Update-XPathValue -Path $tempFile -XPath "//results/@attr" -Value "new"
+            Get-Content $tempFile | Should Be "<results attr=`"new`">original</results>"
+            Remove-Item $tempFile
+        }
     
-    It "Should throw if the path does not exist" {
-        { Update-XPathValue -Path "TestDrive:\not-here.xml" -XPath "//results" -Value "replacement" } | Should Throw "File 'TestDrive:\not-here.xml' not found"
-    }
+        It "Should throw if the path does not exist" {
+            { Update-XPathValue -Path "TestDrive:\not-here.xml" -XPath "//results" -Value "replacement" } | Should Throw "File 'TestDrive:\not-here.xml' not found"
+        }
     
-    It "Should throw an exception if the xml is invalid" {
-        $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
-        
-        Set-Content $tempFile "<resuldkasts attr=`"old`">original</results>"
-        
-        { Update-XPathValue -Path $tempFile -XPath "//results/@attr" -Value "new" } | Should Throw 
-        
-        Remove-Item $tempFile
+        It "Should throw an exception if the xml is invalid" {
+            $tempFile = [System.IO.Path]::GetTempFileName() # Cant use the testdrive as $doc.Save($Path) doesn't support 'TestDrive:\'
+            Set-Content $tempFile "<resuldkasts attr=`"old`">original</results>"
+            { Update-XPathValue -Path $tempFile -XPath "//results/@attr" -Value "new" } | Should Throw 
+            Remove-Item $tempFile
+        }
+
     }
+
 }

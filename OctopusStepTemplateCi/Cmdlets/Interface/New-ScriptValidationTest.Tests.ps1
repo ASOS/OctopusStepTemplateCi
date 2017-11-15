@@ -17,30 +17,31 @@ limitations under the License.
 <#
 .NAME
     New-ScriptValidationTest.Tests
-    
+
 .SYNOPSIS
     Pester tests for New-ScriptValidationTest
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
 Describe "New-ScriptValidationTest" {
+
    It "Should throw an exception if the script validation test exists" {
-       New-Item "TestDrive:\test.ScriptValidationTest.ps1" -ItemType File | Out-Null
-       
-       { New-ScriptValidationTest -Name "test" -Path "TestDrive:\" } | Should Throw
+       New-Item "TestDrive:\test.ScriptValidationTest.ps1" -ItemType File | Out-Null;
+       {
+           $result = New-ScriptValidationTest -Name "test" -Path "TestDrive:\";
+       } | Should Throw;
    }
    
    It "Should create a new script validation test file" {
-       New-ScriptValidationTest -Name "test1" -Path "TestDrive:\"
-       
-       "TestDrive:\test1.ScriptValidationTest.ps1" | Should Exist
+       $result = New-ScriptValidationTest -Name "test1" -Path "TestDrive:\";
+       "TestDrive:\test1.ScriptValidationTest.ps1" | Should Exist;
    }
-   
+
    It "Should output a message to the user" {
-       New-ScriptValidationTest -Name "test2" -Path "TestDrive:\" | % GetType | % Name | Should Be "String"
+       $result = New-ScriptValidationTest -Name "test2" -Path "TestDrive:\";
+       $result | Should BeOfType [string];
    }
+
 }

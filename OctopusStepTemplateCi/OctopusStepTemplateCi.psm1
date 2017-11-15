@@ -22,45 +22,7 @@ limitations under the License.
     OctopusStepTemplateCi Module Script
 #>
 
-Set-StrictMode -Version Latest
-
-<# Interface Functions exported in the PSD1 file #>
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Export-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Invoke-OctopusScriptTestSuite.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Invoke-TeamCityCiUpload.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-ScriptModule.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-ScriptValidationTest.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\New-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-ScriptModule.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Interface\Sync-StepTemplate.ps1')"
-
-<# Internal functions only used within this module #>
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Compare-Hashtable.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\ConvertTo-DictionaryJsonObject.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\ConvertTo-HashtableJsonObject.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Common\ConvertTo-OctopusJson.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Get-Cache.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Invoke-OctopusOperation.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Reset-Cache.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Octopus\Test-OctopusConnectivity.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.ps1')"
-. "$(Join-Path $PSScriptRoot '\Cmdlets\Internal\Tests\Update-XPathValue.ps1')"
+# this file left intentionally blank so the *.psd1 is imported as a "Script Module" (which pester supports)
+# rather than a "Manifest Module" (which pester does not support).
+#
+# see https://github.com/pester/Pester/issues/933 for more details

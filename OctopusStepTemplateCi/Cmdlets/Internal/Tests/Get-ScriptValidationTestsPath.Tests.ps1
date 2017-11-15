@@ -16,27 +16,25 @@ limitations under the License.
 
 <#
 .NAME
-	Get-ScriptValidationTestsPath.Tests
+    Get-ScriptValidationTestsPath.Tests
 
 .SYNOPSIS
-	Pester tests for Get-ScriptValidationPath.
+    Pester tests for Get-ScriptValidationPath.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Get-ScriptValidationTestsPath" {
-	Set-Content "TestDrive:\TestModule.psm1" ". `"$here\$sut`""
-	Get-Module TestModule | Remove-Module
-	Import-Module "TestDrive:\TestModule.psm1"
+InModuleScope "OctopusStepTemplateCi" {
 
-	InModuleScope TestModule {  
-		It "Should return the location of the Script Validation Tests" {
-			New-Item -Path "TestDrive:\ScriptValidationTests" -ItemType Directory | Out-Null
+    Describe "Get-ScriptValidationTestsPath" {
 
-			Get-ScriptValidationTestsPath | Should Match "ScriptValidationTests"
-		}
+
+        It "Should return the location of the Script Validation Tests" {
+            New-Item -Path "TestDrive:\ScriptValidationTests" -ItemType Directory | Out-Null;
+            Get-ScriptValidationTestsPath | Should Match "ScriptValidationTests";
+        }
+
     }
+
 }

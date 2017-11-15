@@ -7,6 +7,9 @@ $thisFolder = [System.IO.Path]::GetDirectoryName($thisScript);
 $rootFolder = [System.IO.Path]::GetDirectoryName($thisFolder);
 
 
+Import-Module -Name "$rootFolder\OctopusStepTemplateCi" -ErrorAction "Stop";
+
+
 . ([System.IO.Path]::Combine($thisFolder, "scripts\Import-PowerShellGalleryModule.ps1"));
 
 

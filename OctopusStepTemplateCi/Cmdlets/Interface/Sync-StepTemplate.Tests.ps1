@@ -21,26 +21,17 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Sync-StepTemplate
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\New-StepTemplate.ps1"
-. "$here\..\Internal\Octopus\Invoke-OctopusOperation.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1"
-. "$here\..\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1"
-. "$here\..\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1"
-. "$here\..\Internal\Octopus\StepTemplates\Compare-Hashtable.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Sync-StepTemplate" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    Mock -CommandName "Get-Content" `
-         -MockWith {
-             return @'
+    Describe "Sync-StepTemplate" {
+
+        Mock -CommandName "Get-Content" `
+             -MockWith {
+                 return @'
 function test {
     $StepTemplateName = "name"
     $StepTemplateDescription = "description"
@@ -55,174 +46,176 @@ function test {
     )
 }
 '@;
-         };
-
-    Mock -CommandName "Invoke-OctopusOperation" `
-         -MockWith {
-             throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
-         };
-
-    Mock Write-TeamCityBuildLogMessage {};
-    
-    Context "when the step template does not exist" {
+             };
 
         Mock -CommandName "Invoke-OctopusOperation" `
-             -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
-             -MockWith { return @(, @()); } `
-             -Verifiable;
-
-        Mock -CommandName "Invoke-OctopusOperation" `
-             -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
-             -MockWith {} `
-             -Verifiable;
-            
-        It "Should upload the step template if it does not exist" {
-            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
-            $result.UploadCount | Should be 1;
-            Assert-VerifiableMock;
-        }
-
-    }
-
-    Context "when the step template description has changed" {
-
-        Mock -CommandName "Invoke-OctopusOperation" `
-             -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
              -MockWith {
-                 return @(, @(
-                     @{
-                         "Id"          = "ActionTemplates-1"
-                         "Name"        = "name"
-                         "Description" = "new description"
-                         "ActionType"  = "Octopus.Script"
-                         "Version"     = 1
-                         "Properties"  = @{}
-                         "Parameters"  = @()
-                     }
-                 ));
-             } `
-             -Verifiable;;
+                 throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
+             };
 
-        Mock -CommandName "Invoke-OctopusOperation" `
-             -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
-             -MockWith {} `
-             -Verifiable;
-
-        It "Should upload an updated step template if it has changed" {
-            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
-            $result.UploadCount | Should be 1;
-            Assert-VerifiableMock;
-        }
-
-    }
-        
-    Context "when the step template parameters have changed" {
-
-        Mock -CommandName "Invoke-OctopusOperation" `
-             -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
-             -MockWith {
-                 return @(, @(
-                     @{
-                         "Id"          = "ActionTemplates-1"
-                         "Name"        = "name"
-                         "Description" = "description"
-                         "ActionType"  = "Octopus.Script"
-                         "Version"     = 1
-                         "Properties"  = @{
-                             "Octopus.Action.Script.ScriptBody" = "function test {
+        Mock Write-TeamCityBuildLogMessage {};
     
-    
-    
-}"
-                             "Octopus.Action.Script.Syntax" = "PowerShell"
-                         }
-                         "Parameters"  = @()
-                     }
-                 ));
-             } `
-             -Verifiable;
-
-        Mock -CommandName "Invoke-OctopusOperation" `
-             -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
-             -MockWith {} `
-             -Verifiable;
-
-        It "Should update the step template parameters" {
-            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
-            $result.UploadCount | Should be 1;
-            Assert-VerifiableMock;
-        }
-
-    }
-
-    Context "when a step template has not changed" {
-
-        Mock -CommandName "Invoke-OctopusOperation" `
-             -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
-             -MockWith {
-                 return @(, @(
-                     @{
-                         "Id"          = "ActionTemplates-1"
-                         "Name"        = "name"
-                         "Description" = "description"
-                         "ActionType"  = "Octopus.Script"
-                         "Version"     = 1
-                         "Properties"  = @{
-                             "Octopus.Action.Script.ScriptBody" = "function test {
-    
-    
-    
-}"
-                             "Octopus.Action.Script.Syntax" = "PowerShell"
-                         }
-                         "Parameters"  = @(
-                             @{
-                                 "Name" = "myParameterName"
-                                 "Label" = "myParameterLabel"
-                                 "HelpText" = "myParameterHelpText"
-                                 "DefaultValue" = "myDefaultValue"
-                                 "DisplaySettings" = @{}
-                             }
-                         )
-                        "`$Meta"      = @{
-			    "Type" = "ActionTemplate"
-                        }
-                     }
-                 ));
-             } `
-             -Verifiable;
-
-        It "Should not upload a step template which is identical" {
-            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
-            $result.UploadCount | Should Be 0;
-            Assert-VerifiableMock;
-        }
-
-    }
-
-    Context "when a template differs only by parameter ids" {
-
-        It "Should not upload a step template which differs only in the parameter ID" {
+        Context "when the step template does not exist" {
 
             Mock -CommandName "Invoke-OctopusOperation" `
-	         -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
-		 -MockWith {
-                     $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
-                     $oldTemplate.Add("Id", "Test-Id");
-                     $oldTemplate.Parameters[0].Add("Id", "1234");
-                     return $oldTemplate;
-                 };
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+                 -MockWith { return @(, @()); } `
+                 -Verifiable;
 
             Mock -CommandName "Invoke-OctopusOperation" `
                  -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
-                 -MockWith {};
+                 -MockWith {} `
+                 -Verifiable;
+            
+            It "Should upload the step template if it does not exist" {
+                $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+                $result.UploadCount | Should be 1;
+                Assert-VerifiableMock;
+            }
+
+        }
+
+        Context "when the step template description has changed" {
 
             Mock -CommandName "Invoke-OctopusOperation" `
-                 -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" } `
-                 -MockWith {};
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+                 -MockWith {
+                     return @(, @(
+                         @{
+                             "Id"          = "ActionTemplates-1"
+                             "Name"        = "name"
+                             "Description" = "new description"
+                             "ActionType"  = "Octopus.Script"
+                             "Version"     = 1
+                             "Properties"  = @{}
+                             "Parameters"  = @()
+                         }
+                     ));
+                 } `
+                 -Verifiable;;
 
-            $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
-            $result.UploadCount | Should Be 0;
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
+                 -MockWith {} `
+                 -Verifiable;
+
+            It "Should upload an updated step template if it has changed" {
+                $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+                $result.UploadCount | Should be 1;
+                Assert-VerifiableMock;
+            }
+
+        }
+        
+        Context "when the step template parameters have changed" {
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+                 -MockWith {
+                     return @(, @(
+                         @{
+                             "Id"          = "ActionTemplates-1"
+                             "Name"        = "name"
+                             "Description" = "description"
+                             "ActionType"  = "Octopus.Script"
+                             "Version"     = 1
+                             "Properties"  = @{
+                                 "Octopus.Action.Script.ScriptBody" = "function test {
+    
+    
+    
+}"
+                                 "Octopus.Action.Script.Syntax" = "PowerShell"
+                             }
+                             "Parameters"  = @()
+                         }
+                     ));
+                 } `
+                 -Verifiable;
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
+                 -MockWith {} `
+                 -Verifiable;
+
+            It "Should update the step template parameters" {
+                $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+                $result.UploadCount | Should be 1;
+                Assert-VerifiableMock;
+            }
+
+        }
+
+        Context "when a step template has not changed" {
+
+            Mock -CommandName "Invoke-OctopusOperation" `
+                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+                 -MockWith {
+                     return @(, @(
+                         @{
+                             "Id"          = "ActionTemplates-1"
+                             "Name"        = "name"
+                             "Description" = "description"
+                             "ActionType"  = "Octopus.Script"
+                             "Version"     = 1
+                             "Properties"  = @{
+                                 "Octopus.Action.Script.ScriptBody" = "function test {
+    
+    
+    
+}"
+                                 "Octopus.Action.Script.Syntax" = "PowerShell"
+                             }
+                             "Parameters"  = @(
+                                 @{
+                                     "Name" = "myParameterName"
+                                     "Label" = "myParameterLabel"
+                                     "HelpText" = "myParameterHelpText"
+                                     "DefaultValue" = "myDefaultValue"
+                                     "DisplaySettings" = @{}
+                                 }
+                             )
+                            "`$Meta"      = @{
+    			    "Type" = "ActionTemplate"
+                            }
+                         }
+                     ));
+                 } `
+                 -Verifiable;
+
+            It "Should not upload a step template which is identical" {
+                $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+                $result.UploadCount | Should Be 0;
+                Assert-VerifiableMock;
+            }
+
+        }
+
+        Context "when a template differs only by parameter ids" {
+
+            It "Should not upload a step template which differs only in the parameter ID" {
+
+                Mock -CommandName "Invoke-OctopusOperation" `
+    	         -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+    		 -MockWith {
+                         $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
+                         $oldTemplate.Add("Id", "Test-Id");
+                         $oldTemplate.Parameters[0].Add("Id", "1234");
+                         return $oldTemplate;
+                     };
+
+                Mock -CommandName "Invoke-OctopusOperation" `
+                     -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
+                     -MockWith {};
+
+                Mock -CommandName "Invoke-OctopusOperation" `
+                     -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" } `
+                     -MockWith {};
+
+                $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
+                $result.UploadCount | Should Be 0;
+
+            }
 
         }
 

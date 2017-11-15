@@ -1,0 +1,568 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="206" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2017-11-14" time="10:42:44">
+  <environment user="Mike" machine-name="RED" cwd="C:\src\github\mikeclayton\OctopusStepTemplateCi\build" user-domain="RED" platform="Microsoft Windows 10 Enterprise|C:\WINDOWS|\Device\Harddisk0\Partition2" nunit-version="2.5.8.0" os-version="10.0.15063" clr-version="4.0.30319.42000" />
+  <culture-info current-culture="en-GB" current-uiculture="en-US" />
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Success" success="True" time="27.1791" asserts="0" description="Pester">
+    <results>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Export-StepTemplate.Tests.ps1" executed="True" result="Success" success="True" time="5.1011" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Export-StepTemplate.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Export-StepTemplate" executed="True" result="Success" success="True" time="5.1011" asserts="0" description="Export-StepTemplate">
+            <results>
+              <test-suite type="TestFixture" name="File" executed="True" result="Success" success="True" time="0.3056" asserts="0" description="File">
+                <results>
+                  <test-case description="Should export the steptemplate to a file" name="Export-StepTemplate.File.Should export the steptemplate to a file" time="0.1427" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should throw an exception if the file already exists" name="Export-StepTemplate.File.Should throw an exception if the file already exists" time="0.1049" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should overwrite the file if it already exists and -Force is specified" name="Export-StepTemplate.File.Should overwrite the file if it already exists and -Force is specified" time="0.058" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Clipboard" executed="True" result="Success" success="True" time="0.1832" asserts="0" description="Clipboard">
+                <results>
+                  <test-case description="Should export the steptemplate to the system clipboard" name="Export-StepTemplate.Clipboard.Should export the steptemplate to the system clipboard" time="0.1832" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-case description="Should convert the step template to json" name="Export-StepTemplate.Should convert the step template to json" time="4.4501" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a message to the user" name="Export-StepTemplate.Should return a message to the user" time="0.1622" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Invoke-OctopusScriptTestSuite.Tests.ps1" executed="True" result="Success" success="True" time="1.6577" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Invoke-OctopusScriptTestSuite.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Invoke-OctopusScriptTestSuite" executed="True" result="Success" success="True" time="1.6577" asserts="0" description="Invoke-OctopusScriptTestSuite">
+            <results>
+              <test-case description="Should run the script's own tests" name="Invoke-OctopusScriptTestSuite.Should run the script's own tests" time="0.4332" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should run the generic tests" name="Invoke-OctopusScriptTestSuite.Should run the generic tests" time="0.4122" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should run the step template tests" name="Invoke-OctopusScriptTestSuite.Should run the step template tests" time="0.2733" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should run the script module tests" name="Invoke-OctopusScriptTestSuite.Should run the script module tests" time="0.2755" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should set success to false if there are any failed tests" name="Invoke-OctopusScriptTestSuite.Should set success to false if there are any failed tests" time="0.2634" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Invoke-TeamCityCiUpload.Tests.ps1" executed="True" result="Success" success="True" time="2.2583" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Invoke-TeamCityCiUpload.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Invoke-TeamCityCiUpload" executed="True" result="Success" success="True" time="2.2583" asserts="0" description="Invoke-TeamCityCiUpload">
+            <results>
+              <test-suite type="TestFixture" name="Parameter validation" executed="True" result="Success" success="True" time="0.4037" asserts="0" description="Parameter validation">
+                <results>
+                  <test-case description="Should default the build directory to .BuildOutput" name="Invoke-TeamCityCiUpload.Parameter validation.Should default the build directory to .BuildOutput" time="0.4037" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="UploadIfSuccessful" executed="True" result="Success" success="True" time="0.5732" asserts="0" description="UploadIfSuccessful">
+                <results>
+                  <test-case description="Should sync the step templates" name="Invoke-TeamCityCiUpload.UploadIfSuccessful.Should sync the step templates" time="0.3232" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should sync the script modules" name="Invoke-TeamCityCiUpload.UploadIfSuccessful.Should sync the script modules" time="0.25" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-case description="Should handle exceptions" name="Invoke-TeamCityCiUpload.Should handle exceptions" time="0.1058" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should test octopus's connectivity before beginning" name="Invoke-TeamCityCiUpload.Should test octopus's connectivity before beginning" time="0.1462" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should reset the build directory before beginning" name="Invoke-TeamCityCiUpload.Should reset the build directory before beginning" time="0.1425" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should reset the cache before beginning" name="Invoke-TeamCityCiUpload.Should reset the cache before beginning" time="0.1037" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should process the entire folder at once in batch mode" name="Invoke-TeamCityCiUpload.Should process the entire folder at once in batch mode" time="0.1191" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should process the each item within the folder in individual mode" name="Invoke-TeamCityCiUpload.Should process the each item within the folder in individual mode" time="0.3583" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should handle only a single file being returned from Get-ChildItem in individual mode" name="Invoke-TeamCityCiUpload.Should handle only a single file being returned from Get-ChildItem in individual mode" time="0.3057" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\New-ScriptModule.Tests.ps1" executed="True" result="Success" success="True" time="0.2957" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\New-ScriptModule.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-ScriptModule" executed="True" result="Success" success="True" time="0.2957" asserts="0" description="New-ScriptModule">
+            <results>
+              <test-case description="Should throw an exception if the script module already exists" name="New-ScriptModule.Should throw an exception if the script module already exists" time="0.1645" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should create a new script module file" name="New-ScriptModule.Should create a new script module file" time="0.0454" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should create a test file for the sccript module" name="New-ScriptModule.Should create a test file for the sccript module" time="0.0394" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should output a message to the user" name="New-ScriptModule.Should output a message to the user" time="0.0464" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\New-ScriptValidationTest.Tests.ps1" executed="True" result="Success" success="True" time="0.207" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\New-ScriptValidationTest.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-ScriptValidationTest" executed="True" result="Success" success="True" time="0.207" asserts="0" description="New-ScriptValidationTest">
+            <results>
+              <test-case description="Should throw an exception if the script validation test exists" name="New-ScriptValidationTest.Should throw an exception if the script validation test exists" time="0.1216" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should create a new script validation test file" name="New-ScriptValidationTest.Should create a new script validation test file" time="0.0418" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should output a message to the user" name="New-ScriptValidationTest.Should output a message to the user" time="0.0436" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\New-StepTemplate.Tests.ps1" executed="True" result="Success" success="True" time="0.2428" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\New-StepTemplate.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="New-StepTemplate" executed="True" result="Success" success="True" time="0.2428" asserts="0" description="New-StepTemplate">
+            <results>
+              <test-case description="Should throw an exception if the step template already exists" name="New-StepTemplate.Should throw an exception if the step template already exists" time="0.1148" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should create a new step template file" name="New-StepTemplate.Should create a new step template file" time="0.0428" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should create a test file for the step template" name="New-StepTemplate.Should create a test file for the step template" time="0.0388" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should output a message to the user" name="New-StepTemplate.Should output a message to the user" time="0.0464" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Sync-ScriptModule.Tests.ps1" executed="True" result="Success" success="True" time="1.8919" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Sync-ScriptModule.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Sync-ScriptModule" executed="True" result="Success" success="True" time="1.8919" asserts="0" description="Sync-ScriptModule">
+            <results>
+              <test-suite type="TestFixture" name="when variable set does not exist" executed="True" result="Success" success="True" time="0.8349" asserts="0" description="when variable set does not exist">
+                <results>
+                  <test-case description="Should upload the VariableSet for the script module if it does not exist" name="Sync-ScriptModule.when variable set does not exist.Should upload the VariableSet for the script module if it does not exist" time="0.8349" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when script module does not exist" executed="True" result="Success" success="True" time="0.4584" asserts="0" description="when script module does not exist">
+                <results>
+                  <test-case description="Should upload the script module if it does not exist" name="Sync-ScriptModule.when script module does not exist.Should upload the script module if it does not exist" time="0.4584" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when variable set has changed" executed="True" result="Success" success="True" time="0.2225" asserts="0" description="when variable set has changed">
+                <results>
+                  <test-case description="Should upload an updated VariableSet for the script module if it has changed" name="Sync-ScriptModule.when variable set has changed.Should upload an updated VariableSet for the script module if it has changed" time="0.2225" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when script module has changed" executed="True" result="Success" success="True" time="0.2193" asserts="0" description="when script module has changed">
+                <results>
+                  <test-case description="Should upload an updated script module if it has changed" name="Sync-ScriptModule.when script module has changed.Should upload an updated script module if it has changed" time="0.2193" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when nothing has changed" executed="True" result="Success" success="True" time="0.1567" asserts="0" description="when nothing has changed">
+                <results>
+                  <test-case description="Should not upload if nothing has changed" name="Sync-ScriptModule.when nothing has changed.Should not upload if nothing has changed" time="0.1567" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Sync-StepTemplate.Tests.ps1" executed="True" result="Success" success="True" time="1.0989" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Interface\Sync-StepTemplate.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Sync-StepTemplate" executed="True" result="Success" success="True" time="1.0989" asserts="0" description="Sync-StepTemplate">
+            <results>
+              <test-suite type="TestFixture" name="when the step template does not exist" executed="True" result="Success" success="True" time="0.4018" asserts="0" description="when the step template does not exist">
+                <results>
+                  <test-case description="Should upload the step template if it does not exist" name="Sync-StepTemplate.when the step template does not exist.Should upload the step template if it does not exist" time="0.4018" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when the step template description has changed" executed="True" result="Success" success="True" time="0.166" asserts="0" description="when the step template description has changed">
+                <results>
+                  <test-case description="Should upload an updated step template if it has changed" name="Sync-StepTemplate.when the step template description has changed.Should upload an updated step template if it has changed" time="0.166" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when the step template parameters have changed" executed="True" result="Success" success="True" time="0.1316" asserts="0" description="when the step template parameters have changed">
+                <results>
+                  <test-case description="Should update the step template parameters" name="Sync-StepTemplate.when the step template parameters have changed.Should update the step template parameters" time="0.1316" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when a step template has not changed" executed="True" result="Success" success="True" time="0.1805" asserts="0" description="when a step template has not changed">
+                <results>
+                  <test-case description="Should not upload a step template which is identical" name="Sync-StepTemplate.when a step template has not changed.Should not upload a step template which is identical" time="0.1805" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="when a template differs only by parameter ids" executed="True" result="Success" success="True" time="0.2191" asserts="0" description="when a template differs only by parameter ids">
+                <results>
+                  <test-case description="Should not upload a step template which differs only in the parameter ID" name="Sync-StepTemplate.when a template differs only by parameter ids.Should not upload a step template which differs only in the parameter ID" time="0.2191" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\Compare-Hashtable.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\Compare-Hashtable.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.Tests.ps1" executed="True" result="Success" success="True" time="2.3581" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="ConvertFrom-OctopusJson" executed="True" result="Success" success="True" time="2.3581" asserts="0" description="ConvertFrom-OctopusJson">
+            <results>
+              <test-case description="Should return the value when the InputObject is a null json string" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a null json string" time="1.5926" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is $true" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is $true" time="0.0363" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is $false" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is $false" time="0.062" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a positive integer" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a positive integer" time="0.0826" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a negative integer" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a negative integer" time="0.035" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty string" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is an empty string" time="0.0607" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a simple string" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a simple string" time="0.0273" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string with apostrophes" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a string with apostrophes" time="0.0308" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string with special characters" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a string with special characters" time="0.0288" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string with whitespace between curly brackets" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a string with whitespace between curly brackets" time="0.0333" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" time="0.032" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is an empty array" name="ConvertFrom-OctopusJson.when InputObject is an empty array" time="0.051" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a populated array" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a populated array" time="0.0564" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty json object" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is an empty json object" time="0.0752" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a nested json object" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is a nested json object" time="0.1034" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is invalid json" name="ConvertFrom-OctopusJson.Should return the value when the InputObject is invalid json" time="0.0504" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertTo-HashtableJsonObject.Tests.ps1" executed="True" result="Success" success="True" time="0.1293" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertTo-HashtableJsonObject.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="ConvertTo-HashtableJsonObject" executed="True" result="Success" success="True" time="0.1293" asserts="0" description="ConvertTo-HashtableJsonObject">
+            <results>
+              <test-case description="when InputObject is not a supported type" name="ConvertTo-HashtableJsonObject.when InputObject is not a supported type" time="0.1293" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertTo-OctopusJson.Tests.ps1" executed="True" result="Success" success="True" time="0.7679" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertTo-OctopusJson.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="ConvertTo-OctopusJson" executed="True" result="Success" success="True" time="0.7679" asserts="0" description="ConvertTo-OctopusJson">
+            <results>
+              <test-case description="when InputObject is null" name="ConvertTo-OctopusJson.when InputObject is null" time="0.113" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is $true" name="ConvertTo-OctopusJson.when InputObject is $true" time="0.0288" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is $false" name="ConvertTo-OctopusJson.when InputObject is $false" time="0.0272" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is an empty string" name="ConvertTo-OctopusJson.when InputObject is an empty string" time="0.0356" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a simple string" name="ConvertTo-OctopusJson.when InputObject is a simple string" time="0.0273" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a string with apostrophes" name="ConvertTo-OctopusJson.when InputObject is a string with apostrophes" time="0.0327" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a string with special characters" name="ConvertTo-OctopusJson.when InputObject is a string with special characters" time="0.0301" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a string with whitespace between curly brackets" name="ConvertTo-OctopusJson.when InputObject is a string with whitespace between curly brackets" time="0.0315" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a string resembling the json escape sequence for an apostrophe" name="ConvertTo-OctopusJson.when InputObject is a string resembling the json escape sequence for an apostrophe" time="0.0294" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a positive integer" name="ConvertTo-OctopusJson.when InputObject is a positive integer" time="0.0393" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a negative integer" name="ConvertTo-OctopusJson.when InputObject is a negative integer" time="0.027" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is an empty array" name="ConvertTo-OctopusJson.when InputObject is an empty array" time="0.0313" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a populated array" name="ConvertTo-OctopusJson.when InputObject is a populated array" time="0.0438" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is an empty hashtable" name="ConvertTo-OctopusJson.when InputObject is an empty hashtable" time="0.0335" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a populated hashtable" name="ConvertTo-OctopusJson.when InputObject is a populated hashtable" time="0.0765" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is an empty PSCustomObject" name="ConvertTo-OctopusJson.when InputObject is an empty PSCustomObject" time="0.0335" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is a populated PSCustomObject" name="ConvertTo-OctopusJson.when InputObject is a populated PSCustomObject" time="0.0583" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="when InputObject is an unhandled type" name="ConvertTo-OctopusJson.when InputObject is an unhandled type" time="0.0692" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertTo-PSSource.Tests.ps1" executed="True" result="Success" success="True" time="0.8394" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Common\ConvertTo-PSSource.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="ConvertTo-PSSource" executed="True" result="Success" success="True" time="0.8394" asserts="0" description="ConvertTo-PSSource">
+            <results>
+              <test-case description="Should return the value when the InputObject is $null" name="ConvertTo-PSSource.Should return the value when the InputObject is $null" time="0.1734" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is $true" name="ConvertTo-PSSource.Should return the value when the InputObject is $true" time="0.0317" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is $false" name="ConvertTo-PSSource.Should return the value when the InputObject is $false" time="0.0395" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a positive integer" name="ConvertTo-PSSource.Should return the value when the InputObject is a positive integer" time="0.0539" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a negative integer" name="ConvertTo-PSSource.Should return the value when the InputObject is a negative integer" time="0.0261" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty string" name="ConvertTo-PSSource.Should return the value when the InputObject is an empty string" time="0.0299" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a simple string" name="ConvertTo-PSSource.Should return the value when the InputObject is a simple string" time="0.0316" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string with apostrophes" name="ConvertTo-PSSource.Should return the value when the InputObject is a string with apostrophes" time="0.0298" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string with special characters" name="ConvertTo-PSSource.Should return the value when the InputObject is a string with special characters" time="0.0276" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string with whitespace between curly brackets" name="ConvertTo-PSSource.Should return the value when the InputObject is a string with whitespace between curly brackets" time="0.0259" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" name="ConvertTo-PSSource.Should return the value when the InputObject is a string resembling the json escape sequence for an apostrophe" time="0.0276" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty array" name="ConvertTo-PSSource.Should return the value when the InputObject is an empty array" time="0.0335" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an array with a single item" name="ConvertTo-PSSource.Should return the value when the InputObject is an array with a single item" time="0.0298" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an array with multiple items" name="ConvertTo-PSSource.Should return the value when the InputObject is an array with multiple items" time="0.0351" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty hashtable" name="ConvertTo-PSSource.Should return the value when the InputObject is an empty hashtable" time="0.03" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a hashtable with a single item" name="ConvertTo-PSSource.Should return the value when the InputObject is a hashtable with a single item" time="0.0374" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a hashtable with multiple items" name="ConvertTo-PSSource.Should return the value when the InputObject is a hashtable with multiple items" time="0.0765" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty PSCustomObject" name="ConvertTo-PSSource.Should return the value when the InputObject is an empty PSCustomObject" time="0.0362" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a populated PSCustomObject" name="ConvertTo-PSSource.Should return the value when the InputObject is a populated PSCustomObject" time="0.064" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.Tests.ps1" executed="True" result="Success" success="True" time="0.253" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Read-ScriptModule" executed="True" result="Success" success="True" time="0.253" asserts="0" description="Read-ScriptModule">
+            <results>
+              <test-case description="Should return a new object with the name from the script file" name="Read-ScriptModule.Should return a new object with the name from the script file" time="0.1933" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a new object with the value as the body of the script file" name="Read-ScriptModule.Should return a new object with the value as the body of the script file" time="0.0598" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.Tests.ps1" executed="True" result="Success" success="True" time="0.2219" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Read-ScriptModuleVariableSet" executed="True" result="Success" success="True" time="0.2219" asserts="0" description="Read-ScriptModuleVariableSet">
+            <results>
+              <test-case description="Should return a new object with the content type of script module" name="Read-ScriptModuleVariableSet.Should return a new object with the content type of script module" time="0.1376" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a new object with the name from the script file" name="Read-ScriptModuleVariableSet.Should return a new object with the name from the script file" time="0.0404" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a new object with the description from the script file" name="Read-ScriptModuleVariableSet.Should return a new object with the description from the script file" time="0.0439" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\StepTemplates\Compare-Hashtable.Tests.ps1" executed="True" result="Success" success="True" time="0.5887" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\StepTemplates\Compare-Hashtable.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Compare-Hashtable" executed="True" result="Success" success="True" time="0.5887" asserts="0" description="Compare-Hashtable">
+            <results>
+              <test-case description="Should return $null if both objects are null" name="Compare-Hashtable.Should return $null if both objects are null" time="0.0987" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return $null if reference object is null and difference object is an empty hashtable" name="Compare-Hashtable.Should return $null if reference object is null and difference object is an empty hashtable" time="0.0252" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return $null if reference object is an empty hashtable and difference object is null" name="Compare-Hashtable.Should return $null if reference object is an empty hashtable and difference object is null" time="0.0267" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return $null if reference object is an empty hashtable and difference object is an empty hashtable" name="Compare-Hashtable.Should return $null if reference object is an empty hashtable and difference object is an empty hashtable" time="0.0247" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return $null if reference object is the same as difference object" name="Compare-Hashtable.Should return $null if reference object is the same as difference object" time="0.0315" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a result if reference object object has additional keys" name="Compare-Hashtable.Should return a result if reference object object has additional keys" time="0.0432" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a result if difference object object has additional keys" name="Compare-Hashtable.Should return a result if difference object object has additional keys" time="0.0349" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a result if the objects have the same key with different values" name="Compare-Hashtable.Should return a result if the objects have the same key with different values" time="0.0471" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a result if reference object's entry value is null" name="Compare-Hashtable.Should return a result if reference object's entry value is null" time="0.0432" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a result if difference object's entry value is null" name="Compare-Hashtable.Should return a result if difference object's entry value is null" time="0.047" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return $null if both object's entries are null" name="Compare-Hashtable.Should return $null if both object's entries are null" time="0.0263" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return $null if both object's entries are empty nested hashtables" name="Compare-Hashtable.Should return $null if both object's entries are empty nested hashtables" time="0.0324" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return $null if both object's entries are populated nested hashtables" name="Compare-Hashtable.Should return $null if both object's entries are populated nested hashtables" time="0.035" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return a result if both object's entries are different nested hashtables" name="Compare-Hashtable.Should return a result if both object's entries are different nested hashtables" time="0.0727" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.Tests.ps1" executed="True" result="Success" success="True" time="0.8439" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Compare-StepTemplate" executed="True" result="Success" success="True" time="0.8439" asserts="0" description="Compare-StepTemplate">
+            <results>
+              <test-case description="Should return false if they are the same" name="Compare-StepTemplate.Should return false if they are the same" time="0.2248" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return true when the description is different" name="Compare-StepTemplate.Should return true when the description is different" time="0.0935" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return true when the Octopus.Action.Script.Syntax property is different" name="Compare-StepTemplate.Should return true when the Octopus.Action.Script.Syntax property is different" time="0.0908" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return true when the Octopus.Action.Script.ScriptBody property is different" name="Compare-StepTemplate.Should return true when the Octopus.Action.Script.ScriptBody property is different" time="0.0984" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return true when the number of parameters is different" name="Compare-StepTemplate.Should return true when the number of parameters is different" time="0.1145" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return true when the names of parameters are different" name="Compare-StepTemplate.Should return true when the names of parameters are different" time="0.1286" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return true when the values of parameters are different" name="Compare-StepTemplate.Should return true when the values of parameters are different" time="0.0933" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.Tests.ps1" executed="True" result="Success" success="True" time="1.0132" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Read-StepTemplate" executed="True" result="Success" success="True" time="1.0132" asserts="0" description="Read-StepTemplate">
+            <results>
+              <test-suite type="TestFixture" name="When reading a valid script file" executed="True" result="Success" success="True" time="0.6482" asserts="0" description="When reading a valid script file">
+                <results>
+                  <test-case description="Should return a new object with the name from the script file" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the name from the script file" time="0.1863" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the description from the script file" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the description from the script file" time="0.0557" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the action type of Octopus.Script" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the action type of Octopus.Script" time="0.0537" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the property Octopus.Action.Script.ScriptBody from the script file" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the property Octopus.Action.Script.ScriptBody from the script file" time="0.0533" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the property Octopus.Action.Script.Syntax of PowerShell" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the property Octopus.Action.Script.Syntax of PowerShell" time="0.0519" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the parameters from the script file" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the parameters from the script file" time="0.0797" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the SensitiveProperties an empty hashtable" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the SensitiveProperties an empty hashtable" time="0.0539" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the metatype of ActionTemplate" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the metatype of ActionTemplate" time="0.0588" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should return a new object with the version of 1" name="Read-StepTemplate.When reading a valid script file.Should return a new object with the version of 1" time="0.0548" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="When cleaning up properties" executed="True" result="Success" success="True" time="0.365" asserts="0" description="When cleaning up properties">
+                <results>
+                  <test-case description="Should convert null parameter properties to an empty string" name="Read-StepTemplate.When cleaning up properties.Should convert null parameter properties to an empty string" time="0.1854" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should trim space-padded parameter properties" name="Read-StepTemplate.When cleaning up properties.Should trim space-padded parameter properties" time="0.0916" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Should convert bool default values to strings" name="Read-StepTemplate.When cleaning up properties.Should convert bool default values to strings" time="0.0879" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Get-Cache.Tests.ps1" executed="True" result="Success" success="True" time="0.1266" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Get-Cache.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-Cache" executed="True" result="Success" success="True" time="0.1266" asserts="0" description="Get-Cache">
+            <results>
+              <test-case description="Should return a hashtable that can be used as a cache" name="Get-Cache.Should return a hashtable that can be used as a cache" time="0.1266" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Invoke-OctopusOperation.Tests.ps1" executed="True" result="Success" success="True" time="0.7704" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Invoke-OctopusOperation.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Invoke-OctopusOperation" executed="True" result="Success" success="True" time="0.7704" asserts="0" description="Invoke-OctopusOperation">
+            <results>
+              <test-case description="Should call Test-OctopusConnectivity" name="Invoke-OctopusOperation.Should call Test-OctopusConnectivity" time="0.25" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should construct the uri based on the object type" name="Invoke-OctopusOperation.Should construct the uri based on the object type" time="0.1139" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should include the id in get or update requests" name="Invoke-OctopusOperation.Should include the id in get or update requests" time="0.1132" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should use the appropriate http method based on the type of request" name="Invoke-OctopusOperation.Should use the appropriate http method based on the type of request" time="0.1403" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should add the object to the body of the request as JSON" name="Invoke-OctopusOperation.Should add the object to the body of the request as JSON" time="0.0587" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should use the cache if 'UseCache' is specified" name="Invoke-OctopusOperation.Should use the cache if 'UseCache' is specified" time="0.0943" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Reset-Cache.Tests.ps1" executed="True" result="Success" success="True" time="0.1249" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Reset-Cache.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Reset-Cache" executed="True" result="Success" success="True" time="0.1249" asserts="0" description="Reset-Cache">
+            <results>
+              <test-case description="Should clear out the cache" name="Reset-Cache.Should clear out the cache" time="0.1249" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Test-OctopusConnectivity.Tests.ps1" executed="True" result="Success" success="True" time="0.3035" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Octopus\Test-OctopusConnectivity.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Test-OctopusConnectivity" executed="True" result="Success" success="True" time="0.3035" asserts="0" description="Test-OctopusConnectivity">
+            <results>
+              <test-case description="Should throw an exception if the octopus uri does not exist" name="Test-OctopusConnectivity.Should throw an exception if the octopus uri does not exist" time="0.1195" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should throw an exception if the octopus api key does not exist" name="Test-OctopusConnectivity.Should throw an exception if the octopus api key does not exist" time="0.0421" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should not make a test api call to the octopus server if not requested" name="Test-OctopusConnectivity.Should not make a test api call to the octopus server if not requested" time="0.0336" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should make a test api call to the octopus server (if requested) to see if it is responding" name="Test-OctopusConnectivity.Should make a test api call to the octopus server (if requested) to see if it is responding" time="0.0591" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should throw an exception if test connection is requested and the test api call doesn't return an object" name="Test-OctopusConnectivity.Should throw an exception if test connection is requested and the test api call doesn't return an object" time="0.0494" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-LiteralValueFromAstNode.Tests.ps1" executed="True" result="Success" success="True" time="0.8759" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-LiteralValueFromAstNode.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-LiteralValueFromAstNode" executed="True" result="Success" success="True" time="0.8759" asserts="0" description="Get-LiteralValueFromAstNode">
+            <results>
+              <test-case description="Should return the value when the InputObject is $null" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is $null" time="0.1623" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is $true" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is $true" time="0.0308" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is $false" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is $false" time="0.0285" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a positive integer" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is a positive integer" time="0.0413" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a negative integer" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is a negative integer" time="0.0298" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty string" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is an empty string" time="0.0357" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a simple string" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is a simple string" time="0.028" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a simple string concatenation" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is a simple string concatenation" time="0.0413" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an expandable string" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is an expandable string" time="0.0786" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty array" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is an empty array" time="0.0572" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an array with a single item" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is an array with a single item" time="0.0596" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an array with multiple items" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is an array with multiple items" time="0.0721" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an array with missing commas" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is an array with missing commas" time="0.0623" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is an empty hashtable" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is an empty hashtable" time="0.057" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a hashtable with a single item" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is a hashtable with a single item" time="0.0416" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the InputObject is a hashtable with multiple items" name="Get-LiteralValueFromAstNode.Should return the value when the InputObject is a hashtable with multiple items" time="0.0499" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.Tests.ps1" executed="True" result="Success" success="True" time="0.2247" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-ScriptBodyFromScriptText" executed="True" result="Success" success="True" time="0.2247" asserts="0" description="Get-ScriptBodyFromScriptText">
+            <results>
+              <test-suite type="TestFixture" name="Script module" executed="True" result="Success" success="True" time="0.1458" asserts="0" description="Script module">
+                <results>
+                  <test-case description="Removes the ScriptModuleName, ScriptModuleDescription variables from the script" name="Get-ScriptBodyFromScriptText.Script module.Removes the ScriptModuleName, ScriptModuleDescription variables from the script" time="0.1458" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="Step template" executed="True" result="Success" success="True" time="0.0789" asserts="0" description="Step template">
+                <results>
+                  <test-case description="Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" name="Get-ScriptBodyFromScriptText.Step template.Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" time="0.0789" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptText.Tests.ps1" executed="True" result="Success" success="True" time="0.6481" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptText.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-VariableFromScriptText" executed="True" result="Success" success="True" time="0.6481" asserts="0" description="Get-VariableFromScriptText">
+            <results>
+              <test-case description="Should return the value when the variable is $null" name="Get-VariableFromScriptText.Should return the value when the variable is $null" time="0.1273" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is $true" name="Get-VariableFromScriptText.Should return the value when the variable is $true" time="0.0412" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is $false" name="Get-VariableFromScriptText.Should return the value when the variable is $false" time="0.0453" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a positive integer" name="Get-VariableFromScriptText.Should return the value when the variable is a positive integer" time="0.0414" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a negative integer" name="Get-VariableFromScriptText.Should return the value when the variable is a negative integer" time="0.0413" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an empty string" name="Get-VariableFromScriptText.Should return the value when the variable is an empty string" time="0.0435" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a simple string" name="Get-VariableFromScriptText.Should return the value when the variable is a simple string" time="0.047" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an array with multiple items" name="Get-VariableFromScriptText.Should return the value when the variable is an array with multiple items" time="0.063" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an empty hashtable" name="Get-VariableFromScriptText.Should return the value when the variable is an empty hashtable" time="0.0417" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a hashtable with a single item" name="Get-VariableFromScriptText.Should return the value when the variable is a hashtable with a single item" time="0.0446" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a hashtable with multiple items" name="Get-VariableFromScriptText.Should return the value when the variable is a hashtable with multiple items" time="0.043" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should get the variable statement from a script" name="Get-VariableFromScriptText.Should get the variable statement from a script" time="0.0298" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should throw an exception when the variable isn't defined" name="Get-VariableFromScriptText.Should throw an exception when the variable isn't defined" time="0.0391" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.Tests.ps1" executed="True" result="Success" success="True" time="0.1612" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-VariableStatementFromScriptText" executed="True" result="Success" success="True" time="0.1612" asserts="0" description="Get-VariableStatementFromScriptText">
+            <results>
+              <test-case description="Should return the variable statement from a powershell script" name="Get-VariableStatementFromScriptText.Should return the variable statement from a powershell script" time="0.1008" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value of the variable statement from a powershell script" name="Get-VariableStatementFromScriptText.Should return the value of the variable statement from a powershell script" time="0.0318" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return nothing if the variable isn't defined" name="Get-VariableStatementFromScriptText.Should return nothing if the variable isn't defined" time="0.0286" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-VariableValueFromScriptText.Tests.ps1" executed="True" result="Success" success="True" time="0.6479" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\PowerShellManipulation\Get-VariableValueFromScriptText.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-VariableValueFromScriptText" executed="True" result="Success" success="True" time="0.6479" asserts="0" description="Get-VariableValueFromScriptText">
+            <results>
+              <test-case description="Should return the value when the variable is $null" name="Get-VariableValueFromScriptText.Should return the value when the variable is $null" time="0.1244" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is $true" name="Get-VariableValueFromScriptText.Should return the value when the variable is $true" time="0.0284" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a $false" name="Get-VariableValueFromScriptText.Should return the value when the variable is a $false" time="0.0262" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a positive integer" name="Get-VariableValueFromScriptText.Should return the value when the variable is a positive integer" time="0.0319" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a negative integer" name="Get-VariableValueFromScriptText.Should return the value when the variable is a negative integer" time="0.0337" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an empty string" name="Get-VariableValueFromScriptText.Should return the value when the variable is an empty string" time="0.037" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a simple string" name="Get-VariableValueFromScriptText.Should return the value when the variable is a simple string" time="0.0247" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a simple string concatenation" name="Get-VariableValueFromScriptText.Should return the value when the variable is a simple string concatenation" time="0.0336" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an empty array" name="Get-VariableValueFromScriptText.Should return the value when the variable is an empty array" time="0.0256" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an array with a single item" name="Get-VariableValueFromScriptText.Should return the value when the variable is an array with a single item" time="0.0416" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an array with multiple items" name="Get-VariableValueFromScriptText.Should return the value when the variable is an array with multiple items" time="0.0435" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an array with missing commas" name="Get-VariableValueFromScriptText.Should return the value when the variable is an array with missing commas" time="0.0437" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is an empty hashtable" name="Get-VariableValueFromScriptText.Should return the value when the variable is an empty hashtable" time="0.035" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a hashtable with a single item" name="Get-VariableValueFromScriptText.Should return the value when the variable is a hashtable with a single item" time="0.0374" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should return the value when the variable is a hashtable with multiple items" name="Get-VariableValueFromScriptText.Should return the value when the variable is a hashtable with multiple items" time="0.038" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should throw an exception when the variable isn't defined" name="Get-VariableValueFromScriptText.Should throw an exception when the variable isn't defined" time="0.0431" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.Tests.ps1" executed="True" result="Success" success="True" time="0" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.Tests.ps1">
+        <results />
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.Tests.ps1" executed="True" result="Success" success="True" time="2.6827" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Get-ScriptValidationTestsPath" executed="True" result="Success" success="True" time="2.6827" asserts="0" description="Get-ScriptValidationTestsPath">
+            <results>
+              <test-case description="Should return the location of the Script Validation Tests" name="Get-ScriptValidationTestsPath.Should return the location of the Script Validation Tests" time="2.6827" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.Tests.ps1" executed="True" result="Success" success="True" time="0.5405" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Invoke-PesterForTeamCity" executed="True" result="Success" success="True" time="0.5405" asserts="0" description="Invoke-PesterForTeamCity">
+            <results>
+              <test-suite type="TestFixture" name="validate that parameters are passed to Pester correctly" executed="True" result="Success" success="True" time="0.2444" asserts="0" description="validate that parameters are passed to Pester correctly">
+                <results>
+                  <test-case description="Invokes pester with the provided arguments" name="Invoke-PesterForTeamCity.validate that parameters are passed to Pester correctly.Invokes pester with the provided arguments" time="0.2444" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="validate that the test name is updated for TeamCity" executed="True" result="Success" success="True" time="0.1064" asserts="0" description="validate that the test name is updated for TeamCity">
+                <results>
+                  <test-case description="Should update the test name so it renders correctly in TeamCity" name="Invoke-PesterForTeamCity.validate that the test name is updated for TeamCity.Should update the test name so it renders correctly in TeamCity" time="0.1064" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="validate that a TeamCity importData message is written" executed="True" result="Success" success="True" time="0.0901" asserts="0" description="validate that a TeamCity importData message is written">
+                <results>
+                  <test-case description="Should write out a teamcity message to import the test results file" name="Invoke-PesterForTeamCity.validate that a TeamCity importData message is written.Should write out a teamcity message to import the test results file" time="0.0901" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="validate that the return value is correct" executed="True" result="Success" success="True" time="0.0995" asserts="0" description="validate that the return value is correct">
+                <results>
+                  <test-case description="Should return a hashtable containing the passed and failed count" name="Invoke-PesterForTeamCity.validate that the return value is correct.Should return a hashtable containing the passed and failed count" time="0.0995" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Tests\Update-XPathValue.Tests.ps1" executed="True" result="Success" success="True" time="0.3039" asserts="0" description="C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\Cmdlets\Internal\Tests\Update-XPathValue.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="Update-XPathValue" executed="True" result="Success" success="True" time="0.3039" asserts="0" description="Update-XPathValue">
+            <results>
+              <test-case description="Should update the value at the given XPath location" name="Update-XPathValue.Should update the value at the given XPath location" time="0.163" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should update attributes at the given XPath location" name="Update-XPathValue.Should update attributes at the given XPath location" time="0.0493" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should throw if the path does not exist" name="Update-XPathValue.Should throw if the path does not exist" time="0.0359" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="Should throw an exception if the xml is invalid" name="Update-XPathValue.Should throw an exception if the xml is invalid" time="0.0557" asserts="0" success="True" result="Success" executed="True" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

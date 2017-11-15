@@ -21,69 +21,70 @@ limitations under the License.
 .SYNOPSIS
     Pester tests for Get-TeamCityServiceMessage
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Get-TeamCityEscapedString.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Get-TeamCityServiceMessage" {
+InModuleScope "OctopusStepTemplateCi" {
 
-    Context "when generating a single-attribute messages" {
+    Describe "Get-TeamCityServiceMessage" {
 
-        It "Should return a service message with no value" {
-            $result = Get-TeamCityServiceMessage -MessageName "progressMessage";
-            $result | Should Be "##teamcity[progressMessage '']";
+        Context "when generating a single-attribute messages" {
+
+            It "Should return a service message with no value" {
+                $result = Get-TeamCityServiceMessage -MessageName "progressMessage";
+                $result | Should Be "##teamcity[progressMessage '']";
+            }
+
+            It "Should return a service message with a null value" {
+                $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value $null;
+                $result | Should Be "##teamcity[progressMessage '']";
+            }
+
+            It "Should return a service message with an empty string value" {
+                $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value "";
+                $result | Should Be "##teamcity[progressMessage '']";
+            }
+
+            It "Should return a service message with a string value" {
+                $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value "my progress message";
+                $result | Should Be "##teamcity[progressMessage 'my progress message']";
+            }
+
+            It "Should return a service message with a string value containing special characters" {
+                $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value "[my | progress ' message]";
+                $result | Should Be "##teamcity[progressMessage '|[my || progress |' message|]']";
+            }
+
         }
 
-        It "Should return a service message with a null value" {
-            $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value $null;
-            $result | Should Be "##teamcity[progressMessage '']";
-        }
+        Context "when generating a multiple-attribute messages" {
 
-        It "Should return a service message with an empty string value" {
-            $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value "";
-            $result | Should Be "##teamcity[progressMessage '']";
-        }
+            It "Should return a service message with null values" {
+                $result = Get-TeamCityServiceMessage -MessageName "blockOpened" -Values $null;
+                $result | Should Be "##teamcity[blockOpened]";
+            }
 
-        It "Should return a service message with a string value" {
-            $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value "my progress message";
-            $result | Should Be "##teamcity[progressMessage 'my progress message']";
-        }
+            It "Should return a service message with empty values" {
+                $result = Get-TeamCityServiceMessage -MessageName "blockOpened" -Values @{};
+                $result | Should Be "##teamcity[blockOpened]";
+            }
 
-        It "Should return a service message with a string value containing special characters" {
-            $result = Get-TeamCityServiceMessage -MessageName "progressMessage" -Value "[my | progress ' message]";
-            $result | Should Be "##teamcity[progressMessage '|[my || progress |' message|]']";
-        }
+            It "Should return a service message with one attribute" {
+                $result = Get-TeamCityServiceMessage -MessageName "blockOpened" -Values @{ "name" = "myBlockName" };
+                $result | Should Be "##teamcity[blockOpened name='myBlockName']";
+            }
 
-    }
+            It "Should return a service message with many attributes" {
+                $result = Get-TeamCityServiceMessage -MessageName "myMessageName" -Values @{ "name1" = "value1"; "name2" = "value2"; "name3" = "value3" };
+                $result | Should Be "##teamcity[myMessageName name1='value1' name2='value2' name3='value3']";
+            }
 
-    Context "when generating a multiple-attribute messages" {
+            It "Should return a service message with attributes containing special characters" {
+                $result = Get-TeamCityServiceMessage -MessageName "myMessageName" -Values @{ "name1" = "[value1]"; "name2" = "val'ue2"; "name3" = "value3" };
+                $result | Should Be "##teamcity[myMessageName name1='|[value1|]' name2='val|'ue2' name3='value3']";
+            }
 
-        It "Should return a service message with null values" {
-            $result = Get-TeamCityServiceMessage -MessageName "blockOpened" -Values $null;
-            $result | Should Be "##teamcity[blockOpened]";
-        }
-
-        It "Should return a service message with empty values" {
-            $result = Get-TeamCityServiceMessage -MessageName "blockOpened" -Values @{};
-            $result | Should Be "##teamcity[blockOpened]";
-        }
-
-        It "Should return a service message with one attribute" {
-            $result = Get-TeamCityServiceMessage -MessageName "blockOpened" -Values @{ "name" = "myBlockName" };
-            $result | Should Be "##teamcity[blockOpened name='myBlockName']";
-        }
-
-        It "Should return a service message with many attributes" {
-            $result = Get-TeamCityServiceMessage -MessageName "myMessageName" -Values @{ "name1" = "value1"; "name2" = "value2"; "name3" = "value3" };
-            $result | Should Be "##teamcity[myMessageName name1='value1' name2='value2' name3='value3']";
-        }
-
-        It "Should return a service message with attributes containing special characters" {
-            $result = Get-TeamCityServiceMessage -MessageName "myMessageName" -Values @{ "name1" = "[value1]"; "name2" = "val'ue2"; "name3" = "value3" };
-            $result | Should Be "##teamcity[myMessageName name1='|[value1|]' name2='val|'ue2' name3='value3']";
         }
 
     }
