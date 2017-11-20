@@ -57,13 +57,12 @@ function test {
     
         Context "when the step template does not exist" {
 
-            Mock -CommandName "Invoke-OctopusApiOperation" `
-                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+            Mock -CommandName "Get-OctopusApiActionTemplate" `
+                 -ParameterFilter { $ObjectId -eq "All" } `
                  -MockWith { return @(, @()); } `
                  -Verifiable;
 
-            Mock -CommandName "Invoke-OctopusApiOperation" `
-                 -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
+            Mock -CommandName "New-OctopusApiActionTemplate" `
                  -MockWith {} `
                  -Verifiable;
             
@@ -77,8 +76,8 @@ function test {
 
         Context "when the step template description has changed" {
 
-            Mock -CommandName "Invoke-OctopusApiOperation" `
-                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+            Mock -CommandName "Get-OctopusApiActionTemplate" `
+                 -ParameterFilter { $ObjectId -eq "All" } `
                  -MockWith {
                      return @(, @(
                          @{
@@ -94,8 +93,7 @@ function test {
                  } `
                  -Verifiable;;
 
-            Mock -CommandName "Invoke-OctopusApiOperation" `
-                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
+            Mock -CommandName "Update-OctopusApiActionTemplate" `
                  -MockWith {} `
                  -Verifiable;
 
@@ -109,8 +107,8 @@ function test {
         
         Context "when the step template parameters have changed" {
 
-            Mock -CommandName "Invoke-OctopusApiOperation" `
-                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+            Mock -CommandName "Get-OctopusApiActionTemplate" `
+                 -ParameterFilter { $ObjectId -eq "All" } `
                  -MockWith {
                      return @(, @(
                          @{
@@ -133,8 +131,7 @@ function test {
                  } `
                  -Verifiable;
 
-            Mock -CommandName "Invoke-OctopusApiOperation" `
-                 -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
+            Mock -CommandName "Update-OctopusApiActionTemplate" `
                  -MockWith {} `
                  -Verifiable;
 
@@ -148,8 +145,8 @@ function test {
 
         Context "when a step template has not changed" {
 
-            Mock -CommandName "Invoke-OctopusApiOperation" `
-                 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+            Mock -CommandName "Get-OctopusApiActionTemplate" `
+                 -ParameterFilter { $ObjectId -eq "All" } `
                  -MockWith {
                      return @(, @(
                          @{
@@ -195,22 +192,14 @@ function test {
 
             It "Should not upload a step template which differs only in the parameter ID" {
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-    	         -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
+            Mock -CommandName "Get-OctopusApiActionTemplate" `
+                 -ParameterFilter { $ObjectId -eq "All" } `
     		 -MockWith {
                          $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
                          $oldTemplate.Add("Id", "Test-Id");
                          $oldTemplate.Parameters[0].Add("Id", "1234");
                          return $oldTemplate;
                      };
-
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
-                     -MockWith {};
-
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" } `
-                     -MockWith {};
 
                 $result = Sync-StepTemplate -Path "my.steptemplate.ps1";
                 $result.UploadCount | Should Be 0;
