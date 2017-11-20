@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-    Invoke-OctopusOperation.Tests
+    Invoke-OctopusApiOperation.Tests
 
 .SYNOPSIS
-    Pester tests for Invoke-OctopusOperation.
+    Pester tests for Invoke-OctopusApiOperation.
 #>
 
 $ErrorActionPreference = "Stop";
@@ -27,7 +27,7 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-    Describe "Invoke-OctopusOperation" {
+    Describe "Invoke-OctopusApiOperation" {
 
         $env:OctopusUri    = "http://example.local";
         $env:OctopusApiKey = "secret";
@@ -37,19 +37,19 @@ InModuleScope "OctopusStepTemplateCi" {
 
         Mock -CommandName "Get-Cache" `
              -MockWith { return @{}; };
-    
-        It "Should call Test-OctopusConnectivity" {
 
-            Mock -CommandName "Test-OctopusConnectivity" `
+        It "Should call Test-OctopusApiConnectivity" {
+
+            Mock -CommandName "Test-OctopusApiConnectivity" `
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
-        
-            Invoke-OctopusOperation -Action "Get" -ObjectType "UserDefined";
+
+            Invoke-OctopusApiOperation -Action "Get" -ObjectType "UserDefined";
 
             Assert-VerifiableMock;
 
         }
-    
+
         It "Should construct the uri based on the object type" {
 
             Mock -CommandName "Invoke-WebRequest" `
@@ -66,15 +66,15 @@ InModuleScope "OctopusStepTemplateCi" {
                  -ParameterFilter { $Uri -eq "http://example.local/custom" } `
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
-        
-            Invoke-OctopusOperation -Action "New" -ObjectType "LibraryVariableSets";
-            Invoke-OctopusOperation -Action "New" -ObjectType "ActionTemplates";
-            Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
-        
+
+            Invoke-OctopusApiOperation -Action "New" -ObjectType "LibraryVariableSets";
+            Invoke-OctopusApiOperation -Action "New" -ObjectType "ActionTemplates";
+            Invoke-OctopusApiOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
+
             Assert-VerifiableMock;
 
         }
-    
+
         It "Should include the id in get or update requests" {
 
             Mock -CommandName "Invoke-WebRequest" `
@@ -87,13 +87,13 @@ InModuleScope "OctopusStepTemplateCi" {
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
 
-            Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
-            Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
+            Invoke-OctopusApiOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
+            Invoke-OctopusApiOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
 
             Assert-VerifiableMock;
 
         }
-    
+
         It "Should use the appropriate http method based on the type of request" {
 
             Mock -CommandName "Invoke-WebRequest" `
@@ -111,14 +111,14 @@ InModuleScope "OctopusStepTemplateCi" {
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
 
-            Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
-            Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
-            Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
-        
+            Invoke-OctopusApiOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1";
+            Invoke-OctopusApiOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId "2";
+            Invoke-OctopusApiOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom";
+
             Assert-VerifiableMock;
 
         }
-    
+
         It "Should add the object to the body of the request as JSON" {
 
             Mock -CommandName "Invoke-WebRequest" `
@@ -126,12 +126,12 @@ InModuleScope "OctopusStepTemplateCi" {
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
 
-            Invoke-OctopusOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom" -Object 1;
-        
+            Invoke-OctopusApiOperation -Action "New" -ObjectType "UserDefined" -ApiUri "custom" -Object 1;
+
             Assert-VerifiableMock;
 
         }
-    
+
         It "Should use the cache if 'UseCache' is specified" {
 
             $cache = @{};
@@ -144,10 +144,10 @@ InModuleScope "OctopusStepTemplateCi" {
                  -ParameterFilter { $Uri -eq "http://example.local/api/LibraryVariableSets/1" } `
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
-        
-            Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
-            Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
-        
+
+            Invoke-OctopusApiOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
+            Invoke-OctopusApiOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "1" -UseCache;
+
             Assert-VerifiableMock;
 
             $cache.Count | Should Be 1;

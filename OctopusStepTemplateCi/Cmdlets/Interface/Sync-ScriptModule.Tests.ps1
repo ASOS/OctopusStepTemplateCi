@@ -41,7 +41,7 @@ function test {
 '@;
              };
 
-        Mock -CommandName "Invoke-OctopusOperation" `
+        Mock -CommandName "Invoke-OctopusApiOperation" `
              -MockWith {
                  throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
              };
@@ -52,22 +52,22 @@ function test {
     
             It "Should upload the VariableSet for the script module if it does not exist" {
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
     		 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
                      -MockWith { return @{ Name = "another name" } } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "LibraryVariableSets") } `
                      -MockWith { return @{ "Links" = @{ "Variables" = "script module" } }; } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
                      -MockWith { return @{ "Variables" = @() }; } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
                      -MockWith {} `
                      -Verifiable;
@@ -85,7 +85,7 @@ function test {
 
             It "Should upload the script module if it does not exist" {
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
                      -MockWith {
                          return @{
@@ -96,12 +96,12 @@ function test {
                       } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
                      -MockWith { @{ Variables = @() } } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
                      -MockWith {}  `
                      -Verifiable;
@@ -119,7 +119,7 @@ function test {
 
             It "Should upload an updated VariableSet for the script module if it has changed" {
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
                      -MockWith {
                         return @{
@@ -130,12 +130,12 @@ function test {
                      } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") -and ($ApiUri -eq "variableset") } `
                      -MockWith {} `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
                      -MockWith {
                         return @{
@@ -167,7 +167,7 @@ function test {
 
             It "Should upload an updated script module if it has changed" {
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
                      -MockWith {
                          return @{
@@ -178,12 +178,12 @@ function test {
                       } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and( $ObjectType -eq "UserDefined") }  `
                      -MockWith { return @{ "Variables" = @( @{ "Value" = "a different script" } ) }; } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
                      -MockWith {} `
                      -Verifiable;
@@ -201,7 +201,7 @@ function test {
 
             It "Should not upload if nothing has changed" {
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
                      -MockWith {
                         return @{
@@ -212,7 +212,7 @@ function test {
                      } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
                      -MockWith {
                         return @{

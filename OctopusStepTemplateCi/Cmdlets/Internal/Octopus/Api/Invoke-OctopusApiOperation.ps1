@@ -16,12 +16,12 @@ limitations under the License.
 
 <#
 .NAME
-    Invoke-OctopusOperation
+    Invoke-OctopusApiOperation
 
 .SYNOPSIS
     Invokes a web request against Octopus's API and returns the JSON result converted into an object
 #>
-function Invoke-OctopusOperation
+function Invoke-OctopusApiOperation
 {
 
     param
@@ -55,7 +55,7 @@ function Invoke-OctopusOperation
 
     )
 
-    Test-OctopusConnectivity;
+    Test-OctopusApiConnectivity;
 
     switch( $ObjectType )
     {

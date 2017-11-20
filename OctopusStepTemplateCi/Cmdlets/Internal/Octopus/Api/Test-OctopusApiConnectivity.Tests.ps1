@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-    Test-OctopusConnectivity.Tests
+    Test-OctopusApiConnectivity.Tests
 
 .SYNOPSIS
-    Pester tests for Test-OctopusConnectivity.
+    Pester tests for Test-OctopusApiConnectivity.
 #>
 
 $ErrorActionPreference = "Stop";
@@ -27,50 +27,50 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-    Describe "Test-OctopusConnectivity" {
+    Describe "Test-OctopusApiConnectivity" {
 
         It "Should throw an exception if the octopus uri does not exist" {
            {
-               Test-OctopusConnectivity -OctopusUri $null -OctopusApiKey "fake-key";
+               Test-OctopusApiConnectivity -OctopusUri $null -OctopusApiKey "fake-key";
            } | Should Throw "The OctopusUri environment variable is not set, please set this variable and execute again.";
         }
 
         It "Should throw an exception if the octopus api key does not exist" {
            {
-               Test-OctopusConnectivity -OctopusUri "fakeurl" -OctopusApiKey $null;
+               Test-OctopusApiConnectivity -OctopusUri "fakeurl" -OctopusApiKey $null;
            } | Should Throw "The OctopusApiKey environment variables is not set, please set this variable and execute again.";
         }
 
         It "Should not make a test api call to the octopus server if not requested" {
 
-           Mock -CommandName "Invoke-OctopusOperation" `
+           Mock -CommandName "Invoke-OctopusApiOperation" `
                 -MockWith {} `
                 -Verifiable;
 
-           Test-OctopusConnectivity -OctopusUri "na" -OctopusApiKey "na";
+           Test-OctopusApiConnectivity -OctopusUri "na" -OctopusApiKey "na";
 
-           Assert-MockCalled Invoke-OctopusOperation -times 0;
+           Assert-MockCalled Invoke-OctopusApiOperation -times 0;
 
         }
 
         It "Should make a test api call to the octopus server (if requested) to see if it is responding" {
 
-           Mock -CommandName "Invoke-OctopusOperation" `
+           Mock -CommandName "Invoke-OctopusApiOperation" `
                 -MockWith { return @{ "Application" = "Octopus Deploy" }; };
 
-           Test-OctopusConnectivity -OctopusUri "na" -OctopusApiKey "na" -TestConnection;
+           Test-OctopusApiConnectivity -OctopusUri "na" -OctopusApiKey "na" -TestConnection;
 
-           Assert-MockCalled Invoke-OctopusOperation -times 1;
+           Assert-MockCalled Invoke-OctopusApiOperation -times 1;
 
         }
 
         It "Should throw an exception if test connection is requested and the test api call doesn't return an object" {
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -MockWith {};
 
             {
-                Test-OctopusConnectivity -OctopusUri "na" -OctopusApiKey "na" -TestConnection;
+                Test-OctopusApiConnectivity -OctopusUri "na" -OctopusApiKey "na" -TestConnection;
             } | Should Throw "Octopus Deploy Api is not responding correctly";
 
         }

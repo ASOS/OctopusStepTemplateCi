@@ -32,7 +32,7 @@ Describe "Invoke-TeamCityCiUpload" {
         Mock Write-TeamCityBuildLogMessage {};
         Mock Sync-ScriptModule { @{UploadCount = 0} };
         Mock Sync-StepTemplate { @{UploadCount = 0} };
-        Mock Test-OctopusConnectivity {};
+        Mock Test-OctopusApiConnectivity {};
         Mock Reset-Cache {};
         Mock Invoke-OctopusScriptTestSuite { @{ Passed = 1; Failed = 0; Success = $true } };
 
@@ -46,14 +46,14 @@ Describe "Invoke-TeamCityCiUpload" {
         }
 
         It "Should handle exceptions" {
-            Mock Test-OctopusConnectivity { throw "bang" }
+            Mock Test-OctopusApiConnectivity { throw "bang" }
             {
                 Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" -UploadIfSuccessful;
             } | Should Throw;
         }
 
         It "Should test octopus's connectivity before beginning" {
-            Mock Test-OctopusConnectivity {} -Verifiable;
+            Mock Test-OctopusApiConnectivity {} -Verifiable;
             Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput" -UploadIfSuccessful;
             Assert-VerifiableMock;
         }

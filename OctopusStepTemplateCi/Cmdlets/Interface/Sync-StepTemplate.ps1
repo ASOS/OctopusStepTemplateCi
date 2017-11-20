@@ -56,7 +56,7 @@ function Sync-StepTemplate
     $newStepTemplate = Read-StepTemplate -Path $Path;
     $templateName = $newStepTemplate.Name;
 
-    $stepTemplates = Invoke-OctopusOperation -Action "Get" -ObjectType "ActionTemplates" -ObjectId "All" -UseCache:$UseCache;
+    $stepTemplates = Invoke-OctopusApiOperation -Action "Get" -ObjectType "ActionTemplates" -ObjectId "All" -UseCache:$UseCache;
     $stepTemplate  = $stepTemplates | where-object { $_.Name -eq $templateName };
 
     $result = @{ "UploadCount" = 0 };
@@ -64,7 +64,7 @@ function Sync-StepTemplate
     if( $null -eq $stepTemplate )
     {
         Write-TeamCityBuildLogMessage "Step template '$templateName' does not exist. Creating";
-        $stepTemplate = Invoke-OctopusOperation -Action "New" -ObjectType "ActionTemplates" -Object $newStepTemplate;
+        $stepTemplate = Invoke-OctopusApiOperation -Action "New" -ObjectType "ActionTemplates" -Object $newStepTemplate;
         $result.UploadCount++;
     }
     else
@@ -93,7 +93,7 @@ function Sync-StepTemplate
         {
             Write-TeamCityBuildLogMessage "Step template '$templateName' has changed. Updating";
             $newStepTemplate.Version = $stepTemplate.Version + 1;
-            $stepTemplate = Invoke-OctopusOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId $stepTemplate.Id -Object $newStepTemplate;
+            $stepTemplate = Invoke-OctopusApiOperation -Action "Update" -ObjectType "ActionTemplates" -ObjectId $stepTemplate.Id -Object $newStepTemplate;
             $result.UploadCount++;
         }
         else

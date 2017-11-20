@@ -61,20 +61,20 @@ function Sync-ScriptModule
 
     $result = @{ "UploadCount" = 0 };
 
-    $scriptModuleVariableSets = Invoke-OctopusOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "All" -UseCache:$UseCache;
+    $scriptModuleVariableSets = Invoke-OctopusApiOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "All" -UseCache:$UseCache;
     $scriptModuleVariableSet  = $scriptModuleVariableSets | where-object { $_.Name -eq $moduleName };
 
     if( $null -eq $scriptModuleVariableSet )
     {
         Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' does not exist. Creating";
-        $scriptModuleVariableSet = Invoke-OctopusOperation -Action "New" -ObjectType "LibraryVariableSets" -Object $newVariableSet;
+        $scriptModuleVariableSet = Invoke-OctopusApiOperation -Action "New" -ObjectType "LibraryVariableSets" -Object $newVariableSet;
         $result.UploadCount++;
     }
     elseif( $scriptModuleVariableSet.Description -ne $moduleDescription )
     {
         Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' has different metadata. Updating.";
         $scriptModuleVariableSet.Description = $moduleDescription;
-        $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Self -Object $scriptModuleVariableSet;
+        $response = Invoke-OctopusApiOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Self -Object $scriptModuleVariableSet;
         $result.UploadCount++;
     }
     else
@@ -82,13 +82,13 @@ function Sync-ScriptModule
         Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' has not changed. Skipping.";
     }
 
-    $scriptModule = Invoke-OctopusOperation -Action "Get" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -UseCache:$UseCache
+    $scriptModule = Invoke-OctopusApiOperation -Action "Get" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -UseCache:$UseCache
 
     if( $scriptModule.Variables.Count -eq 0 )
     {
         Write-TeamCityBuildLogMessage "Script module '$moduleName' does not exist. Creating";
         $scriptModule.Variables += Read-ScriptModule -Path $Path;
-        $response = Invoke-OctopusOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
+        $response = Invoke-OctopusApiOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
         $result.UploadCount++;
     }
     else
@@ -98,7 +98,7 @@ function Sync-ScriptModule
         {
             Write-TeamCityBuildLogMessage "Script module '$moduleName' has changed. Updating";
             $scriptModule.Variables[0].Value = $moduleScript;
-            $response = Invoke-OctopusOperation -Action Update -ObjectType UserDefined -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
+            $response = Invoke-OctopusApiOperation -Action Update -ObjectType UserDefined -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
             $result.UploadCount++;
         }
         else

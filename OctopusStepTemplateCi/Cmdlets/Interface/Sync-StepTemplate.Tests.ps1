@@ -48,7 +48,7 @@ function test {
 '@;
              };
 
-        Mock -CommandName "Invoke-OctopusOperation" `
+        Mock -CommandName "Invoke-OctopusApiOperation" `
              -MockWith {
                  throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
              };
@@ -57,12 +57,12 @@ function test {
     
         Context "when the step template does not exist" {
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
                  -MockWith { return @(, @()); } `
                  -Verifiable;
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
                  -MockWith {} `
                  -Verifiable;
@@ -77,7 +77,7 @@ function test {
 
         Context "when the step template description has changed" {
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
                  -MockWith {
                      return @(, @(
@@ -94,7 +94,7 @@ function test {
                  } `
                  -Verifiable;;
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
                  -MockWith {} `
                  -Verifiable;
@@ -109,7 +109,7 @@ function test {
         
         Context "when the step template parameters have changed" {
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
                  -MockWith {
                      return @(, @(
@@ -133,7 +133,7 @@ function test {
                  } `
                  -Verifiable;
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "ActionTemplates") } `
                  -MockWith {} `
                  -Verifiable;
@@ -148,7 +148,7 @@ function test {
 
         Context "when a step template has not changed" {
 
-            Mock -CommandName "Invoke-OctopusOperation" `
+            Mock -CommandName "Invoke-OctopusApiOperation" `
                  -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
                  -MockWith {
                      return @(, @(
@@ -195,7 +195,7 @@ function test {
 
             It "Should not upload a step template which differs only in the parameter ID" {
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
     	         -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "ActionTemplates") -and ($ObjectId -eq "All") } `
     		 -MockWith {
                          $oldTemplate = Read-StepTemplate -Path "my.steptemplate.ps1";
@@ -204,11 +204,11 @@ function test {
                          return $oldTemplate;
                      };
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "ActionTemplates") } `
                      -MockWith {};
 
-                Mock -CommandName "Invoke-OctopusOperation" `
+                Mock -CommandName "Invoke-OctopusApiOperation" `
                      -ParameterFilter { $Action -eq "Update" -and $ObjectType -eq "ActionTemplates" } `
                      -MockWith {};
 

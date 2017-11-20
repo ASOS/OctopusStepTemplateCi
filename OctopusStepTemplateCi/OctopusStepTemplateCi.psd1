@@ -84,6 +84,7 @@ NestedModules = @(
 
     <# Interface Functions exported in the PSD1 file #>
     "Cmdlets\Interface\Export-StepTemplate.ps1",
+    "Cmdlets\Interface\Get-OctopusStatusReport.ps1",
     "Cmdlets\Interface\Invoke-OctopusScriptTestSuite.ps1",
     "Cmdlets\Interface\Invoke-TeamCityCiUpload.ps1",
     "Cmdlets\Interface\New-ScriptModule.ps1",
@@ -93,6 +94,8 @@ NestedModules = @(
     "Cmdlets\Interface\Sync-StepTemplate.ps1",
 
     <# Internal functions only used within this module #>
+    "Cmdlets\Internal\Octopus\Api\Invoke-OctopusApiOperation.ps1",
+    "Cmdlets\Internal\Octopus\Api\Test-OctopusApiConnectivity.ps1",
     "Cmdlets\Internal\Octopus\Common\Compare-Hashtable.ps1",
     "Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.ps1",
     "Cmdlets\Internal\Octopus\Common\ConvertTo-DictionaryJsonObject.ps1",
@@ -104,9 +107,7 @@ NestedModules = @(
     "Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1",
     "Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1",
     "Cmdlets\Internal\Octopus\Get-Cache.ps1",
-    "Cmdlets\Internal\Octopus\Invoke-OctopusOperation.ps1",
     "Cmdlets\Internal\Octopus\Reset-Cache.ps1",
-    "Cmdlets\Internal\Octopus\Test-OctopusConnectivity.ps1",
     "Cmdlets\Internal\PowerShellManipulation\Get-LiteralValueFromAstNode.ps1",
     "Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1",
     "Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1",
@@ -131,6 +132,7 @@ NestedModules = @(
 # Functions to export from this module
 FunctionsToExport = @(
     'Export-StepTemplate',
+    'Get-OctopusStatusReport',
     'Invoke-OctopusScriptTestSuite',
     'Invoke-TeamCityCiUpload',
     'New-ScriptModule',
