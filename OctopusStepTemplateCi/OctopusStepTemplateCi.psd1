@@ -95,10 +95,14 @@ NestedModules = @(
 
     <# Internal functions only used within this module #>
     "Cmdlets\Internal\Octopus\Api\Get-OctopusApiActionTemplate.ps1",
+    "Cmdlets\Internal\Octopus\Api\Get-OctopusApiLibraryVariableSet.ps1",
+    "Cmdlets\Internal\Octopus\Api\Get-OctopusApiObject.ps1",
     "Cmdlets\Internal\Octopus\Api\Invoke-OctopusApiOperation.ps1",
     "Cmdlets\Internal\Octopus\Api\New-OctopusApiActionTemplate.ps1",
+    "Cmdlets\Internal\Octopus\Api\New-OctopusApiLibraryVariableSet.ps1",
     "Cmdlets\Internal\Octopus\Api\Test-OctopusApiConnectivity.ps1",
     "Cmdlets\Internal\Octopus\Api\Update-OctopusApiActionTemplate.ps1",
+    "Cmdlets\Internal\Octopus\Api\Update-OctopusApiLibraryVariableSet.ps1",
     "Cmdlets\Internal\Octopus\Common\Compare-Hashtable.ps1",
     "Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.ps1",
     "Cmdlets\Internal\Octopus\Common\ConvertTo-DictionaryJsonObject.ps1",

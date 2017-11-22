@@ -61,20 +61,20 @@ function Sync-ScriptModule
 
     $result = @{ "UploadCount" = 0 };
 
-    $scriptModuleVariableSets = Invoke-OctopusApiOperation -Action "Get" -ObjectType "LibraryVariableSets" -ObjectId "All" -UseCache:$UseCache;
+    $scriptModuleVariableSets = Get-OctopusApiLibraryVariableSet -ObjectId "All" -UseCache:$UseCache;
     $scriptModuleVariableSet  = $scriptModuleVariableSets | where-object { $_.Name -eq $moduleName };
 
     if( $null -eq $scriptModuleVariableSet )
     {
         Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' does not exist. Creating";
-        $scriptModuleVariableSet = Invoke-OctopusApiOperation -Action "New" -ObjectType "LibraryVariableSets" -Object $newVariableSet;
+        $scriptModuleVariableSet = New-OctopusApiLibraryVariableSet -Object $newVariableSet;
         $result.UploadCount++;
     }
     elseif( $scriptModuleVariableSet.Description -ne $moduleDescription )
     {
         Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' has different metadata. Updating.";
         $scriptModuleVariableSet.Description = $moduleDescription;
-        $response = Invoke-OctopusApiOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Self -Object $scriptModuleVariableSet;
+        $response = Update-OctopusApiLibraryVariableSet -ObjectId $scriptModuleVariableSet.Id -Object $scriptModuleVariableSet;
         $result.UploadCount++;
     }
     else
@@ -82,7 +82,7 @@ function Sync-ScriptModule
         Write-TeamCityBuildLogMessage "VariableSet for script module '$moduleName' has not changed. Skipping.";
     }
 
-    $scriptModule = Invoke-OctopusApiOperation -Action "Get" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -UseCache:$UseCache
+    $scriptModule = Get-OctopusApiObject -ObjectUri $scriptModuleVariableSet.Links.Variables -UseCache:$UseCache;
 
     if( $scriptModule.Variables.Count -eq 0 )
     {

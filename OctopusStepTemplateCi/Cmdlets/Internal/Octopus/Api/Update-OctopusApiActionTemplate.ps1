@@ -49,6 +49,6 @@ function Update-OctopusApiActionTemplate
                                           -Object        $Object `
                                           -UseCache:$false;
 
-    return $results;
+    return @(, $results);
 
 }

@@ -16,12 +16,12 @@ limitations under the License.
 
 <#
 .NAME
-    New-OctopusApiActionTemplate
+    Get-OctopusApiLibraryVariableSet
 
 .SYNOPSIS
-    Invokes a web request against Octopus's API and creates the requested ActionTemplate
+    Invokes a web request against Octopus's API and returns the requested LibraryVariableSet
 #>
-function New-OctopusApiActionTemplate
+function Get-OctopusApiLibraryVariableSet
 {
 
     param
@@ -34,17 +34,20 @@ function New-OctopusApiActionTemplate
         [string] $OctopusApiKey = $env:OctopusApiKey,
 
         [Parameter(Mandatory=$true)]
-        [string] $Object
+        [string] $ObjectId,
+
+        [Parameter(Mandatory=$false)]
+        [switch] $UseCache
 
     )
 
     $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
                                           -OctopusApiKey $OctopusApiKey `
-					  -Action        "New" `
-                                          -ObjectType    "ActionTemplates" `
-                                          -Object        $Object `
-                                          -UseCache:$false;
-
+					  -Action        "Get" `
+                                          -ObjectType    "LibraryVariableSets" `
+                                          -ObjectId      $ObjectId `
+                                          -UseCache:$UseCache;
+					  
     return @(, $results);
 
 }

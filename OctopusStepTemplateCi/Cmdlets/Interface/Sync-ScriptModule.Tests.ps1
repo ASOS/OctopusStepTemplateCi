@@ -52,18 +52,17 @@ function test {
     
             It "Should upload the VariableSet for the script module if it does not exist" {
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-    		 -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                Mock -CommandName "Get-OctopusApiLibraryVariableSet" `
+                     -ParameterFilter { $ObjectId -eq "All" } `
                      -MockWith { return @{ Name = "another name" } } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "New") -and ($ObjectType -eq "LibraryVariableSets") } `
-                     -MockWith { return @{ "Links" = @{ "Variables" = "script module" } }; } `
+                Mock -CommandName "New-OctopusApiLibraryVariableSet" `
+                     -MockWith { return @{ "Links" = @{ "Variables" = "/api/variables/variableset-LibraryVariableSets-1" } }; } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                Mock -CommandName "Get-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-1" } `
                      -MockWith { return @{ "Variables" = @() }; } `
                      -Verifiable;
 
@@ -85,19 +84,20 @@ function test {
 
             It "Should upload the script module if it does not exist" {
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                Mock -CommandName "Get-OctopusApiLibraryVariableSet" `
+                     -ParameterFilter { $ObjectId -eq "All" } `
                      -MockWith {
                          return @{
+                             "Id" = "LibraryVariableSets-100"
                              "Name" = "name"
                              "Description" = "description"
-                             "Links" = @{ "Variables" = "script module" }
+                             "Links" = @{ "Variables" = "/api/variables/variableset-LibraryVariableSets-100" }
                          };
                       } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                Mock -CommandName "Get-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-100" } `
                      -MockWith { @{ Variables = @() } } `
                      -Verifiable;
 
@@ -119,24 +119,24 @@ function test {
 
             It "Should upload an updated VariableSet for the script module if it has changed" {
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                Mock -CommandName "Get-OctopusApiLibraryVariableSet" `
+                     -ParameterFilter { $ObjectId -eq "All" } `
                      -MockWith {
-                        return @{
-                            "Name" = "name"
-                            "Description" = "new description"
-                            "Links" = @{ "Variables" = "script module"; "Self" = "variableset" }
-                        };
+                         return @{
+                             "Id" = "LibraryVariableSets-200"
+                             "Name" = "name"
+                             "Description" = "new description"
+                             "Links" = @{ "Variables" = "/api/variables/variableset-LibraryVariableSets-200" }
+                         };
                      } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") -and ($ApiUri -eq "variableset") } `
+                Mock -CommandName "Update-OctopusApiLibraryVariableSet" `
                      -MockWith {} `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                Mock -CommandName "Get-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-200" } `
                      -MockWith {
                         return @{
                             "Variables" = @(
@@ -167,19 +167,20 @@ function test {
 
             It "Should upload an updated script module if it has changed" {
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                Mock -CommandName "Get-OctopusApiLibraryVariableSet" `
+                     -ParameterFilter { $ObjectId -eq "All" } `
                      -MockWith {
                          return @{
-                            "Name" = "name"
-                            "Description" = "description"
-                            "Links" = @{ "Variables" = "script module" }
+                             "Id" = "LibraryVariableSets-300"
+                             "Name" = "name"
+                             "Description" = "description"
+                             "Links" = @{ "Variables" = "/api/variables/variableset-LibraryVariableSets-300" }
                          };
                       } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and( $ObjectType -eq "UserDefined") }  `
+                Mock -CommandName "Get-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-300" } `
                      -MockWith { return @{ "Variables" = @( @{ "Value" = "a different script" } ) }; } `
                      -Verifiable;
 
@@ -201,19 +202,19 @@ function test {
 
             It "Should not upload if nothing has changed" {
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "LibraryVariableSets") -and ($ObjectId -eq "All") } `
+                Mock -CommandName "Get-OctopusApiLibraryVariableSet" `
+                     -ParameterFilter { $ObjectId -eq "All" } `
                      -MockWith {
                         return @{
                             "Name" = "name"
                             "Description" = "description"
-                            "Links" = @{ "Variables" = "script module"; "Self" = "variableset" }
+                            "Links" = @{ "Variables" = "/api/variables/variableset-LibraryVariableSets-400" }
                         };
                      } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Get") -and ($ObjectType -eq "UserDefined") } `
+                Mock -CommandName "Get-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-400" } `
                      -MockWith {
                         return @{
                             "Variables" = @(

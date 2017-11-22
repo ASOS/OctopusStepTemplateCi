@@ -48,6 +48,6 @@ function Get-OctopusApiActionTemplate
                                           -ObjectId      $ObjectId `
                                           -UseCache:$UseCache;
 
-    return $results;
+    return @(, $results);
 
 }
