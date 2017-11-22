@@ -43,7 +43,7 @@ function Get-OctopusApiObject
 
     $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
                                           -OctopusApiKey $OctopusApiKey `
-					  -Action        "Get" `
+                                          -Action        "Get" `
                                           -ObjectType    "UserDefined" `
                                           -ApiUri        $ObjectUri `
                                           -UseCache:$UseCache;

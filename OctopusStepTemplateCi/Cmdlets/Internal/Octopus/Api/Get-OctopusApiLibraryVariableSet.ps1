@@ -43,7 +43,7 @@ function Get-OctopusApiLibraryVariableSet
 
     $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
                                           -OctopusApiKey $OctopusApiKey `
-					  -Action        "Get" `
+                                          -Action        "Get" `
                                           -ObjectType    "LibraryVariableSets" `
                                           -ObjectId      $ObjectId `
                                           -UseCache:$UseCache;
