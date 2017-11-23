@@ -43,7 +43,7 @@ function Update-OctopusApiLibraryVariableSet
 
     $results = Update-OctopusApiObject -OctopusServerUri $OctopusServerUri `
                                        -OctopusApiKey    $OctopusApiKey `
-                                       -ObjectUri        "api/LibraryVariableSets/$ObjectId" `
+                                       -ObjectUri        "/api/LibraryVariableSets/$ObjectId" `
                                        -Object           $Object;
 
     return @(, $results);

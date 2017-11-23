@@ -42,7 +42,7 @@ InModuleScope "OctopusStepTemplateCi" {
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
 
-            New-OctopusApiObject -ObjectUri "api/UserDefined" -Object @{};
+            New-OctopusApiObject -ObjectUri "/api/UserDefined" -Object @{};
 
             Assert-VerifiableMock;
 
@@ -55,7 +55,7 @@ InModuleScope "OctopusStepTemplateCi" {
                  -MockWith { return @{ "Content" = "" }; } `
                  -Verifiable;
 
-            New-OctopusApiObject -ObjectUri "api/UserDefined" -Object @{};
+            New-OctopusApiObject -ObjectUri "/api/UserDefined" -Object @{};
 
             Assert-VerifiableMock;
 

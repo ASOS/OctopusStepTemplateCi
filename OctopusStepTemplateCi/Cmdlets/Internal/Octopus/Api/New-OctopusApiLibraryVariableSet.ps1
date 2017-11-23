@@ -40,7 +40,7 @@ function New-OctopusApiLibraryVariableSet
 
     $results = New-OctopusApiObject -OctopusServerUri $OctopusServerUri `
                                     -OctopusApiKey    $OctopusApiKey `
-                                    -ObjectUri        "api/LibraryVariableSets" `
+                                    -ObjectUri        "/api/LibraryVariableSets" `
                                     -Object           $Object;
 
     return @(, $results);

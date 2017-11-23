@@ -48,7 +48,7 @@ function Test-OctopusApiConnectivity
     if( $TestConnection )
     {
 
-        $apiTestCall = Invoke-OctopusApiOperation -Action Get -ObjectType UserDefined -ApiUri "api" | ? Application -eq "Octopus Deploy"
+        $apiTestCall = Invoke-OctopusApiOperation -Method "GET" -Uri "/api" | ? Application -eq "Octopus Deploy"
 
         if( $null -eq $apiTestCall )
         {

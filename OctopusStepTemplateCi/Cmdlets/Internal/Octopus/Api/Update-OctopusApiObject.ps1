@@ -43,10 +43,9 @@ function Update-OctopusApiObject
 
     $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
                                           -OctopusApiKey $OctopusApiKey `
-                                          -Action        "Update" `
-                                          -ObjectType    "UserDefined" `
-                                          -ApiUri        $ObjectUri `
-                                          -Object        $Object `
+                                          -Method        "PUT" `
+                                          -Uri           $ObjectUri `
+                                          -Body          $Object `
                                           -UseCache:$false;
 
     return @(, $results);

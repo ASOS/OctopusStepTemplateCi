@@ -88,7 +88,7 @@ function Sync-ScriptModule
     {
         Write-TeamCityBuildLogMessage "Script module '$moduleName' does not exist. Creating";
         $scriptModule.Variables += Read-ScriptModule -Path $Path;
-        $response = Invoke-OctopusApiOperation -Action "Update" -ObjectType "UserDefined" -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
+        $response = Update-OctopusApiObject -ObjectUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
         $result.UploadCount++;
     }
     else
@@ -98,7 +98,7 @@ function Sync-ScriptModule
         {
             Write-TeamCityBuildLogMessage "Script module '$moduleName' has changed. Updating";
             $scriptModule.Variables[0].Value = $moduleScript;
-            $response = Invoke-OctopusApiOperation -Action Update -ObjectType UserDefined -ApiUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
+            $response = Update-OctopusApiObject -ObjectUri $scriptModuleVariableSet.Links.Variables -Object $scriptModule;
             $result.UploadCount++;
         }
         else

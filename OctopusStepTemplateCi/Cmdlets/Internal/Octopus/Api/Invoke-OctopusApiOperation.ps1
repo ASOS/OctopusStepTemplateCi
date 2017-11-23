@@ -27,64 +27,33 @@ function Invoke-OctopusApiOperation
     param
     (
 
-        [Parameter(Mandatory=$true)]
-        [ValidateSet("Get", "New", "Update")]
-        [string] $Action,
-
-        [Parameter(Mandatory=$true)]
-        [ValidateSet("LibraryVariableSets", "ActionTemplates", "UserDefined")]
-        [string] $ObjectType,
-
-        [Parameter(Mandatory=$false)]
-        [string] $ObjectId,
-
-        [Parameter(Mandatory=$false)]
-        [object] $Object,
-
-        [Parameter(Mandatory=$false)]
-        [string] $ApiUri,
-
-        [Parameter(Mandatory=$false)]
-        [switch] $UseCache,
-
         [Parameter(Mandatory=$false)]
         [string] $OctopusUri = $env:OctopusURI,
 
         [Parameter(Mandatory=$false)]
-        [string] $OctopusApiKey = $env:OctopusApikey
+        [string] $OctopusApiKey = $env:OctopusApikey,
+
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("GET", "POST", "PUT")]
+        [string] $Method,
+
+        [Parameter(Mandatory=$false)]
+        [string] $Uri,
+
+        [Parameter(Mandatory=$false)]
+        [object] $Body,
+
+        [Parameter(Mandatory=$false)]
+        [switch] $UseCache
 
     )
 
     Test-OctopusApiConnectivity;
 
-    switch( $ObjectType )
-    {
-        "LibraryVariableSets" {
-            $uri = "$OctopusUri/api/LibraryVariableSets";
-        }
-        "ActionTemplates" {
-            $uri = "$OctopusUri/api/ActionTemplates";
-        }
-        "UserDefined" {
-            $uri = "$OctopusUri/$ApiUri";
-        }
-    }
-
-    if( ($ObjectType -in @("LibraryVariableSets", "ActionTemplates")) -and
-        ($Action -in @("Get", "Update")) )
-    {
-        $uri = "$uri/$ObjectId";
-    }
-
-    switch( $Action )
-    {
-        "Get"    { $method = "GET";  }
-        "New"    { $method = "POST"; }
-        "Update" { $method = "PUT";  }
-    }
+    $Uri      = $OctopusUri + $Uri;
+    $cacheKey = "$Uri-$Method";
 
     $cache = Get-Cache;
-    $cacheKey = "$uri-$method";
     if( $UseCache -and $cache.ContainsKey($cacheKey) )
     {
         return $cache.Item($cacheKey);
@@ -93,14 +62,14 @@ function Invoke-OctopusApiOperation
     # by default, only SSL3 and TLS 1.0 are supported.
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType] "Ssl3, Tls, Tls11, Tls12";
 
-    if( $null -eq $Object )
+    if( $null -eq $Body )
     {
-        $response = Invoke-WebRequest -Uri $uri -Method $method -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
+        $response = Invoke-WebRequest -Uri $Uri -Method $Method -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
     }
     else
     {
-        $requestBody = ConvertTo-OctopusJson -InputObject $Object;
-        $response = Invoke-WebRequest -Uri $uri -Method $method -Body $requestBody -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
+        $requestBody = ConvertTo-OctopusJson -InputObject $Body;
+        $response = Invoke-WebRequest -Uri $Uri -Method $method -Body $requestBody -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
     }
 
     $result = ConvertFrom-OctopusJson -InputObject $response.Content;

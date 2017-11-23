@@ -49,9 +49,7 @@ function test {
              };
 
         Mock -CommandName "Invoke-OctopusApiOperation" `
-             -MockWith {
-                 throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
-             };
+             -MockWith { throw ("should not be called with parameters @{ Method = '$Method', Uri = '$Uri'}!"); };
 
         Mock Write-TeamCityBuildLogMessage {};
     

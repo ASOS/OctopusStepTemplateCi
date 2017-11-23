@@ -43,7 +43,7 @@ function Update-OctopusApiActionTemplate
 
     $results = Update-OctopusApiObject -OctopusServerUri $OctopusServerUri `
                                        -OctopusApiKey    $OctopusApiKey `
-                                       -ObjectUri        "api/ActionTemplates/$ObjectId" `
+                                       -ObjectUri        "/api/ActionTemplates/$ObjectId" `
                                        -Object           $Object;
 
     return @(, $results);

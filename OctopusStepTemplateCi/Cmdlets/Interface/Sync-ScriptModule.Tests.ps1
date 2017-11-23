@@ -42,9 +42,7 @@ function test {
              };
 
         Mock -CommandName "Invoke-OctopusApiOperation" `
-             -MockWith {
-                 throw ("should not be called with parameters @{ Action = '$Action', ObjectType = '$ObjectType'}!");
-             };
+             -MockWith { throw ("should not be called with parameters @{ Method = '$Method', Uri = '$Uri'}!"); };
 
         Mock Write-TeamCityBuildLogMessage {};
 
@@ -66,8 +64,8 @@ function test {
                      -MockWith { return @{ "Variables" = @() }; } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
+                Mock -CommandName "Update-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-1" } `
                      -MockWith {} `
                      -Verifiable;
 
@@ -101,8 +99,8 @@ function test {
                      -MockWith { @{ Variables = @() } } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
+                Mock -CommandName "Update-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-100" } `
                      -MockWith {}  `
                      -Verifiable;
 
@@ -184,8 +182,8 @@ function test {
                      -MockWith { return @{ "Variables" = @( @{ "Value" = "a different script" } ) }; } `
                      -Verifiable;
 
-                Mock -CommandName "Invoke-OctopusApiOperation" `
-                     -ParameterFilter { ($Action -eq "Update") -and ($ObjectType -eq "UserDefined") } `
+                Mock -CommandName "Update-OctopusApiObject" `
+                     -ParameterFilter { $ObjectUri -eq "/api/variables/variableset-LibraryVariableSets-300" } `
                      -MockWith {} `
                      -Verifiable;
 

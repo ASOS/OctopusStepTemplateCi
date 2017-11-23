@@ -43,10 +43,9 @@ function New-OctopusApiObject
 
     $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
                                           -OctopusApiKey $OctopusApiKey `
-                                          -Action        "New" `
-                                          -ObjectType    "UserDefined" `
-                                          -ApiUri        $ObjectUri `
-                                          -Object        $Object `
+                                          -Method        "POST" `
+                                          -Uri           $ObjectUri `
+                                          -Body          $Object `
                                           -UseCache:$false;
 					  
     return @(, $results);

@@ -40,7 +40,7 @@ function New-OctopusApiActionTemplate
 
     $results = New-OctopusApiObject -OctopusServerUri $OctopusServerUri `
                                     -OctopusApiKey    $OctopusApiKey `
-                                    -ObjectUri        "api/ActionTemplates" `
+                                    -ObjectUri        "/api/ActionTemplates" `
                                     -Object           $Object;
 
     return @(, $results);
