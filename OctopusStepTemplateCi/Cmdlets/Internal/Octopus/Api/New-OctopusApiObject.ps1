@@ -16,12 +16,12 @@ limitations under the License.
 
 <#
 .NAME
-    Update-OctopusApiLibraryVariableSet
+    New-OctopusApiObject
 
 .SYNOPSIS
-    Invokes a web request against Octopus's API and updates the requested LibraryVariableSet
+    Invokes a web request against Octopus's API and creates the requested object
 #>
-function Update-OctopusApiLibraryVariableSet
+function New-OctopusApiObject
 {
 
     param
@@ -34,18 +34,21 @@ function Update-OctopusApiLibraryVariableSet
         [string] $OctopusApiKey = $env:OctopusApiKey,
 
         [Parameter(Mandatory=$true)]
-        [string] $ObjectId,
+        [string] $ObjectUri,
 
         [Parameter(Mandatory=$true)]
-        [object] $Object
+        [string] $Object
 
     )
 
-    $results = Update-OctopusApiObject -OctopusServerUri $OctopusServerUri `
-                                       -OctopusApiKey    $OctopusApiKey `
-                                       -ObjectUri        "api/LibraryVariableSets/$ObjectId" `
-                                       -Object           $Object;
-
+    $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
+                                          -OctopusApiKey $OctopusApiKey `
+                                          -Action        "New" `
+                                          -ObjectType    "UserDefined" `
+                                          -ApiUri        $ObjectUri `
+                                          -Object        $Object `
+                                          -UseCache:$false;
+					  
     return @(, $results);
 
 }

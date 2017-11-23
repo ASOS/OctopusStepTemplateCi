@@ -41,12 +41,10 @@ function Get-OctopusApiActionTemplate
 
     )
 
-    $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
-                                          -OctopusApiKey $OctopusApiKey `
-                                          -Action        "Get" `
-                                          -ObjectType    "ActionTemplates" `
-                                          -ObjectId      $ObjectId `
-                                          -UseCache:$UseCache;
+    $results = Get-OctopusApiObject -OctopusServerUri $OctopusServerUri `
+                                    -OctopusApiKey    $OctopusApiKey `
+                                    -ObjectUri        "api/ActionTemplates/$ObjectId" `
+                                    -UseCache:$UseCache;
 
     return @(, $results);
 

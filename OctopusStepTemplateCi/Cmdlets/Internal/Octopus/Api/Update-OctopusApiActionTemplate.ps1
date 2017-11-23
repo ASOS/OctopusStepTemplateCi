@@ -41,13 +41,10 @@ function Update-OctopusApiActionTemplate
 
     )
 
-    $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
-                                          -OctopusApiKey $OctopusApiKey `
-                                          -Action        "Update" `
-                                          -ObjectType    "ActionTemplates" `
-                                          -ObjectId      $ObjectId `
-                                          -Object        $Object `
-                                          -UseCache:$false;
+    $results = Update-OctopusApiObject -OctopusServerUri $OctopusServerUri `
+                                       -OctopusApiKey    $OctopusApiKey `
+                                       -ObjectUri        "api/ActionTemplates/$ObjectId" `
+                                       -Object           $Object;
 
     return @(, $results);
 

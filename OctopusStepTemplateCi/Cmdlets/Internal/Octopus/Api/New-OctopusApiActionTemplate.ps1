@@ -38,12 +38,10 @@ function New-OctopusApiActionTemplate
 
     )
 
-    $results = Invoke-OctopusApiOperation -OctopusUri    $OctopusServerUri `
-                                          -OctopusApiKey $OctopusApiKey `
-                                          -Action        "New" `
-                                          -ObjectType    "ActionTemplates" `
-                                          -Object        $Object `
-                                          -UseCache:$false;
+    $results = New-OctopusApiObject -OctopusServerUri $OctopusServerUri `
+                                    -OctopusApiKey    $OctopusApiKey `
+                                    -ObjectUri        "api/ActionTemplates" `
+                                    -Object           $Object;
 
     return @(, $results);
 
