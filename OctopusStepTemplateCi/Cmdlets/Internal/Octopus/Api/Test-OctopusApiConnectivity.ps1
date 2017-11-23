@@ -16,31 +16,45 @@ limitations under the License.
 
 <#
 .NAME
-	Test-OctopusConnectivity
+    Test-OctopusApiConnectivity
 
 .SYNOPSIS
     Verifies that the required octopus environment variables are available, and performs a test API call to ensure the Octopus web api is responding
 #>
-function Test-OctopusConnectivity {
-    param(
+function Test-OctopusApiConnectivity
+{
+
+    param
+    (
+
         $OctopusUri = $ENV:OctopusURI,
+
         $OctopusApiKey = $ENV:OctopusApikey,
-        [switch]$TestConnection
+
+        [switch] $TestConnection
+
     )
-    
-    if ([string]::IsNullOrWhiteSpace($OctopusUri)) {
+
+    if( [string]::IsNullOrWhiteSpace($OctopusUri) )
+    {
         throw "The OctopusUri environment variable is not set, please set this variable and execute again."
     }
 
-    if ([string]::IsNullOrWhiteSpace($OctopusApiKey)) {
+    if( [string]::IsNullOrWhiteSpace($OctopusApiKey) )
+    {
         throw "The OctopusApiKey environment variables is not set, please set this variable and execute again."
     }
-    
-    if ($TestConnection) {
-        $apiTestCall = Invoke-OctopusOperation -Action Get -ObjectType UserDefined -ApiUri "api" | ? Application -eq "Octopus Deploy"
-        
-        if ($null -eq $apiTestCall) {
+
+    if( $TestConnection )
+    {
+
+        $apiTestCall = Invoke-OctopusApiOperation -Method "GET" -Uri "/api" | ? Application -eq "Octopus Deploy"
+
+        if( $null -eq $apiTestCall )
+        {
             throw "Octopus Deploy Api is not responding correctly"
         }
+
     }
+
 }

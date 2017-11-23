@@ -105,7 +105,7 @@ function Invoke-TeamCityCiUpload
 
         if( $UploadIfSuccessful )
         {
-            Test-OctopusConnectivity -TestConnection;
+            Test-OctopusApiConnectivity -TestConnection;
         }
 
         Reset-BuildOutputDirectory -Path $BuildDirectory;
