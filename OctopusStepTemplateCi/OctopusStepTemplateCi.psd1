@@ -84,7 +84,6 @@ NestedModules = @(
 
     <# Interface Functions exported in the PSD1 file #>
     "Cmdlets\Interface\Export-StepTemplate.ps1",
-    "Cmdlets\Interface\Get-OctopusStatusReport.ps1",
     "Cmdlets\Interface\Invoke-OctopusScriptTestSuite.ps1",
     "Cmdlets\Interface\Invoke-TeamCityCiUpload.ps1",
     "Cmdlets\Interface\New-ScriptModule.ps1",
