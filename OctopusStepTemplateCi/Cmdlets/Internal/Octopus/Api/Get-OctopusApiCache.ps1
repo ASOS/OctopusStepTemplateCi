@@ -16,26 +16,24 @@ limitations under the License.
 
 <#
 .NAME
-    Reset-Cache.Tests
+    Get-OctopusApiCache
 
 .SYNOPSIS
-    Pester tests for Reset-Cache.
+    Returns a hashtable that can be used as a cache
 #>
+function Get-OctopusApiCache
+{
 
-$ErrorActionPreference = "Stop";
-Set-StrictMode -Version "Latest";
-
-InModuleScope "OctopusStepTemplateCi" {
-
-    Describe "Reset-Cache" {
-
-        It "Should clear out the cache" {
-            $cache = Get-Cache;
-            $cache.Add("key", "value");
-            Reset-Cache;
-            Get-Cache | % Count | Should BeExactly 0;
-        }
-
+    if( $null -eq $ExecutionContext.SessionState.Module.PrivateData )
+    {
+        $ExecutionContext.SessionState.Module.PrivateData = @{};
     }
+
+    if( $null -eq $ExecutionContext.SessionState.Module.PrivateData["OctopusApiCache"] )
+    {
+        $ExecutionContext.SessionState.Module.PrivateData["OctopusApiCache"] = @{};
+    }
+    
+    return $ExecutionContext.SessionState.Module.PrivateData.OctopusApiCache;
 
 }

@@ -16,13 +16,23 @@ limitations under the License.
 
 <#
 .NAME
-	Reset-Cache
+    Get-OctopusApiCache.Tests
 
 .SYNOPSIS
-    Resets / clears the cache 
+    Pester tests for Get-OctopusApiCache.
 #>
-function Reset-Cache {
-    $cache = Get-Cache
-    
-    $cache.Clear()
+
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
+
+InModuleScope "OctopusStepTemplateCi" {
+
+    Describe "Get-OctopusApiCache" {
+
+        It "Should return a hashtable that can be used as a cache" {
+            Get-OctopusApiCache | % GetType | % Name | Should Be "hashtable";
+        }
+
+    }
+
 }

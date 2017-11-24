@@ -65,7 +65,7 @@ InModuleScope "OctopusStepTemplateCi" {
 
             $cache = @{};
 
-            Mock -CommandName "Get-Cache" `
+            Mock -CommandName "Get-OctopusApiCache" `
                  -MockWith { return $cache; } `
                  -Verifiable;
 

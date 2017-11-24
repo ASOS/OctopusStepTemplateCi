@@ -35,7 +35,7 @@ InModuleScope "OctopusStepTemplateCi" {
         Mock -CommandName "Invoke-WebRequest" `
              -MockWith { return @{ "Content" = "" }; };
 
-        Mock -CommandName "Get-Cache" `
+        Mock -CommandName "Get-OctopusApiCache" `
              -MockWith { return @{}; };
 
         It "Should call Test-OctopusApiConnectivity" {
@@ -117,7 +117,7 @@ InModuleScope "OctopusStepTemplateCi" {
 
             $cache = @{};
 
-            Mock -CommandName "Get-Cache" `
+            Mock -CommandName "Get-OctopusApiCache" `
                  -MockWith { return $cache; } `
                  -Verifiable;
 

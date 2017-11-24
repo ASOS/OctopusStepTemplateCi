@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-	Get-Cache.Tests
+    Reset-Cache.Tests
 
 .SYNOPSIS
-	Pester tests for Get-Cache.
+    Pester tests for Reset-Cache.
 #>
 
 $ErrorActionPreference = "Stop";
@@ -27,10 +27,17 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-    Describe "Get-Cache" {
+    Describe "Reset-Cache" {
 
-        It "Should return a hashtable that can be used as a cache" {
-            Get-Cache | % GetType | % Name | Should Be "hashtable";
+        It "Should clear out the cache" {
+
+            $cache = Get-OctopusApiCache;
+            $cache.Add("key", "value");
+
+            Reset-OctopusApiCache;
+
+            (Get-OctopusApiCache).Count | Should BeExactly 0;
+
         }
 
     }
