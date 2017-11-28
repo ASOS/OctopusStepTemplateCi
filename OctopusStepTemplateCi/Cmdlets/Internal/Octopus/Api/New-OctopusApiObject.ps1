@@ -37,7 +37,7 @@ function New-OctopusApiObject
         [string] $ObjectUri,
 
         [Parameter(Mandatory=$true)]
-        [string] $Object
+        [object] $Object
 
     )
 

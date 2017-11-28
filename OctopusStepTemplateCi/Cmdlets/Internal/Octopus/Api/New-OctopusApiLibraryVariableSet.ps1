@@ -34,7 +34,7 @@ function New-OctopusApiLibraryVariableSet
         [string] $OctopusApiKey = $env:OctopusApiKey,
 
         [Parameter(Mandatory=$true)]
-        [string] $Object
+        [object] $Object
 
     )
 
