@@ -51,7 +51,7 @@ function Export-StepTemplate
     (
 
         [Parameter(Mandatory=$true)]
-	[ValidateScript({ Test-Path $_ })]
+        [ValidateScript({ Test-Path $_ })]
         [string] $Path,
 
         [Parameter(Mandatory=$true, ParameterSetName="File")]
