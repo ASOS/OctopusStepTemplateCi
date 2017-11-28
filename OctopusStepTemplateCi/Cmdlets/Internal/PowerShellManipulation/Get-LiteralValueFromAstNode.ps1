@@ -58,15 +58,6 @@ function Get-LiteralValueFromAstNode
     switch( $true )
     {
 
-        { $Node -is [System.Management.Automation.Language.ConstantExpressionAst] } {
-
-            # represents a constant value - e.g. 100
-            # see https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.language.constantexpressionast?view=powershellsdk-1.1.0
-
-            return $Node.Value;
-
-        }
-
         { $Node -is [System.Management.Automation.Language.StringConstantExpressionAst] } {
 
             # represents a string constant with no variable references or no sub-expressions.
@@ -74,6 +65,15 @@ function Get-LiteralValueFromAstNode
             # see https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.language.stringconstantexpressionast?view=powershellsdk-1.1.0
 
             return $node.Value;
+
+        }
+
+        { $Node -is [System.Management.Automation.Language.ConstantExpressionAst] } {
+
+            # represents a constant value - e.g. 100
+            # see https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.language.constantexpressionast?view=powershellsdk-1.1.0
+
+            return $Node.Value;
 
         }
 
