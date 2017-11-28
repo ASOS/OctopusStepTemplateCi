@@ -27,14 +27,20 @@ limitations under the License.
     This is safer than calling Invoke() on a script block as it won't execute any
     instruction statements (e.g. write-host, remove-item, format-volume) while evaluating.
 
-    It also side-steps an issue with ScriptBlock.Invoke which converts an array containing
-    one item into the same output as the unrolled item. For example {100}.Invoke() returns
-    an object of type [System.Collections.ObjectModel.Collection[[System.Management.Automation.PSObject]]
-    containing one item with a value of 100, but {@(100)}.Invoke() also returns exactly
-    the same result. There's no way of knowing whether a return value of 100 from Invoke()
-    was declared inside the script block as a free-standing value or as an array with a
-    single item. By contrast, Get-LiteralValueFromAstNode will return an array containing
-    a single item if that's what the Ast specifically represents.
+    It also side-steps an issue with ScriptBlock.Invoke() where it unrolls the return value
+    if it's an array containing a single item. For example {@(100)}.Invoke() evaluates to
+    an array with one item, which then gets unrolled to just return the item itself, i.e. 100.
+
+    By comparison, Get-LiteralValueFromAstNode preserves the original script block structure
+    and will return @(100) if the script block is {@(100)} or 100 if the script block is {100}.
+
+.EXAMPLE
+    $node  = { @( 100 ) }.Ast.EndBlock.Statements[0].PipelineElements[0];
+    $value = Get-LiteralValueFromAstNode -Node $node;
+
+.EXAMPLE
+    $node  = { 100 }.Ast.EndBlock.Statements[0].PipelineElements[0];
+    $value = Get-LiteralValueFromAstNode -Node $node;
     
 #>
 function Get-LiteralValueFromAstNode
