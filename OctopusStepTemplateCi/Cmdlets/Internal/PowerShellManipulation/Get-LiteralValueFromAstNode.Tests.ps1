@@ -85,6 +85,14 @@ InModuleScope "OctopusStepTemplateCi" {
             $actual | Should Be $false;
         }
 
+        It "Should throw when InputObject is not a constant variable" {
+            $myVariable = 100;
+            {
+                $commandExpression = { $myVariable }.Ast.EndBlock.Statements[0].PipelineElements[0];
+                $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            } | Should Throw "Only variables that reference constant values can be evaluated (e.g. `$true, `$false, `$null).";
+        }
+
         # [System.Management.Automation.Language.BinaryExpressionAst] tests
 
         It "Should return the value when the InputObject is a simple string concatenation" {

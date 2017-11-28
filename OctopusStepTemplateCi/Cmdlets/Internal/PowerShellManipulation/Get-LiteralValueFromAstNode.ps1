@@ -122,7 +122,7 @@ function Get-LiteralValueFromAstNode
 
             # only evaluate built-in literal values, not user defined variables
             # or built-in variables that can have different values on different systems.
-            if( -not $Node.IsConstantVariable )
+            if( -not $Node.IsConstantVariable() )
             {
                 throw new-object System.InvalidOperationException("Only variables that reference constant values can be evaluated (e.g. `$true, `$false, `$null).");
             }
