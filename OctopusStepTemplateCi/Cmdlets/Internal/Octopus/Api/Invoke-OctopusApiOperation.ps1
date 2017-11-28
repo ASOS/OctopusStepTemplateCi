@@ -53,7 +53,7 @@ function Invoke-OctopusApiOperation
     $Uri      = $OctopusUri + $Uri;
     $cacheKey = "$Uri-$Method";
 
-    $cache = Get-Cache;
+    $cache = Get-OctopusApiCache;
     if( $UseCache -and $cache.ContainsKey($cacheKey) )
     {
         return $cache.Item($cacheKey);
@@ -69,7 +69,7 @@ function Invoke-OctopusApiOperation
     else
     {
         $requestBody = ConvertTo-OctopusJson -InputObject $Body;
-        $response = Invoke-WebRequest -Uri $Uri -Method $method -Body $requestBody -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
+        $response = Invoke-WebRequest -Uri $Uri -Method $Method -Body $requestBody -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
     }
 
     $result = ConvertFrom-OctopusJson -InputObject $response.Content;

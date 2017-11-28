@@ -33,7 +33,7 @@ Describe "Invoke-TeamCityCiUpload" {
         Mock Sync-ScriptModule { @{UploadCount = 0} };
         Mock Sync-StepTemplate { @{UploadCount = 0} };
         Mock Test-OctopusApiConnectivity {};
-        Mock Reset-Cache {};
+        Mock Reset-OctopusApiCache {};
         Mock Invoke-OctopusScriptTestSuite { @{ Passed = 1; Failed = 0; Success = $true } };
 
         Context "Parameter validation" {    
@@ -65,7 +65,7 @@ Describe "Invoke-TeamCityCiUpload" {
         }
 
         It "Should reset the cache before beginning" {
-            Mock Reset-Cache {} -Verifiable;
+            Mock Reset-OctopusApiCache {} -Verifiable;
             Invoke-TeamCityCiUpload -Path "TestDrive:\" -BuildDirectory "TestDrive:\.BuildOutput";
             Assert-VerifiableMock;
         }

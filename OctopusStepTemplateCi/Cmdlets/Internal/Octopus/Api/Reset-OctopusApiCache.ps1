@@ -16,18 +16,16 @@ limitations under the License.
 
 <#
 .NAME
-	Get-Cache
+    Reset-OctopusApiCache
 
 .SYNOPSIS
-    Returns a hashtable that can be used as a cache
+    Resets / clears the cache 
 #>
-function Get-Cache {
-    if ($null -eq $ExecutionContext.SessionState.Module.PrivateData) {
-	   $ExecutionContext.SessionState.Module.PrivateData = @{}
-    }
-    if ($null -eq $ExecutionContext.SessionState.Module.PrivateData['Cache']) {
-        $ExecutionContext.SessionState.Module.PrivateData['Cache'] = @{}
-    }
+function Reset-OctopusApiCache
+{
+
+    $cache = Get-OctopusApiCache;
     
-    return $ExecutionContext.SessionState.Module.PrivateData.Cache
+    $cache.Clear();
+
 }

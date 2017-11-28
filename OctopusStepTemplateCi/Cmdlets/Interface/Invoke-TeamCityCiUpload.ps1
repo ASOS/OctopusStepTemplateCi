@@ -110,7 +110,7 @@ function Invoke-TeamCityCiUpload
 
         Reset-BuildOutputDirectory -Path $BuildDirectory;
 
-        Reset-Cache;
+        Reset-OctopusApiCache;
 
         switch( $ProcessingMode )
         {
