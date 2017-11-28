@@ -29,6 +29,44 @@ InModuleScope "OctopusStepTemplateCi" {
 
     Describe "Get-LiteralValueFromAstNode" {
 
+        # [System.Management.Automation.Language.StringConstantExpressionAst] tests
+
+        It "Should return the value when the InputObject is an empty string" {
+            $commandExpression = { "" }.Ast.EndBlock.Statements[0].PipelineElements[0];
+            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            $actual | Should Be "";
+        }
+
+        It "Should return the value when the InputObject is a simple string" {
+            $commandExpression = { "my string" }.Ast.EndBlock.Statements[0].PipelineElements[0];
+            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            $actual | Should Be "my string";
+        }
+
+        # [System.Management.Automation.Language.ConstantExpressionAst] tests
+
+        It "Should return the value when the InputObject is a positive integer" {
+            $commandExpression = { 100 }.Ast.EndBlock.Statements[0].PipelineElements[0];
+            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            $actual | Should Be 100;
+        }
+
+        It "Should return the value when the InputObject is a negative integer" {
+            $commandExpression = { -100 }.Ast.EndBlock.Statements[0].PipelineElements[0];
+            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            $actual | Should Be -100;
+        }
+
+        # [System.Management.Automation.Language.ExpandableStringExpressionAst] tests
+
+        It "Should return the value when the InputObject is an expandable string" {
+            $commandExpression = { "[$null|$true|$false]" }.Ast.EndBlock.Statements[0].PipelineElements[0];
+            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            $actual | Should Be "[|True|False]";
+        }
+
+        # [System.Management.Automation.Language.VariableExpressionAst] tests
+
         It "Should return the value when the InputObject is `$null" {
             $commandExpression = { $null }.Ast.EndBlock.Statements[0].PipelineElements[0];
             $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
@@ -47,29 +85,7 @@ InModuleScope "OctopusStepTemplateCi" {
             $actual | Should Be $false;
         }
 
-        It "Should return the value when the InputObject is a positive integer" {
-            $commandExpression = { 100 }.Ast.EndBlock.Statements[0].PipelineElements[0];
-            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
-            $actual | Should Be 100;
-        }
-
-        It "Should return the value when the InputObject is a negative integer" {
-            $commandExpression = { -100 }.Ast.EndBlock.Statements[0].PipelineElements[0];
-            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
-            $actual | Should Be -100;
-        }
-
-        It "Should return the value when the InputObject is an empty string" {
-            $commandExpression = { "" }.Ast.EndBlock.Statements[0].PipelineElements[0];
-            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
-            $actual | Should Be "";
-        }
-
-        It "Should return the value when the InputObject is a simple string" {
-            $commandExpression = { "my string" }.Ast.EndBlock.Statements[0].PipelineElements[0];
-            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
-            $actual | Should Be "my string";
-        }
+        # [System.Management.Automation.Language.BinaryExpressionAst] tests
 
         It "Should return the value when the InputObject is a simple string concatenation" {
             $commandExpression = { "my" + " " + "string" }.Ast.EndBlock.Statements[0].PipelineElements[0];
@@ -77,11 +93,9 @@ InModuleScope "OctopusStepTemplateCi" {
             $actual | Should Be "my string";
         }
 
-        It "Should return the value when the InputObject is an expandable string" {
-            $commandExpression = { "[$null|$true|$false]" }.Ast.EndBlock.Statements[0].PipelineElements[0];
-            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
-            $actual | Should Be "[|True|False]";
-        }
+        # [System.Management.Automation.Language.CommandExpressionAst] tests
+
+        # [System.Management.Automation.Language.ArrayExpressionAst]
 
         It "Should return the value when the InputObject is an empty array" {
             $commandExpression = { @() }.Ast.EndBlock.Statements[0].PipelineElements[0];
@@ -125,6 +139,10 @@ InModuleScope "OctopusStepTemplateCi" {
             $actual[1] | Should Be 100;
             $actual[2] | Should Be "my string";
         }
+
+        # [System.Management.Automation.Language.ArrayLiteralAst]
+
+        # [System.Management.Automation.Language.HashtableAst]
 
         It "Should return the value when the InputObject is an empty hashtable" {
             $commandExpression = { @{} }.Ast.EndBlock.Statements[0].PipelineElements[0];
