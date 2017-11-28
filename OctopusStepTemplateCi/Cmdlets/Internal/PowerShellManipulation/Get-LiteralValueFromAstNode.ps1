@@ -124,7 +124,7 @@ function Get-LiteralValueFromAstNode
             # or built-in variables that can have different values on different systems.
             if( -not $Node.IsConstantVariable )
             {
-                throw new-object System.InvalidOperationException("Only variable that reference constant values can be evaluated (e.g. `$true, `$false, `$null).");
+                throw new-object System.InvalidOperationException("Only variables that reference constant values can be evaluated (e.g. `$true, `$false, `$null).");
             }
 
             switch( $Node.VariablePath.UserPath )
