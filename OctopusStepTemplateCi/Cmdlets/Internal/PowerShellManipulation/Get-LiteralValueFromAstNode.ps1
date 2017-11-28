@@ -263,7 +263,7 @@ function Get-LiteralValueFromAstNode
         }
 
         default {
-            throw new-object System.InvalidOperationException("Ast nodes of type '$($Node.GetType().FullName)' are not supported.");
+            throw new-object System.InvalidOperationException("Ast nodes of type [$($Node.GetType().FullName)] are not supported.");
         }
 
     }

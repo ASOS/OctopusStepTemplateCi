@@ -85,7 +85,7 @@ InModuleScope "OctopusStepTemplateCi" {
             $actual | Should Be $false;
         }
 
-        It "Should throw when InputObject is not a constant variable" {
+        It "Should throw when the InputObject is not a constant variable" {
             $myVariable = 100;
             {
                 $commandExpression = { $myVariable }.Ast.EndBlock.Statements[0].PipelineElements[0];
@@ -95,15 +95,28 @@ InModuleScope "OctopusStepTemplateCi" {
 
         # [System.Management.Automation.Language.BinaryExpressionAst] tests
 
-        It "Should return the value when the InputObject is a simple string concatenation" {
+        It "Should return the value when the InputObject is an integer addition" {
+            $commandExpression = { 100 + 200 }.Ast.EndBlock.Statements[0].PipelineElements[0];
+            $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            $actual | Should Be 300;
+        }
+
+        It "Should return the value when the InputObject is a string concatenation" {
             $commandExpression = { "my" + " " + "string" }.Ast.EndBlock.Statements[0].PipelineElements[0];
             $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
             $actual | Should Be "my string";
         }
 
+        It "Should throw when the InputObject is an unsupported operation" {
+            {
+                $commandExpression = { 100 - 50 }.Ast.EndBlock.Statements[0].PipelineElements[0];
+                $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            } | Should Throw "Operator not supported.";
+        }
+
         # [System.Management.Automation.Language.CommandExpressionAst] tests
 
-        # [System.Management.Automation.Language.ArrayExpressionAst]
+        # [System.Management.Automation.Language.ArrayExpressionAst] tests
 
         It "Should return the value when the InputObject is an empty array" {
             $commandExpression = { @() }.Ast.EndBlock.Statements[0].PipelineElements[0];
@@ -148,9 +161,9 @@ InModuleScope "OctopusStepTemplateCi" {
             $actual[2] | Should Be "my string";
         }
 
-        # [System.Management.Automation.Language.ArrayLiteralAst]
+        # [System.Management.Automation.Language.ArrayLiteralAst] tests
 
-        # [System.Management.Automation.Language.HashtableAst]
+        # [System.Management.Automation.Language.HashtableAst] tests
 
         It "Should return the value when the InputObject is an empty hashtable" {
             $commandExpression = { @{} }.Ast.EndBlock.Statements[0].PipelineElements[0];
@@ -178,6 +191,15 @@ InModuleScope "OctopusStepTemplateCi" {
             $actual["myKey1"] | Should Be $null;
             $actual["myKey2"] | Should Be 100;
             $actual["myKey3"] | Should Be "my string";
+        }
+
+        # unsupported node type tests
+
+        It "Should throw when the InputObject is a command node" {
+            {
+                $commandExpression = { write-host "my message" }.Ast.EndBlock.Statements[0].PipelineElements[0];
+                $actual = Get-LiteralValueFromAstNode -Node $commandExpression;
+            } | Should Throw "Ast nodes of type [System.Management.Automation.Language.CommandAst] are not supported.";
         }
 
     }
