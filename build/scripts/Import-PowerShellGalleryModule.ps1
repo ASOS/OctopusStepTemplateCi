@@ -7,7 +7,7 @@ function Import-PowerShellGalleryModule
         [Parameter(Mandatory=$true)]
         [string] $Name,
 
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$false)]
         [version] $Version,
 
         [Parameter(Mandatory=$true)]
@@ -20,7 +20,10 @@ function Import-PowerShellGalleryModule
 
     $moduleRoot = $InstallRoot;
     $moduleRoot = [System.IO.Path]::Combine($moduleRoot, $Name);
-    $moduleRoot = [System.IO.Path]::Combine($moduleRoot, $Version);
+    if( $PSBoundParameters.ContainsKey("Version") )
+    {
+        $moduleRoot = [System.IO.Path]::Combine($moduleRoot, $Version);
+    }
 
     if( -not [System.IO.Directory]::Exists($moduleRoot) )
     {
@@ -34,7 +37,11 @@ function Import-PowerShellGalleryModule
         #Save-Module -Name $Name -Path $InstallRoot -RequiredVersion $Version;
 
         # ... so we'll roll our own instead
-        $downloadUri = "https://www.powershellgallery.com/api/v2/package/$Name/$Version";
+        $downloadUri = "https://www.powershellgallery.com/api/v2/package/$Name";
+        if( $PSBoundParameters.ContainsKey("Version") )
+        {
+            $downloadUri += "/$Version";
+        }
         $webResponse = Invoke-WebRequest $downloadUri;
         $nupkgBytes  = $webResponse.Content;
         $nupkgFilename = [System.IO.Path]::Combine($InstallRoot, "$($Name.ToLowerInvariant()).$Version.zip");
