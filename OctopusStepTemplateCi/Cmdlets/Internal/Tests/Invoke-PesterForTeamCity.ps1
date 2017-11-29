@@ -30,27 +30,32 @@ function Invoke-PesterForTeamCity {
     )
 
     $pesterModule = Get-Module "pester";
-    if( $pesterModule -eq $null )
+    if( $null -eq $pesterModule )
     {
         Import-Module -Name "pester" -ErrorAction "Stop";
         $pesterModule = Get-Module "pester";
     }
 
+    $parameters = @{
+        "Script"       = $Script
+        "OutputFile"   = $TestResultsFile
+        "OutputFormat" = "NUnitXml"
+        "PassThru"     = $true;
+    };
+
     if( $SuppressPesterOutput )
     {
         if( $pesterModule.Version -gt "3.4.0" )
         {
-            $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml -Show "None"
+            $parameters.Add("Show", "None");
         }
         else
         {
-            $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml -Quiet:$SuppressPesterOutput
+            $parameters.Add("Quiet", $true);
         }
     }
-    else
-    {
-        $testResult = Invoke-Pester -Script $Script -PassThru -OutputFile $TestResultsFile -OutputFormat NUnitXml
-    }
+
+    $testResult = Invoke-Pester @parameters;
 
     #update the test-suit name so that teamcity displays it better. otherwise, all test suites are called "Pester"
     Update-XPathValue -Path $TestResultsFile -XPath '//test-results/test-suite/@name' -Value $TestName
@@ -59,10 +64,12 @@ function Invoke-PesterForTeamCity {
     Write-TeamCityImportDataMessage -Type  "nunit" `
                                     -Path $TestResultsFile `
                                     -VerboseMessage;
-    
-    return New-Object -TypeName PSObject -Property @{
+
+    $result = New-Object -TypeName PSObject -Property @{
         "Passed" = $testResult.PassedCount
         "Failed" = $testResult.FailedCount
     };
+
+    return $result;
 
 }

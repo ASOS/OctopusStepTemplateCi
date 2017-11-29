@@ -115,8 +115,8 @@ function Invoke-TeamCityCiUpload
         switch( $ProcessingMode )
         {
             "Batch" {
-                $foldersToProcess = @(Get-Item -Path $Path | where-object { $_.PSIsContainer });
-                $itemsToProcess   = $foldersToProcess;
+                $folderToProcess = @(Get-Item -Path $Path | where-object { $_.PSIsContainer });
+                $itemsToProcess  = $folderToProcess;
             }
             "Individual" {
                 $stepTemplates  = @(Get-ChildItem -Path $Path -File -Recurse -Filter $StepTemplateFilter);
