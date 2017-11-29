@@ -60,7 +60,7 @@ function Get-LiteralValueFromAstNode
 
         { $Node -is [System.Management.Automation.Language.StringConstantExpressionAst] } {
 
-            # represents a string constant with no variable references or no sub-expressions.
+            # represents a string constant with no variable references and no sub-expressions.
             # e.g. "my string"
             # see https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.language.stringconstantexpressionast?view=powershellsdk-1.1.0
 
