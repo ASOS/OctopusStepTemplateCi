@@ -10,13 +10,11 @@ $rootFolder = [System.IO.Path]::GetDirectoryName($thisFolder);
 . ([System.IO.Path]::Combine($thisFolder, "scripts\Import-PowerShellGalleryModule.ps1"));
 
 
-
-
 # LOCAL
-$nuget           = "C:\src\github\pester\pester\vendor\tools\NuGet.exe";
-$progetFeedUrl  = "https://proget.services.kingsway.asos.com/nuget/ASOSPackages";
-$pesterModule    = "C:\src\github\pester\pester";
-$octopusModule   = "C:\src\github\mikeclayton\OctopusStepTemplateCi\OctopusStepTemplateCi\OctopusStepTemplateCi.psm1"
+$nuget           = "[nuget exe path]";
+$nugetFeedUrl    = "[nuget feed url]";
+$pesterModule    = "[pester module path]";
+$octopusModule   = "[octopus module path]"
 $excludeRules    = @(
     "PSAvoidUsingWMICmdlet",
     "PSAvoidUsingWriteHost",
@@ -25,19 +23,12 @@ $excludeRules    = @(
     "PSAvoidUsingUserNameAndPassWordParams",
     "PSShouldProcess"
 );
-$scriptPath         = "C:\src\asos-tfs\ASOS\BRB\OctopusDeployStepTemplates\Release\src";
-$OctopusUri         = "https://dev-octopus.services.kingsway.asos.com";
-$OctopusApiKey      = "API-PS9GLUF2EMM6ZM3ZXLVC8DLR5E";
+$scriptPath         = "[script path]";
+$OctopusUri         = "[octopus uri]";
+$OctopusApiKey      = "[octopus api key]";
 
 $stepTemplateFilter = "*.steptemplate.ps1";
-#$stepTemplateFilter = "xxx.steptemplate.ps1";
-#$stepTemplateFilter = "azure-activedirectory-add-application-key.steptemplate.ps1";
-#$stepTemplateFilter = "azure-deployment-check-instance-status.steptemplate.steptemplate.ps1";
-#$stepTemplateFilter = "azure-cosmosdb-account-create.steptemplate.ps1";
-
 $scriptmoduleFilter = "*.scriptmodule.ps1";
-#$scriptmoduleFilter = "xxx.scriptmodule.ps1";
-#$scriptmoduleFilter  = "azurespnv2.scriptmodule.ps1";
 
 
 $packageRoot = [System.IO.Path]::Combine($rootFolder, "packages");
@@ -52,7 +43,7 @@ if( $false )
     $cmdLine = $nuget;
     $cmdArgs = @(
         "Install", "OctopusStepTemplateCi"
-        "-Source", "`"$progetFeedUrl`"",
+        "-Source", "`"$nugetFeedUrl`"",
         "-ExcludeVersion"
     );
     write-host "cmdLine = '$cmdLine'";
