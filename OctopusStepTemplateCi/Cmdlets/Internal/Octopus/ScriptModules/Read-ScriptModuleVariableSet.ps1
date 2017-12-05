@@ -45,7 +45,7 @@ function Read-ScriptModuleVariableSet
     if( ($scriptModuleDescription -ne $null) -and
         ($scriptModuleDescription -isnot [string]) )
     {
-        throw new-object System.InvalidOperationException("The '`ScriptModuleDescription' variable in file '$Path' does not evaluate to a string.");
+        throw new-object System.InvalidOperationException("The '`$ScriptModuleDescription' variable in file '$Path' does not evaluate to a string.");
     }
 
     $variableSet = @{

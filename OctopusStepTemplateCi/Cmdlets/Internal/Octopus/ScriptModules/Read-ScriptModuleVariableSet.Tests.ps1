@@ -29,33 +29,79 @@ InModuleScope "OctopusStepTemplateCi" {
 
     Describe "Read-ScriptModuleVariableSet" {
 
-        Mock -CommandName "Get-Content" `
-             -MockWith {
-                 return @'
+        Context "When reading a valid script file" {
+
+            Mock -CommandName "Get-Content" `
+                 -MockWith {
+                     return @'
 function test {
     $ScriptModuleName = "name";
     $ScriptModuleDescription = "description";
     write-host "test";
 }
 '@
-             };
+                 };
 
-        It "Should return a new object with the content type of script module" {
-            $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
-    	$result.ContentType | Should Be "ScriptModule";
-            Assert-VerifiableMock;
+            It "Should return a new object with the content type of script module" {
+                $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+                $result.ContentType | Should Be "ScriptModule";
+                Assert-VerifiableMock;
+            }
+
+            It "Should return a new object with the name from the script file" {
+                $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+                $result.Name | Should Be "name";
+                Assert-VerifiableMock;
+            }
+
+            It "Should return a new object with the description from the script file" {
+                $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+                $result.Description | Should Be "description";
+                Assert-VerifiableMock;
+            }
+
         }
 
-        It "Should return a new object with the name from the script file" {
-            $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
-    	$result.Name | Should Be "name";
-            Assert-VerifiableMock;
+        Context "when script module name is not a string" {
+
+            Mock -CommandName "Get-Content" `
+                 -MockWith {
+                     return @'
+function test {
+    $ScriptModuleName = 100;
+    $ScriptModuleDescription = "description";
+    write-host "test";
+}
+'@
+            }
+
+            It "Should throw when script module name is not a string" {
+                {
+                    $result = Read-ScriptModuleVariableSet -Path "my.scriptmodule.ps1";
+                } | Should Throw "The '`$ScriptModuleName' variable in file 'my.scriptmodule.ps1' does not evaluate to a string.";
+             }
+
         }
 
-        It "Should return a new object with the description from the script file" {
-            $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
-    	$result.Description | Should Be "description";
-            Assert-VerifiableMock;
+        Context "when script module description is not a string" {
+
+            Mock -CommandName "Get-Content" `
+                 -MockWith {
+                     return @'
+function test {
+    $ScriptModuleName = "name";
+    $ScriptModuleDescription = 100;
+    write-host "test";
+}
+'@
+            }
+
+            It "Should throw when script module description is not a string" {
+                {
+                    $result = Read-ScriptModuleVariableSet -Path "my.scriptmodule.ps1";
+                } | Should Throw "The '`$ScriptModuleDescription' variable in file 'my.scriptmodule.ps1' does not evaluate to a string.";
+             }
+
         }
 
     }
