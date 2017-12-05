@@ -1,67 +1,57 @@
+param
+(
+
+    [string] $NuGet,
+    [string] $NuGetFeedUrl,
+
+    [string] $OctopusUri,
+    [string] $OctopusApiKey,
+
+    [string] $ScriptPath,
+
+    [string] $StepTemplateFilter = "*.steptemplate.ps1",
+    [string] $ScriptmoduleFilter = "*.scriptmodule.ps1"
+
+)
+
+
 $ErrorActionPreference = "Stop";
 Set-StrictMode -Version "Latest";
 
 
-$thisScript = $MyInvocation.MyCommand.Path;
-$thisFolder = [System.IO.Path]::GetDirectoryName($thisScript);
-$rootFolder = [System.IO.Path]::GetDirectoryName($thisFolder);
+$thisScript   = $MyInvocation.MyCommand.Path;
+$thisFolder   = [System.IO.Path]::GetDirectoryName($thisScript);
+$rootFolder   = [System.IO.Path]::GetDirectoryName($thisFolder);
+$packagesRoot = [System.IO.Path]::Combine($rootFolder, "packages");
 
 
-. ([System.IO.Path]::Combine($thisFolder, "scripts\Import-PowerShellGalleryModule.ps1"));
+. ([System.IO.Path]::Combine($thisFolder, "scripts\Invoke-NuGetInstall.ps1"));
 
 
-# LOCAL
-$nuget           = "[nuget exe path]";
-$nugetFeedUrl    = "[nuget feed url]";
-$pesterModule    = "[pester module path]";
-$octopusModule   = "[octopus module path]"
-$excludeRules    = @(
-    "PSAvoidUsingWMICmdlet",
-    "PSAvoidUsingWriteHost",
-    "PSAvoidUsingPlainTextForPassword",
-    "PSAvoidUsingConvertToSecureStringWithPlainText",
-    "PSAvoidUsingUserNameAndPassWordParams",
-    "PSShouldProcess"
-);
-$scriptPath         = "[script path]";
-$OctopusUri         = "[octopus uri]";
-$OctopusApiKey      = "[octopus api key]";
+Invoke-NuGetInstall -NuGet           $NuGet `
+                    -Source          "https://www.powershellgallery.com/api/v2" `
+                    -PackageId       "PSScriptAnalyzer" `
+                    -OutputDirectory $packagesRoot `
+                    -ExcludeVersion;
 
-$stepTemplateFilter = "*.steptemplate.ps1";
-$scriptmoduleFilter = "*.scriptmodule.ps1";
+Invoke-NuGetInstall -NuGet           $NuGet `
+                    -Source          "https://www.powershellgallery.com/api/v2" `
+                    -PackageId       "Pester" `
+                    -Version         "4.0.8" `
+                    -OutputDirectory $packagesRoot `
+                    -ExcludeVersion;
 
-
-$packageRoot = [System.IO.Path]::Combine($rootFolder, "packages");
-Import-PowerShellGalleryModule -Name        "PSScriptAnalyzer" `
-                               -InstallRoot $packageRoot `
-                               -ModulePath  "PSScriptAnalyzer.psd1";
+Invoke-NuGetInstall -NuGet           $NuGet `
+                    -Source          $NuGetFeedUrl `
+                    -PackageId       "OctopusStepTemplateCi" `
+                    -OutputDirectory $packagesRoot `
+                    -ExcludeVersion;
 
 
-if( $false )
-{
-    write-host "installing OctopusStepTemplateCi nuget package";
-    $cmdLine = $nuget;
-    $cmdArgs = @(
-        "Install", "OctopusStepTemplateCi"
-        "-Source", "`"$nugetFeedUrl`"",
-        "-ExcludeVersion"
-    );
-    write-host "cmdLine = '$cmdLine'";
-    write-host "cmdArgs = ";
-    write-host ($cmdArgs | fl * | out-string);
-    $process = Start-Process -FilePath $cmdLine -ArgumentList $cmdArgs -Wait -NoNewWindow -PassThru;
-    if( $process.ExitCode -ne 0 )
-    {
-        throw new-object System.InvalidOperationException("process terminated with exit code $($process.ExitCode)");
-    }
-}
-
-
-if( -not [string]::IsNullOrEmpty($pesterModule) )
-{
-    Import-Module -Name $pesterModule -ErrorAction "Stop";
-}
-Import-Module -Name $octopusModule -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer"))      -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester"))                -ErrorAction "Stop";
+#Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "OctopusStepTemplateCi")) -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($rootFolder, "OctopusStepTemplateCi"))   -ErrorAction "Stop";
 
 
 if( -not [string]::IsNullOrEmpty($OctopusUri) )
@@ -74,15 +64,20 @@ if( -not [string]::IsNullOrEmpty($OctopusApiKey) )
 }
 
 
-$env:PSModulePath += ";$($PWD.Path)";
-
-Invoke-TeamCityCiUpload -Path               $scriptPath `
+Invoke-TeamCityCiUpload -Path               $ScriptPath `
                         -ProcessingMode     "Individual" `
-                        -StepTemplateFilter $stepTemplateFilter `
-                        -ScriptModuleFilter $scriptModuleFilter `
+                        -StepTemplateFilter $StepTemplateFilter `
+                        -ScriptModuleFilter $ScriptModuleFilter `
                         -TestSettings @{
                             "PSScriptAnalyzer-Enabled"      = "True";
-                            "PSScriptAnalyzer-ExcludeRules" = $excludeRules
+                            "PSScriptAnalyzer-ExcludeRules" = @(
+                                "PSAvoidUsingWMICmdlet",
+                                "PSAvoidUsingWriteHost",
+                                "PSAvoidUsingPlainTextForPassword",
+                                "PSAvoidUsingConvertToSecureStringWithPlainText",
+                                "PSAvoidUsingUserNameAndPassWordParams",
+                                "PSShouldProcess"
+                            )
                         } `
                         -UploadIfSuccessful:$false `
-                        -suppressPesterOutput:$false;
+                        -SuppressPesterOutput:$true;
