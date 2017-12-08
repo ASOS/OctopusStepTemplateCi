@@ -45,7 +45,7 @@ function Read-StepTemplate
     if( ($stepTemplateDescription -ne $null) -and
         ($stepTemplateDescription -isnot [string]) )
     {
-        throw new-object System.InvalidOperationException("The '`StepTemplateDescription' variable in file '$Path' does not evaluate to a string.");
+        throw new-object System.InvalidOperationException("The '`$StepTemplateDescription' variable in file '$Path' does not evaluate to a string.");
     }
 
     $stepTemplateParameters = @(Get-VariableFromScriptText -Script $script -VariableName "StepTemplateParameters");

@@ -17,7 +17,7 @@ set currentfilewithoutextension=%~n0
 set psscript=%currentdirwithoutbackslash%\%currentfilewithoutextension%.ps1
 
 echo calling %currentfilewithoutextension%.ps1
-powershell -NoProfile -NonInteractive -File "%psscript%"
+powershell -NoProfile -NonInteractive -File "%psscript%" %*
 echo returned from %currentfilewithoutextension%.ps1
 
 echo errorlevel = %ERRORLEVEL%

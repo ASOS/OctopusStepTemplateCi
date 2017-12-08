@@ -197,6 +197,86 @@ function test {
 
         }
 
+        Context "when step template name is not a string" {
+
+            Mock -CommandName "Get-Content" `
+                 -MockWith {
+                     return @'
+function test {
+    $StepTemplateName = 100
+    $StepTemplateDescription = "description"
+    $StepTemplateParameters = @(
+        @{
+            "Name" = "myParameterName"
+            "Label" = "myParameterLabel"
+            "HelpText" = "myParameterHelpText"
+            "DefaultValue" = "myDefaultValue"
+            "DisplaySettings" = @{}
+        }
+    )
+}
+'@
+                 };
+
+            It "Should throw when step template name is not a string" {
+                {
+                    $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                } | Should Throw "The '`$StepTemplateName' variable in file 'my.steptemplate.ps1' does not evaluate to a string.";
+             }
+
+        }
+
+        Context "when step template description is not a string" {
+
+            Mock -CommandName "Get-Content" `
+                 -MockWith {
+                     return @'
+function test {
+    $StepTemplateName = "name"
+    $StepTemplateDescription = 100
+    $StepTemplateParameters = @(
+        @{
+            "Name" = "myParameterName"
+            "Label" = "myParameterLabel"
+            "HelpText" = "myParameterHelpText"
+            "DefaultValue" = "myDefaultValue"
+            "DisplaySettings" = @{}
+        }
+    )
+}
+'@
+                 };
+
+            It "Should throw when step template description is not a string" {
+                {
+                    $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                } | Should Throw "The '`$StepTemplateDescription' variable in file 'my.steptemplate.ps1' does not evaluate to a string.";
+             }
+
+        }
+
+
+        Context "when step template parameters is not an array of hashtables" {
+
+            Mock -CommandName "Get-Content" `
+                 -MockWith {
+                     return @'
+function test {
+    $StepTemplateName = "name"
+    $StepTemplateDescription = "description"
+    $StepTemplateParameters = 100
+}
+'@
+                 };
+
+            It "Should throw when step template description is not a string" {
+                {
+                    $result = Read-StepTemplate -Path "my.steptemplate.ps1";
+                } | Should Throw "The '`$StepTemplateParameters' variable in file 'my.steptemplate.ps1' does not evaluate to an array of hashtables.";
+             }
+
+        }
+	
     }
 
 }
