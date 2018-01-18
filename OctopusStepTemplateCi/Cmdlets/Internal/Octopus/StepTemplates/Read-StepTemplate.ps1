@@ -86,7 +86,7 @@ function Read-StepTemplate
             if( $parameter.ContainsKey($propertyName) )
             {
 
-                if( $parameter[$propertyName] -eq $null )
+                if( $null -eq $parameter[$propertyName] )
                 {
                     # Octopus converts null values into an empty string when a step template is uploaded
                     $parameter[$propertyName] = "";

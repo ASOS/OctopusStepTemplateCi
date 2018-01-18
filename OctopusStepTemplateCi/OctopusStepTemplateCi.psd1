@@ -115,6 +115,7 @@ NestedModules = @(
     "Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.ps1",
     "Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.ps1",
     "Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1",
+    "Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplateParameter.ps1",
     "Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1",
     "Cmdlets\Internal\PowerShellManipulation\Get-LiteralValueFromAstNode.ps1",
     "Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1",
