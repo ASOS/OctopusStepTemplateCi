@@ -169,6 +169,10 @@ function Invoke-TeamCityCiUpload
                     }
 
                 }
+                else
+                {
+                    Write-TeamCityBuildLogMessage -Message "UploadIfSuccessful is false. Skipping comparison with server.";
+                }
             }
             else
             {
