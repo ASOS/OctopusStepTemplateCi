@@ -38,12 +38,22 @@ function Compare-StepTemplate
     $ErrorActionPreference = "Stop";
 
     #id - wont change
-    #name - wont change
-    #actiontype - wont change
     #version - will be incremented, shouldn't be checked
+
+    # name
+    if( $OldTemplate.Name -ne $NewTemplate.Name )
+    {
+        return $true;
+    }
 
     # description
     if( $OldTemplate.Description -ne $NewTemplate.Description )
+    {
+        return $true;
+    }
+
+    # action type
+    if( $OldTemplate.ActionType -ne $NewTemplate.ActionType )
     {
         return $true;
     }
@@ -60,13 +70,13 @@ function Compare-StepTemplate
         return $true;
     }
 
-    # Parameters - check we have the same number of them, with the same names
+    # Parameters - check we have the same number of them, with the same names (in the same order!)
     if( (($OldTemplate.Parameters | % Name) -join ',') -ne (($NewTemplate.Parameters | % Name) -join ',') )
     {
         return $true;
     }
 
-    # loop through the params, and compare each hashtable
+    # loop through the parameters, and compare each hashtable
     foreach( $newParameter in $NewTemplate.Parameters )
     {
         $oldParameter = $OldTemplate.Parameters | where-object { $_.Name -eq $newParameter.Name };

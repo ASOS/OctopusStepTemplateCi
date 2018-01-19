@@ -56,10 +56,26 @@ function test {
             $result | Should Be $false;
         }
 
+        It "Should return true when the name is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Name = "new name";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
         It "Should return true when the description is different" {
             $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
             $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
             $newTemplate.Description = "new description";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
+        It "Should return true when the action type is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.ActionType = "new action type";
             $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
             $result | Should Be $true;
         }
