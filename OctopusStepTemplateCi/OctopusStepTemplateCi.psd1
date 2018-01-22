@@ -112,6 +112,8 @@ NestedModules = @(
     "Cmdlets\Internal\Octopus\Common\ConvertTo-HashtableJsonObject.ps1",
     "Cmdlets\Internal\Octopus\Common\ConvertTo-OctopusJson.ps1",
     "Cmdlets\Internal\Octopus\Common\ConvertTo-PSSource.ps1",
+    "Cmdlets\Internal\Octopus\ScriptModules\ConvertTo-ScriptModule.ps1",
+    "Cmdlets\Internal\Octopus\ScriptModules\ConvertTo-ScriptModuleVariableSet.ps1",
     "Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.ps1",
     "Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.ps1",
     "Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1",

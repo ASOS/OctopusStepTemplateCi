@@ -34,25 +34,7 @@ function Read-ScriptModuleVariableSet
 
     $script = Get-Content -LiteralPath $Path -Raw;
 
-    $scriptModuleName = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleName";
-    if( ($scriptModuleName -ne $null) -and
-        ($scriptModuleName -isnot [string]) )
-    {
-        throw new-object System.InvalidOperationException("The '`$ScriptModuleName' variable in file '$Path' does not evaluate to a string.");
-    }
-
-    $scriptModuleDescription = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleDescription";
-    if( ($scriptModuleDescription -ne $null) -and
-        ($scriptModuleDescription -isnot [string]) )
-    {
-        throw new-object System.InvalidOperationException("The '`$ScriptModuleDescription' variable in file '$Path' does not evaluate to a string.");
-    }
-
-    $variableSet = @{
-                       "ContentType" = "ScriptModule"
-                       "Name"        = $scriptModuleName
-                       "Description" = $scriptModuleDescription
-                   };
+    $variableSet = ConvertTo-ScriptModuleVariableSet -Script $script;
 
     return $variableSet;
 

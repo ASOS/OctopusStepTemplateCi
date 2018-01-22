@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-    Read-ScriptModule.Tests
+    ConvertTo-ScriptModule.Tests
 
 .SYNOPSIS
-    Pester tests for Read-ScriptModule.
+    Pester tests for ConvertTo-ScriptModule.
 #>
 
 $ErrorActionPreference = "Stop";
@@ -27,29 +27,26 @@ Set-StrictMode -Version "Latest";
 
 InModuleScope "OctopusStepTemplateCi" {
 
-    Describe "Read-ScriptModule" {
+    Describe "ConvertTo-ScriptModule" {
 
         Context "When reading a valid script file" {
 
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            $scriptModuleScript = @'
 function test {
     $ScriptModuleName = "name";
     $ScriptModuleDescription = "description";
     write-host "test";
 }
 '@;
-                 };
 
             It "Should return a new object with the name from the script file" {
-                $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
+                $result = ConvertTo-ScriptModule -Script $scriptModuleScript;
                 $result.Name | Should Be "Octopus.Script.Module[name]";
                 Assert-VerifiableMock;
             }
-    
+
             It "Should return a new object with the value as the body of the script file" {
-                $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
+                $result = ConvertTo-ScriptModule -Script $scriptModuleScript;
                 $result.Value | Should Be @'
 function test {
     ;
@@ -64,20 +61,17 @@ function test {
 
         Context "when script module name is not a string" {
 
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            $script =  @'
 function test {
     $ScriptModuleName = 100;
     $ScriptModuleDescription = "description";
     write-host "test";
 }
 '@;
-            }
 
             It "Should throw when script module name is not a string" {
                 {
-                    $result = Read-ScriptModule -Path "my.scriptmodule.ps1";
+                    $result = ConvertTo-ScriptModule -Script $script;
                 } | Should Throw "The '`$ScriptModuleName' variable does not evaluate to a string.";
              }
 
