@@ -16,26 +16,29 @@ limitations under the License.
 
 <#
 .NAME
-    Read-StepTemplate
+    Test-VariableFromScriptText
 
 .SYNOPSIS
-    Reads a step template from a powershell script file
+    Returns true if the specified variable is declared and assigned in a powershell script
 #>
-function Read-StepTemplate
+function Test-VariableFromScriptText
 {
 
     param
     (
 
         [Parameter(Mandatory=$true)]
-        [string] $Path
+        [string] $Script,
+
+        [Parameter(Mandatory=$true)]
+        [string] $VariableName
 
     )
 
-    $script = Get-Content -LiteralPath $Path -Raw;
+    $variableValue = Get-VariableStatementFromScriptText -Script $Script -VariableName $VariableName -Type "Value";
 
-    $stepTemplate = ConvertTo-StepTemplate -Script $script;
+    $variableExists = ($null -ne $variableValue);
 
-    return $stepTemplate;
+    return $variableExists;
 
 }

@@ -34,20 +34,7 @@ function Read-ScriptModule
 
     $script = Get-Content -LiteralPath $Path -Raw;
 
-    $scriptModuleName = Get-VariableFromScriptText -Script $script -VariableName "ScriptModuleName";
-    if( ($scriptModuleName -ne $null) -and
-        ($scriptModuleName -isnot [string]) )
-    {
-        throw new-object System.InvalidOperationException("The '`$ScriptModuleName' variable in file '$Path' does not evaluate to a string.");
-    }
-    $scriptModuleName = "Octopus.Script.Module[$scriptModuleName]";
-
-    $scriptModuleScriptBody = Get-ScriptBodyFromScriptText -Script $script -Type "ScriptModule";
-
-    $scriptModule = @{
-                        "Name"  = $scriptModuleName
-                        "Value" = $scriptModuleScriptBody
-                    };
+    $scriptModule = ConvertTo-ScriptModule -Script $script;
 
     return $scriptModule;
 

@@ -16,7 +16,7 @@ limitations under the License.
 
 <#
 .NAME
-	Compare-StepTemplate
+    Compare-StepTemplate
 
 .SYNOPSIS
     Compares two step templates, returning true if they are different, false if they are the same (so it can be used in an if statement)
@@ -38,12 +38,22 @@ function Compare-StepTemplate
     $ErrorActionPreference = "Stop";
 
     #id - wont change
-    #name - wont change
-    #actiontype - wont change
     #version - will be incremented, shouldn't be checked
+
+    # name
+    if( $OldTemplate.Name -ne $NewTemplate.Name )
+    {
+        return $true;
+    }
 
     # description
     if( $OldTemplate.Description -ne $NewTemplate.Description )
+    {
+        return $true;
+    }
+
+    # action type
+    if( $OldTemplate.ActionType -ne $NewTemplate.ActionType )
     {
         return $true;
     }
@@ -59,19 +69,19 @@ function Compare-StepTemplate
     {
         return $true;
     }
-    
-    # Parameters - check we have the same number of them, with the same names
-    if ((($OldTemplate.Parameters | % Name) -join ',') -ne (($NewTemplate.Parameters | % Name) -join ','))
+
+    # Parameters - check we have the same number of them, with the same names (in the same order!)
+    if( (($OldTemplate.Parameters | % Name) -join ',') -ne (($NewTemplate.Parameters | % Name) -join ',') )
     {
         return $true;
     }
-    
-    # loop through the params, and compare each hashtable
+
+    # loop through the parameters, and compare each hashtable
     foreach( $newParameter in $NewTemplate.Parameters )
     {
         $oldParameter = $OldTemplate.Parameters | where-object { $_.Name -eq $newParameter.Name };
-        $diffs = Compare-HashTable -ReferenceObject $oldParameter -DifferenceObject $newParameter;
-        if( $diffs -ne $null )
+        $diffs = Compare-StepTemplateParameter -ReferenceObject $oldParameter -DifferenceObject $newParameter;
+        if( $null -ne $diffs )
 	{
 	    return $true;
 	}

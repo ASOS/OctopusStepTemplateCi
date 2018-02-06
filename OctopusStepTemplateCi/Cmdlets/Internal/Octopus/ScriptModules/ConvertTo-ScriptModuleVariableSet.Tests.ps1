@@ -16,10 +16,10 @@ limitations under the License.
 
 <#
 .NAME
-    Read-ScriptModuleVariableSet.Tests
+    ConvertTo-ScriptModuleVariableSet.Tests
 
 .SYNOPSIS
-    Pester tests for Read-ScriptModuleVariableSet.
+    Pester tests for ConvertTo-ScriptModuleVariableSet.
 #>
 
 $ErrorActionPreference = "Stop";
@@ -31,31 +31,28 @@ InModuleScope "OctopusStepTemplateCi" {
 
         Context "When reading a valid script file" {
 
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            $variableSetScript = @'
 function test {
     $ScriptModuleName = "name";
     $ScriptModuleDescription = "description";
     write-host "test";
 }
-'@
-                 };
+'@;
 
             It "Should return a new object with the content type of script module" {
-                $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+                $result = ConvertTo-ScriptModuleVariableSet -Script $variableSetScript;
                 $result.ContentType | Should Be "ScriptModule";
                 Assert-VerifiableMock;
             }
 
             It "Should return a new object with the name from the script file" {
-                $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+                $result = ConvertTo-ScriptModuleVariableSet -Script $variableSetScript;
                 $result.Name | Should Be "name";
                 Assert-VerifiableMock;
             }
 
             It "Should return a new object with the description from the script file" {
-                $result = Read-ScriptModuleVariableSet -Path "my.variableset.ps1";
+                $result = ConvertTo-ScriptModuleVariableSet -Script $variableSetScript;
                 $result.Description | Should Be "description";
                 Assert-VerifiableMock;
             }
@@ -64,20 +61,17 @@ function test {
 
         Context "when script module name is not a string" {
 
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            $variableSetScript = @'
 function test {
     $ScriptModuleName = 100;
     $ScriptModuleDescription = "description";
     write-host "test";
 }
-'@
-            }
+'@;
 
             It "Should throw when script module name is not a string" {
                 {
-                    $result = Read-ScriptModuleVariableSet -Path "my.scriptmodule.ps1";
+                    $result = ConvertTo-ScriptModuleVariableSet -Script $variableSetScript;
                 } | Should Throw "The '`$ScriptModuleName' variable does not evaluate to a string.";
              }
 
@@ -85,20 +79,17 @@ function test {
 
         Context "when script module description is not a string" {
 
-            Mock -CommandName "Get-Content" `
-                 -MockWith {
-                     return @'
+            $variableSetScript = @'
 function test {
     $ScriptModuleName = "name";
     $ScriptModuleDescription = 100;
     write-host "test";
 }
-'@
-            }
+'@;
 
             It "Should throw when script module description is not a string" {
                 {
-                    $result = Read-ScriptModuleVariableSet -Path "my.scriptmodule.ps1";
+                    $result = ConvertTo-ScriptModuleVariableSet -Script $variableSetScript;
                 } | Should Throw "The '`$ScriptModuleDescription' variable does not evaluate to a string.";
              }
 
