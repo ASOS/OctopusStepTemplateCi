@@ -31,7 +31,7 @@ InModuleScope "OctopusStepTemplateCi" {
 
         Context "Script module" {
 
-            It "Removes the ScriptModuleName, ScriptModuleDescription variables from the script" {         
+            It "Removes the script module variables from the script" {
                 $script = @'
 function test
 {
@@ -54,18 +54,20 @@ function test
     
         Context "Step template" {
 
-            It "Removes the StepTemplateName, StepTemplateDescription, StepTemplateParameters variables from the script" {         
-            $script = @'
+            It "Removes the step template variables from the script" {
+                $script = @'
 function test
 {
     $StepTemplateName = "name"
     $StepTemplateDescription = "description"
+    $StepTemplateActionType = "actiontype"
     $StepTemplateParameters = "parameters"
 }
 '@
                 $expected = @'
 function test
 {
+    
     
     
     
