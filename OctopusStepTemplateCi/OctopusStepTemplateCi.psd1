@@ -79,12 +79,73 @@ Description = 'PowerShell module to facilitate CI uploading of Octopus StepTempl
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 NestedModules = @(
-    'Pester'
+
+    #"Pester",
+
+    <# Interface Functions exported in the PSD1 file #>
+    "Cmdlets\Interface\Export-StepTemplate.ps1",
+    "Cmdlets\Interface\Invoke-OctopusScriptTestSuite.ps1",
+    "Cmdlets\Interface\Invoke-TeamCityCiUpload.ps1",
+    "Cmdlets\Interface\New-ScriptModule.ps1",
+    "Cmdlets\Interface\New-ScriptValidationTest.ps1",
+    "Cmdlets\Interface\New-StepTemplate.ps1",
+    "Cmdlets\Interface\Sync-ScriptModule.ps1",
+    "Cmdlets\Interface\Sync-StepTemplate.ps1",
+
+    <# Internal functions only used within this module #>
+    "Cmdlets\Internal\Octopus\Api\Get-OctopusApiActionTemplate.ps1",
+    "Cmdlets\Internal\Octopus\Api\Get-OctopusApiCache.ps1",
+    "Cmdlets\Internal\Octopus\Api\Get-OctopusApiLibraryVariableSet.ps1",
+    "Cmdlets\Internal\Octopus\Api\Get-OctopusApiObject.ps1",
+    "Cmdlets\Internal\Octopus\Api\Invoke-OctopusApiOperation.ps1",
+    "Cmdlets\Internal\Octopus\Api\New-OctopusApiActionTemplate.ps1",
+    "Cmdlets\Internal\Octopus\Api\New-OctopusApiLibraryVariableSet.ps1",
+    "Cmdlets\Internal\Octopus\Api\New-OctopusApiObject.ps1",
+    "Cmdlets\Internal\Octopus\Api\Reset-OctopusApiCache.ps1",
+    "Cmdlets\Internal\Octopus\Api\Test-OctopusApiConnectivity.ps1",
+    "Cmdlets\Internal\Octopus\Api\Update-OctopusApiActionTemplate.ps1",
+    "Cmdlets\Internal\Octopus\Api\Update-OctopusApiLibraryVariableSet.ps1",
+    "Cmdlets\Internal\Octopus\Api\Update-OctopusApiObject.ps1",
+    "Cmdlets\Internal\Octopus\Common\Compare-Hashtable.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertFrom-OctopusJson.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-DictionaryJsonObject.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-HashtableJsonObject.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-OctopusJson.ps1",
+    "Cmdlets\Internal\Octopus\Common\ConvertTo-PSSource.ps1",
+    "Cmdlets\Internal\Octopus\ScriptModules\ConvertTo-ScriptModule.ps1",
+    "Cmdlets\Internal\Octopus\ScriptModules\ConvertTo-ScriptModuleVariableSet.ps1",
+    "Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModule.ps1",
+    "Cmdlets\Internal\Octopus\ScriptModules\Read-ScriptModuleVariableSet.ps1",
+    "Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplate.ps1",
+    "Cmdlets\Internal\Octopus\StepTemplates\Compare-StepTemplateParameter.ps1",
+    "Cmdlets\Internal\Octopus\StepTemplates\ConvertTo-StepTemplate.ps1",
+    "Cmdlets\Internal\Octopus\StepTemplates\Read-StepTemplate.ps1",
+    "Cmdlets\Internal\PowerShellManipulation\Get-LiteralValueFromAstNode.ps1",
+    "Cmdlets\Internal\PowerShellManipulation\Get-ScriptBodyFromScriptText.ps1",
+    "Cmdlets\Internal\PowerShellManipulation\Get-VariableFromScriptText.ps1",
+    "Cmdlets\Internal\PowerShellManipulation\Get-VariableStatementFromScriptText.ps1",
+    "Cmdlets\Internal\PowerShellManipulation\Get-VariableValueFromScriptText.ps1",
+    "Cmdlets\Internal\PowerShellManipulation\Test-VariableFromScriptText.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityEscapedString.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Get-TeamCityServiceMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityServiceMessage.ps1",
+    "Cmdlets\Internal\TeamCity\Reset-BuildOutputDirectory.ps1",
+    "Cmdlets\Internal\Tests\Get-ScriptValidationTestsPath.ps1",
+    "Cmdlets\Internal\Tests\Invoke-PesterForTeamCity.ps1",
+    "Cmdlets\Internal\Tests\Update-XPathValue.ps1"
+
 )
 
 # Functions to export from this module
 FunctionsToExport = @(
     'Export-StepTemplate',
+    'Get-OctopusStatusReport',
     'Invoke-OctopusScriptTestSuite',
     'Invoke-TeamCityCiUpload',
     'New-ScriptModule',

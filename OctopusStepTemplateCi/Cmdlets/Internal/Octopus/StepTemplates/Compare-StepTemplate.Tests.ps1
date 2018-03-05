@@ -16,70 +16,110 @@ limitations under the License.
 
 <#
 .NAME
-	Compare-StepTemplate.Tests
+    Compare-StepTemplate.Tests
 
 .SYNOPSIS
-	Pester tests for Compare-StepTemplate.
+    Pester tests for Compare-StepTemplate.
 #>
-Set-StrictMode -Version Latest
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\New-StepTemplateObject.ps1"
-. "$here\Compare-Hashtable.ps1"
-. "$here\..\Convert-ToOctopusJson.ps1"
-. "$here\..\..\PowerShellManipulation\Get-VariableFromScriptFile.ps1"
-. "$here\..\..\PowerShellManipulation\Get-ScriptBody.ps1"
+$ErrorActionPreference = "Stop";
+Set-StrictMode -Version "Latest";
 
-Describe "Compare-StepTemplate" {
-    Mock Get-VariableFromScriptFile { "test name" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "StepTemplateName" }
-    Mock Get-VariableFromScriptFile { "test description" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "StepTemplateDescription" }
-    Mock Get-ScriptBody { "test script" } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" }
-    Mock Get-VariableFromScriptFile { @{Name = "test" } } -ParameterFilter { $Path -eq "TestDrive:\file.ps1" -and $VariableName -eq "StepTemplateParameters" }
-        
-    BeforeEach {        
-        $oldTemplate = New-StepTemplateObject -Path "TestDrive:\file.ps1"
-        $newTemplate = New-StepTemplateObject -Path "TestDrive:\file.ps1"
-    }
+
+InModuleScope "OctopusStepTemplateCi" {
+
+    Describe "Compare-StepTemplate" {
+
+        Mock -CommandName "Get-Content" `
+             -MockWith {
+                 return @'
+function test {
+    $StepTemplateName = "name"
+    $StepTemplateDescription = "description"
+    $StepTemplateParameters = @(
+        @{
+            "Name" = "myParameterName"
+            "Label" = "myParameterLabel"
+            "HelpText" = "myParameterHelpText"
+            "DefaultValue" = "myDefaultValue"
+            "DisplaySettings" = @{}
+        }
+    )
+}
+'@;
+             };
+
+        It "Should return false if they are the same" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $false;
+        }
+
+        It "Should return true when the name is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Name = "new name";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
+        It "Should return true when the description is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Description = "new description";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
+        It "Should return true when the action type is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.ActionType = "new action type";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
+        It "Should return true when the Octopus.Action.Script.Syntax property is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Properties["Octopus.Action.Script.Syntax"] = "new syntax";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
+        It "Should return true when the Octopus.Action.Script.ScriptBody property is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Properties["Octopus.Action.Script.ScriptBody"] = "new script body";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
     
-    It "Should return false if they are the same" {
-        Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate | Should Be $false
+        It "Should return true when the number of parameters is different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Parameters = @();
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
+        It "Should return true when the names of parameters are different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Parameters[0].Name = "new parameter";
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
+        It "Should return true when the values of parameters are different" {
+            $oldTemplate = Read-StepTemplate -Path "old.steptemplate.ps1";
+            $newTemplate = Read-StepTemplate -Path "new.steptemplate.ps1";
+            $newTemplate.Parameters[0].Label = "new label"
+            $result = Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate;
+            $result | Should Be $true;
+        }
+
     }
-    
-    It "Should compare the descriptions" {
-        $newTemplate.Description = "new description"
-        
-        Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate | Should Be $true
-    }
-    
-    It "Should compare the Octopus.Action.Script.Syntax property" {
-        $newTemplate.Properties['Octopus.Action.Script.Syntax'] = "batch file"
-        
-        Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate | Should Be $true
-    }
-    
-    It "Should compare the Octopus.Action.Script.ScriptBody property" {
-        $newTemplate.Properties['Octopus.Action.Script.ScriptBody'] = "new script"
-        
-        Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate | Should Be $true
-    }
-    
-    It "Should compare the names of the parameters" {
-        $newTemplate.Parameters[0].Name = "new"
-        
-        Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate | Should Be $true
-    }
-    
-    It "Should compare the number of parameters" {
-        $newTemplate.Parameters = @(@{Name = "Example Parameter"}, @{Name = "New parameter"})
-        
-        Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate | Should Be $true
-    }
-    
-    It "Should compare the values of the parameters" {
-        $newTemplate.Parameters[0].Label = "new"
-        
-        Compare-StepTemplate -OldTemplate $oldTemplate -NewTemplate $newTemplate | Should Be $true
-    }
+
 }

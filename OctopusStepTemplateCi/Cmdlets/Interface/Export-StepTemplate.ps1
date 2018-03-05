@@ -17,59 +17,76 @@ limitations under the License.
 <#
 .NAME
     Export-StepTemplate
-    
+
 .SYNOPSIS
     Exports a step template
 
 .DESCRIPTION
     Exports a step template in JSON format for submission to the Octopus community site or manual import into Octopus
-    
+
 .PARAMETER Path
     The path to the step template
 
 .PARAMETER ExportPath
     The location to save the step template file
-    
+
 .PARAMETER Force
     Overwrites the file if it already exists
-    
+
 .PARAMETER ExportToClipboard
     Exports the step template to the system clipboard
-    
+
 .INPUTS
     None. You cannot pipe objects to Export-StepTemplate.
 
 .OUTPUTS
     None.
 #>
-function Export-StepTemplate {
+function Export-StepTemplate
+{
+
     [CmdletBinding()]
     [OutputType("System.String")]
-    param(
-        [Parameter(Mandatory=$true)][ValidateScript({ Test-Path $_ })][System.String]$Path,
-        [Parameter(Mandatory=$true, ParameterSetName="File")][System.String]$ExportPath,
-        [Parameter(Mandatory=$false, ParameterSetName="File")][System.Management.Automation.SwitchParameter]$Force,
-        [Parameter(Mandatory=$true, ParameterSetName="Clipboard")][System.Management.Automation.SwitchParameter]$ExportToClipboard
+    param
+    (
+
+        [Parameter(Mandatory=$true)]
+        [ValidateScript({ Test-Path $_ })]
+        [string] $Path,
+
+        [Parameter(Mandatory=$true, ParameterSetName="File")]
+        [string] $ExportPath,
+
+        [Parameter(Mandatory=$false, ParameterSetName="File")]
+        [switch] $Force,
+
+        [Parameter(Mandatory=$true, ParameterSetName="Clipboard")]
+        [switch] $ExportToClipboard
+
     )
-    
-    $resolvedPath = Resolve-Path -Path $Path
-    $stepTemplate = Convert-ToOctopusJson (New-StepTemplateObject -Path $resolvedPath)
-    
-    switch ($PSCmdlet.ParameterSetName) {
+
+    $resolvedPath = Resolve-Path -Path $Path;
+    $stepTemplate = ConvertTo-OctopusJson (Read-StepTemplate -Path $resolvedPath);
+
+    switch( $PSCmdlet.ParameterSetName )
+    {
+
         "File" {
-            if ((Test-Path $ExportPath) -and -not $Force) {
-                throw "$ExportPath already exists. Specify -Force to overwrite"
+            if( (Test-Path $ExportPath) -and -not $Force )
+            {
+                throw "$ExportPath already exists. Specify -Force to overwrite";
             }
-            
-            Set-Content -Path $ExportPath -Value $stepTemplate -Force:$Force -Encoding UTF8
-            
-            "Step Template exported to $ExportPath"
+            Set-Content -Path $ExportPath -Value $stepTemplate -Force:$Force -Encoding UTF8;
+            return "Step Template exported to $ExportPath";
         }
+
         "Clipboard" {
-             Add-Type -AssemblyName System.Windows.Forms
-             [System.Windows.Forms.Clipboard]::SetText($stepTemplate)
-            
-            "Step Template exported clipboard"
+            Add-Type -AssemblyName System.Windows.Forms
+            [System.Windows.Forms.Clipboard]::SetText($stepTemplate)
+            return "Step Template exported to clipboard";
+
         }
+
     }
+
 }

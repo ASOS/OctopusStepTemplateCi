@@ -37,49 +37,72 @@ limitations under the License.
 .OUTPUTS
     None.
 #>
-function Sync-StepTemplate {
+function Sync-StepTemplate
+{
+
     [CmdletBinding()]
     [OutputType("System.Collections.Hashtable")]
-    param (
-        [Parameter(Mandatory=$true)][ValidateScript({ Test-Path $_ })][System.String]$Path,
-        [Parameter(Mandatory=$false)][System.Management.Automation.SwitchParameter]$UseCache
+    param
+    (
+
+        [Parameter(Mandatory=$true)]
+        [string] $Path,
+
+        [Parameter(Mandatory=$false)]
+        [switch] $UseCache
+
     )
+
+    $newStepTemplate = Read-StepTemplate -Path $Path;
+    $templateName = $newStepTemplate.Name;
+
+    $stepTemplates = Get-OctopusApiActionTemplate -ObjectId "All" -UseCache:$UseCache;
+    $stepTemplate  = $stepTemplates | where-object { $_.Name -eq $templateName };
+
+    $result = @{ "UploadCount" = 0 };
     
-    $templateName = Get-VariableFromScriptFile -Path $Path -VariableName StepTemplateName
-    $stepTemplate =  Invoke-OctopusOperation -Action Get -ObjectType ActionTemplates -ObjectId "All" -UseCache:$UseCache | ? Name -eq $templateName
-    
-    $result = @{UploadCount = 0} 
-    
-    $newStepTemplate = New-StepTemplateObject -Path $Path
-    if ($null -eq $stepTemplate) {
-        Write-TeamCityMessage "Step template '$templateName' does not exist. Creating"
-        
-        $stepTemplate = Invoke-OctopusOperation -Action New -ObjectType ActionTemplates -Object $newStepTemplate
-        $result.UploadCount++
-    } else {
-        $stepTemplate.Properties = Convert-PSObjectToHashTable $stepTemplate.Properties
-        $stepTemplate.Parameters = @($stepTemplate.Parameters | % {
-            $newParameter = Convert-PSObjectToHashTable $_
-            $newParameter.DisplaySettings = Convert-PSObjectToHashTable $newParameter.DisplaySettings
-            $newParameter
-        })
-
-        $paramCount = ($stepTemplate.Parameters.Count) - 1
-        # Remove the Id from each parameter
-        while ($paramCount -ge 0) {
-            ($stepTemplate.Parameters[$paramCount]).Remove('Id')
-            $paramCount = $paramCount - 1
-        }       
-
-        if (Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate) {
-            Write-TeamCityMessage "Script template '$templateName' has changed. Updating"
-
-            $newStepTemplate.Version = $stepTemplate.Version + 1
-
-            $stepTemplate = Invoke-OctopusOperation -Action Update -ObjectType ActionTemplates -ObjectId $stepTemplate.Id -Object $newStepTemplate
-            $result.UploadCount++
-        }
+    if( $null -eq $stepTemplate )
+    {
+        Write-TeamCityBuildLogMessage "Step template '$templateName' does not exist. Creating";
+        $stepTemplate = New-OctopusApiActionTemplate -Object $newStepTemplate;
+        $result.UploadCount++;
     }
-    
-    $result
+    else
+    {
+
+        # Strip out unneccessary keys such as Id and links.
+        try
+	{
+            $keysToRemove = $stepTemplate.Parameters.Keys | Select -Unique | ? {$_ -notin ("DefaultValue", "Label", "HelpText", "Name", "DisplaySettings")};
+            foreach( $key in $keysToRemove )
+            {
+                $paramCount = ($stepTemplate.Parameters.Count) - 1;
+                while( $paramCount -ge 0 )
+	        {
+                    ($stepTemplate.Parameters[$paramCount]).Remove($key);
+                    $paramCount = $paramCount - 1;
+                }
+            }
+        }
+        catch
+        {
+            Write-Verbose "No parameter keys to remove";
+        }
+
+        if( Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate )
+        {
+            Write-TeamCityBuildLogMessage "Step template '$templateName' has changed. Updating";
+            $newStepTemplate.Version = $stepTemplate.Version + 1;
+            $stepTemplate = Update-OctopusApiActionTemplate -ObjectId $stepTemplate.Id -Object $newStepTemplate;
+            $result.UploadCount++;
+        }
+        else
+        {
+            Write-TeamCityBuildLogMessage "Step template '$templateName' has not changed. Skipping.";
+        }
+
+    }
+
+    return $result;
+
 }
