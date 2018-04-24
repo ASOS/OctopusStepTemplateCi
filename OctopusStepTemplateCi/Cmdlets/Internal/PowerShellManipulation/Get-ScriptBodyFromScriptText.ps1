@@ -47,7 +47,7 @@ function Get-ScriptBodyFromScriptText
         }
 
         "StepTemplate" {
-            $variablesToRemove = @( "StepTemplateName", "StepTemplateDescription", "StepTemplateParameters" );
+            $variablesToRemove = @( "StepTemplateName", "StepTemplateDescription", "StepTemplateActionType", "StepTemplateParameters" );
         }
 
     }
