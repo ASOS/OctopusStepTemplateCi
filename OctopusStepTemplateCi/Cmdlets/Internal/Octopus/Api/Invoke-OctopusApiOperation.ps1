@@ -48,6 +48,10 @@ function Invoke-OctopusApiOperation
 
     )
 
+    $ErrorActionPreference = "Stop";
+    $ProgressPreference = "SilentlyContinue";
+    Set-StrictMode -Version "Latest";
+
     Test-OctopusApiConnectivity;
 
     $Uri      = $OctopusUri + $Uri;
@@ -62,14 +66,51 @@ function Invoke-OctopusApiOperation
     # by default, only SSL3 and TLS 1.0 are supported.
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType] "Ssl3, Tls, Tls11, Tls12";
 
-    if( $null -eq $Body )
-    {
-        $response = Invoke-WebRequest -Uri $Uri -Method $Method -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
-    }
-    else
+    #write-host "Invoke-OctopusApiOperation";
+    #write-host "    uri    = '$Uri'";
+    #write-host "    method = '$Method'";
+
+    $splat = @{
+        "Uri"             = $Uri
+        "Method"          = $Method
+        "Headers"         = @{ "X-Octopus-ApiKey" = $OctopusApiKey }
+        "UseBasicParsing" = $true
+    };
+
+    if( $null -ne $Body )
     {
         $requestBody = ConvertTo-OctopusJson -InputObject $Body;
-        $response = Invoke-WebRequest -Uri $Uri -Method $Method -Body $requestBody -Headers @{ "X-Octopus-ApiKey" = $OctopusApiKey } -UseBasicParsing;
+        #write-host "    body = ";
+        #write-host "-----------";
+        #write-host $requestBody;
+        #write-host "-----------";
+        $splat.Add("Body", $requestBody);
+    }
+
+    try
+    {
+        $response = Invoke-WebRequest @splat;
+    }
+    catch [System.Net.WebException]
+    {
+
+        $ex = $_.psbase.Exception;
+        $response = $ex.Response;
+        $responseStream = $response.GetResponseStream();
+        $responseReader = new-object System.IO.StreamReader($responseStream);
+        $responseText = $responseReader.ReadToEnd();
+        $responseReader.Dispose();
+        $responseStream.Dispose();
+        $response.Dispose();
+
+        $message = $ex.Message + "`r`n" +
+                   "The response body was:`r`n" +
+                   "------------`r`n" +
+                   $responseText + "`r`n" +
+                   "------------`r`n";
+
+        throw new-object System.Net.WebException($message, $ex, $ex.Status, $ex.Response);
+
     }
 
     $result = ConvertFrom-OctopusJson -InputObject $response.Content;

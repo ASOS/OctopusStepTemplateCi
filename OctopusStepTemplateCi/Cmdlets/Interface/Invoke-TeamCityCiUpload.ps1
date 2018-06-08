@@ -159,7 +159,13 @@ function Invoke-TeamCityCiUpload
                         }
                         elseif( $_.Name -like $StepTemplateFilter )
                         {
-                            Sync-StepTemplate -Path $_.FullName -UseCache;
+                            try
+                            {
+                                Sync-StepTemplate -Path $_.FullName -UseCache;
+                            }
+                            catch
+                            {
+                            }
                         }
                     } | % UploadCount | Measure-Object -Sum | % Sum;
 
@@ -200,4 +206,4 @@ function Invoke-TeamCityCiUpload
 
     }
 
- }
+}

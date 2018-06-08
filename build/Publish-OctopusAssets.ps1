@@ -10,13 +10,18 @@ param
     [string] $ScriptPath,
 
     [string] $StepTemplateFilter = "*.steptemplate.ps1",
-    [string] $ScriptmoduleFilter = "*.scriptmodule.ps1"
+    [string] $ScriptModuleFilter = "*.scriptmodule.ps1"
 
 )
 
 
 $ErrorActionPreference = "Stop";
+$ProgressPreference = "SilentlyContinue";
 Set-StrictMode -Version "Latest";
+
+
+write-host "powershell version = ";
+write-host ($PSVersionTable | ft -AutoSize | out-string);
 
 
 $thisScript   = $MyInvocation.MyCommand.Path;
@@ -31,15 +36,14 @@ $packagesRoot = [System.IO.Path]::Combine($rootFolder, "packages");
 Invoke-NuGetInstall -NuGet           $NuGet `
                     -Source          "https://www.powershellgallery.com/api/v2" `
                     -PackageId       "PSScriptAnalyzer" `
-                    -OutputDirectory $packagesRoot `
-                    -ExcludeVersion;
+                    -Version         "1.17.1" `
+                    -OutputDirectory $packagesRoot;
 
 Invoke-NuGetInstall -NuGet           $NuGet `
                     -Source          "https://www.powershellgallery.com/api/v2" `
                     -PackageId       "Pester" `
-                    -Version         "4.0.8" `
-                    -OutputDirectory $packagesRoot `
-                    -ExcludeVersion;
+                    -Version         "4.3.1" `
+                    -OutputDirectory $packagesRoot;
 
 Invoke-NuGetInstall -NuGet           $NuGet `
                     -Source          $NuGetFeedUrl `
@@ -48,10 +52,9 @@ Invoke-NuGetInstall -NuGet           $NuGet `
                     -ExcludeVersion;
 
 
-Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer"))      -ErrorAction "Stop";
-Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester"))                -ErrorAction "Stop";
-#Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "OctopusStepTemplateCi")) -ErrorAction "Stop";
-Import-Module -Name ([System.IO.Path]::Combine($rootFolder, "OctopusStepTemplateCi"))   -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer.1.17.1\PSScriptAnalyzer.psd1")) -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester.4.3.1\Pester.psd1")) -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "OctopusStepTemplateCi\OctopusStepTemplateCi.psd1")) -ErrorAction "Stop";
 
 
 if( -not [string]::IsNullOrEmpty($OctopusUri) )
@@ -62,6 +65,11 @@ if( -not [string]::IsNullOrEmpty($OctopusApiKey) )
 {
     $env:OctopusApiKey = $OctopusApiKey;
 }
+
+
+write-host "modules loaded at start of script = ";
+$modules = Get-Module;
+write-host ($modules | ft -AutoSize | out-string);
 
 
 Invoke-TeamCityCiUpload -Path               $ScriptPath `
@@ -79,5 +87,10 @@ Invoke-TeamCityCiUpload -Path               $ScriptPath `
                                 "PSShouldProcess"
                             )
                         } `
-                        -UploadIfSuccessful:$false `
-                        -SuppressPesterOutput:$true;
+                        -UploadIfSuccessful:$true `
+                        -SuppressPesterOutput:$false;
+
+
+write-host "modules loaded at end of script = ";
+$modules = Get-Module;
+write-host ($modules | ft -AutoSize | out-string);
