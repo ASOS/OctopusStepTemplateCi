@@ -35,7 +35,7 @@ Invoke-NuGetInstall -NuGet           $NuGet `
 
 
 Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer.1.17.1\PSScriptAnalyzer.psd1")) -ErrorAction "Stop";
-Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester.4.3.1\tools\Pester.psd1")) -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester.4.3.1\Pester.psd1")) -ErrorAction "Stop";
 
 
 $testPath      = [System.IO.Path]::Combine($rootFolder, "OctopusStepTemplateCi\Cmdlets");
