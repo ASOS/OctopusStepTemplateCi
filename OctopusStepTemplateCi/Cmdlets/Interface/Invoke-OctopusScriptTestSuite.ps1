@@ -81,13 +81,28 @@ function Invoke-OctopusScriptTestSuite
         [switch] $SuppressPesterOutput
 
     )
-    
+
+    $ErrorActionPreference = "Stop";
+    $ProgressPreference = "SilentlyContinue";
+    #$VerbosePreference = "Continue";
+    Set-StrictMode -Version "Latest";
+
+    write-verbose "*****************************";
+    write-verbose "Invoke-OctopusScriptTestSuite";
+    write-verbose "*****************************";
+    write-verbose "path                   = '$Path'";
+    write-verbose "result files path      = '$ResultFilesPath'";
+    write-verbose "step template filter   = '$StepTemplateFilter'";
+    write-verbose "script module filter   = '$ScriptModuleFilter'";
+    write-verbose "test settings          = '$(ConvertTo-PSSource -InputObject $TestSettings)'";
+    write-verbose "suppress pester output  = $(ConvertTo-PSSource -InputObject $SuppressPesterOutput)";
+
     $stepTemplates  = @(Get-ChildItem -Path $Path -File -Recurse -Filter $StepTemplateFilter);
     $scriptModules  = @(Get-ChildItem -Path $Path -File -Recurse -Filter $ScriptModuleFilter);
 
     $filesToProcess = @($stepTemplates + $scriptModules) | ? Name -NotLike "*.Tests.ps1";
 
-    $results = $filesToProcess | % {
+    $allTestResults = @( $filesToProcess | % {
 
         $sut = $_.FullName;
 
@@ -158,11 +173,15 @@ function Invoke-OctopusScriptTestSuite
                                      -SuppressPesterOutput:$SuppressPesterOutput;
         }
 
-    } | Measure-Object -Sum -Property @("Passed", "Failed")
-    
-    return @{
-        "Success" = ($results | ? Property -EQ 'Failed' | % Sum | % { $_ -eq 0 })
-        "Passed"  = ($results | ? Property -EQ 'Passed' | % Sum)
-        "Failed"  = ($results | ? Property -EQ 'Failed' | % Sum)
-    }
+    });
+
+    $testResultTotals = $allTestResults | Measure-Object -Sum -Property @("Passed", "Failed");
+
+    $testResultStats = @{
+        "Success" = ($testResultTotals | ? Property -EQ 'Failed' | % Sum | % { $_ -eq 0 })
+        "Passed"  = ($testResultTotals | ? Property -EQ 'Passed' | % Sum)
+        "Failed"  = ($testResultTotals | ? Property -EQ 'Failed' | % Sum)
+    };
+
+    return $testResultStats;
 }
