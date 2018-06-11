@@ -112,10 +112,11 @@ function Invoke-OctopusScriptTestSuite
 
         $testScriptFile  = $_.FullName.Replace(".ps1", ".Tests.ps1");
         $testResultsFile = $baseResultsFile;
-        Invoke-PesterForTeamCity -TestName        $_.Name `
-                                 -Script          $testScriptFile `
-                                 -TestResultsFile $testResultsFile `
-                                 -SuppressPesterOutput:$SuppressPesterOutput;
+        $testResults = Invoke-PesterForTeamCity -TestName        $_.Name `
+                                                -Script          $testScriptFile `
+                                                -TestResultsFile $testResultsFile `
+                                                -SuppressPesterOutput:$SuppressPesterOutput;
+        write-output $testResults;
         
         $testScriptInfo = @(
             Get-ChildItem -Path (Join-Path (Get-ScriptValidationTestsPath) "\Generic\*.ScriptValidationTest.ps1") -File `
@@ -131,11 +132,12 @@ function Invoke-OctopusScriptTestSuite
                 }
         );
         $testResultsFile = Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".generic.TestResults.xml");
-        Invoke-PesterForTeamCity -TestName        $_.Name `
-                                 -Script          $testScriptInfo `
-                                 -TestResultsFile $testResultsFile `
-                                 -SuppressPesterOutput:$SuppressPesterOutput;
-        
+        $testResults = Invoke-PesterForTeamCity -TestName        $_.Name `
+                                                -Script          $testScriptInfo `
+                                                -TestResultsFile $testResultsFile `
+                                                -SuppressPesterOutput:$SuppressPesterOutput;
+        write-output $testResults;
+
         if( $_.Name -like $ScriptModuleFilter )
         {
             $testScriptInfo = @(
@@ -152,10 +154,11 @@ function Invoke-OctopusScriptTestSuite
                     }
             );
             $testResultsFile = Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".script-module.TestResults.xml");
-            Invoke-PesterForTeamCity -TestName        $_.Name `
-                                     -Script          $testScriptInfo `
-                                     -TestResultsFile $testResultsFile `
-                                     -SuppressPesterOutput:$SuppressPesterOutput;
+            $testResults = Invoke-PesterForTeamCity -TestName        $_.Name `
+                                                    -Script          $testScriptInfo `
+                                                    -TestResultsFile $testResultsFile `
+                                                    -SuppressPesterOutput:$SuppressPesterOutput;
+            write-output $testResults;
         }
         elseif( $_.Name -like $StepTemplateFilter )
         {
@@ -173,10 +176,11 @@ function Invoke-OctopusScriptTestSuite
                     }
             );
             $testResultsFile = Join-Path $ResultFilesPath $_.Name.Replace(".ps1", ".step-template.TestResults.xml");
-            Invoke-PesterForTeamCity -TestName        $_.Name `
-                                     -Script          $testScriptInfo `
-                                     -TestResultsFile $testResultsFile `
-                                     -SuppressPesterOutput:$SuppressPesterOutput;
+            $testResults = Invoke-PesterForTeamCity -TestName        $_.Name `
+                                                    -Script          $testScriptInfo `
+                                                    -TestResultsFile $testResultsFile `
+                                                    -SuppressPesterOutput:$SuppressPesterOutput;
+            write-output $testResults;
         }
 
     });
