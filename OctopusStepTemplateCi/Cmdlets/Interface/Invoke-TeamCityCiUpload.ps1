@@ -182,7 +182,7 @@ function Invoke-TeamCityCiUpload
             }
             else
             {
-                Write-TeamCityBuildLogMessage -Message "One or more PSSciptAnalyzer tests failed. Skipping upload.";
+                Write-TeamCityBuildLogMessage -Message "One or more PSScriptAnalyzer tests failed. Skipping upload.";
             }
 
             Write-TeamCityBlockClosedMessage -BlockName $_.BaseName;
