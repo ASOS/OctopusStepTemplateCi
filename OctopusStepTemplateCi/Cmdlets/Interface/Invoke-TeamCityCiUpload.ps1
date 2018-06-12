@@ -209,7 +209,7 @@ function Invoke-TeamCityCiUpload
 
         Write-TeamCityBuildLogMessage "$passedTests tests passed. $failedTests tests failed";
 
-        if( $failedTests -ge 0 )
+        if( $failedTests -gt 0 )
         {
             $message = "One or more files failed to synchronise. Check the build logs for details.";
             Write-TeamCityBuildProblemMessage -Description $message;
