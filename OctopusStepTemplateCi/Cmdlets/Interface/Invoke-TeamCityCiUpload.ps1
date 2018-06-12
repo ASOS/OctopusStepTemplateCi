@@ -131,16 +131,33 @@ function Invoke-TeamCityCiUpload
 
         $itemsToProcess | % {
 
-            Write-TeamCityBlockOpenedMessage -BlockName $_.BaseName;
+            $itemToProcess = $_;
 
-            Write-TeamCityProgressMessage -Message "Running tests for $($_.BaseName)";
+            Write-TeamCityBlockOpenedMessage -BlockName $itemToProcess.BaseName;
 
-            $testResults = Invoke-OctopusScriptTestSuite -Path               $_.FullName `
-                                                         -ResultFilesPath    $BuildDirectory `
-                                                         -StepTemplateFilter $StepTemplateFilter `
-                                                         -ScriptModuleFilter $ScriptModuleFilter `
-                                                         -TestSettings       $TestSettings `
-                                                         -SuppressPesterOutput:$SuppressPesterOutput;
+            Write-TeamCityProgressMessage -Message "Running tests for $($itemToProcess.BaseName)";
+
+            try
+            {
+                $testResults = Invoke-OctopusScriptTestSuite -Path               $itemToProcess.FullName `
+                                                             -ResultFilesPath    $BuildDirectory `
+                                                             -StepTemplateFilter $StepTemplateFilter `
+                                                             -ScriptModuleFilter $ScriptModuleFilter `
+                                                             -TestSettings       $TestSettings `
+                                                             -SuppressPesterOutput:$SuppressPesterOutput;
+            }
+            catch [Exception]
+            {
+                $ex = $_.psbase.Exception;
+                $message = "'$($itemToProcess.BaseName)' failed with error`r`n$($ex.ToString())";
+                Write-TeamCityBuildProblemMessage -Description $message;
+                Write-Warning $message;
+                $testResults = @{
+                    "Success" = $false
+                    "Passed"  = 0
+                    "Failed"  = 1
+                };
+            }
 
             $passedTests += $testResults.Passed;
             $failedTests += $testResults.Failed;
@@ -150,28 +167,22 @@ function Invoke-TeamCityCiUpload
                 if( $UploadIfSuccessful )
                 {
 
-                    Write-TeamCityProgressMessage -Message "Starting sync of $($_.BaseName) to Octopus";
+                    Write-TeamCityProgressMessage -Message "Starting sync of $($itemToProcess.BaseName) to Octopus";
 
-                    $uploadCount += Get-ChildItem -Path $_.FullName -File -Recurse | % {
+                    $uploadCount += Get-ChildItem -Path $itemToProcess.FullName -File -Recurse | % {
                         if( $_.Name -like $ScriptModuleFilter )
                         {
                             Sync-ScriptModule -Path $_.FullName -UseCache;
                         }
                         elseif( $_.Name -like $StepTemplateFilter )
                         {
-                            try
-                            {
-                                Sync-StepTemplate -Path $_.FullName -UseCache;
-                            }
-                            catch
-                            {
-                            }
+                            Sync-StepTemplate -Path $_.FullName -UseCache;
                         }
                     } | % UploadCount | Measure-Object -Sum | % Sum;
 
                     if( $uploadCount -gt 0 )
                     {
-                        Write-TeamCityProgressMessage -Message "Uploaded $($_.BaseName) to Octopus";
+                        Write-TeamCityProgressMessage -Message "Uploaded $($itemToProcess.BaseName) to Octopus";
                     }
 
                 }
@@ -182,10 +193,12 @@ function Invoke-TeamCityCiUpload
             }
             else
             {
-                Write-TeamCityBuildLogMessage -Message "One or more PSSciptAnalyzer tests failed. Skipping upload.";
+                $message = "One or more PSScriptAnalyzer tests failed. Skipping upload.";
+                Write-TeamCityBuildLogMessage -Message $message;
+                Write-Warning $message;
             }
 
-            Write-TeamCityBlockClosedMessage -BlockName $_.BaseName;
+            Write-TeamCityBlockClosedMessage -BlockName $itemToProcess.BaseName;
 
         }
 
@@ -195,6 +208,13 @@ function Invoke-TeamCityCiUpload
         }
 
         Write-TeamCityBuildLogMessage "$passedTests tests passed. $failedTests tests failed";
+
+        if( $failedTests -gt 0 )
+        {
+            $message = "One or more files failed to synchronise. Check the build logs for details.";
+            Write-TeamCityBuildProblemMessage -Description $message;
+            throw $message;
+        }
 
     }
     catch

@@ -21,13 +21,20 @@ limitations under the License.
 .SYNOPSIS
     Invokes Pester's tests, handles the results file and teamcity integration to link the results file into team city and returns the passed & failed tests count  
 #>
-function Invoke-PesterForTeamCity {
-    param (
+function Invoke-PesterForTeamCity
+{
+
+    param
+    (
         $TestName,
         $Script,
         $TestResultsFile,
         [switch]$SuppressPesterOutput
     )
+
+    $ErrorActionPreference = "Stop";
+    $ProgressPreference = "SilentlyContinue";
+    Set-StrictMode -Version "Latest";
 
     $pesterModule = Get-Module "pester";
     if( $null -eq $pesterModule )
@@ -55,19 +62,22 @@ function Invoke-PesterForTeamCity {
         }
     }
 
-    $testResult = Invoke-Pester @parameters;
+    $testResults = Invoke-Pester @parameters;
 
-    #update the test-suit name so that teamcity displays it better. otherwise, all test suites are called "Pester"
+    # see https://github.com/pester/Pester/issues/1060
+    $testResults = $testResults | select-object -Last 1;
+
+    # update the test-suite name so that teamcity displays it better. otherwise, all test suites are called "Pester"
     Update-XPathValue -Path $TestResultsFile -XPath '//test-results/test-suite/@name' -Value $TestName
 
-    #tell teamcity to import the test results. Cant use the xml report processor feature of TeamCity, due to aysnc issues around updating the test suite name
+    # tell teamcity to import the test results. Cant use the xml report processor feature of TeamCity, due to aysnc issues around updating the test suite name
     Write-TeamCityImportDataMessage -Type  "nunit" `
                                     -Path $TestResultsFile `
                                     -VerboseMessage;
 
     $result = New-Object -TypeName PSObject -Property @{
-        "Passed" = $testResult.PassedCount
-        "Failed" = $testResult.FailedCount
+        "Passed" = $testResults.PassedCount
+        "Failed" = $testResults.FailedCount
     };
 
     return $result;
