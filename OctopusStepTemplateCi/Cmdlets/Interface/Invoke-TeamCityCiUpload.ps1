@@ -133,12 +133,12 @@ function Invoke-TeamCityCiUpload
 
             $itemToProcess = $_;
 
-            Write-TeamCityBlockOpenedMessage -BlockName $itemToProcess.BaseName;
-
-            Write-TeamCityProgressMessage -Message "Running tests for $($itemToProcess.BaseName)";
-
             try
             {
+
+                Write-TeamCityBlockOpenedMessage -BlockName $itemToProcess.BaseName;
+
+                Write-TeamCityProgressMessage -Message "Running tests for $($itemToProcess.BaseName)";
 
                 $testResults = Invoke-OctopusScriptTestSuite -Path               $itemToProcess.FullName `
                                                              -ResultFilesPath    $BuildDirectory `
@@ -186,8 +186,6 @@ function Invoke-TeamCityCiUpload
                     Write-Warning $message;
                 }
 
-                Write-TeamCityBlockClosedMessage -BlockName $itemToProcess.BaseName;
-
             }
             catch [Exception]
             {
@@ -196,6 +194,10 @@ function Invoke-TeamCityCiUpload
                 $message = "'$($itemToProcess.BaseName)' failed with error`r`n$($ex.ToString())";
                 Write-TeamCityBuildProblemMessage -Description $message;
                 Write-Warning $message;
+            }
+            finally
+            {
+                Write-TeamCityBlockClosedMessage -BlockName $itemToProcess.BaseName;
             }
 
         }
