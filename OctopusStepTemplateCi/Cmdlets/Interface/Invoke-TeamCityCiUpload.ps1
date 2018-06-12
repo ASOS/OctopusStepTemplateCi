@@ -139,66 +139,64 @@ function Invoke-TeamCityCiUpload
 
             try
             {
+
                 $testResults = Invoke-OctopusScriptTestSuite -Path               $itemToProcess.FullName `
                                                              -ResultFilesPath    $BuildDirectory `
                                                              -StepTemplateFilter $StepTemplateFilter `
                                                              -ScriptModuleFilter $ScriptModuleFilter `
                                                              -TestSettings       $TestSettings `
                                                              -SuppressPesterOutput:$SuppressPesterOutput;
+
+                $passedTests += $testResults.Passed;
+                $failedTests += $testResults.Failed;
+
+                if( $testResults.Success )
+                {
+                    if( $UploadIfSuccessful )
+                    {
+
+                        Write-TeamCityProgressMessage -Message "Starting sync of $($itemToProcess.BaseName) to Octopus";
+
+                        $uploadCount += Get-ChildItem -Path $itemToProcess.FullName -File -Recurse | % {
+                            if( $_.Name -like $ScriptModuleFilter )
+                            {
+                                Sync-ScriptModule -Path $_.FullName -UseCache;
+                            }
+                            elseif( $_.Name -like $StepTemplateFilter )
+                            {
+                                Sync-StepTemplate -Path $_.FullName -UseCache;
+                            }
+                        } | % UploadCount | Measure-Object -Sum | % Sum;
+
+                        if( $uploadCount -gt 0 )
+                        {
+                            Write-TeamCityProgressMessage -Message "Uploaded $($itemToProcess.BaseName) to Octopus";
+                        }
+
+                    }
+                    else
+                    {
+                        Write-TeamCityBuildLogMessage -Message "UploadIfSuccessful is false. Skipping comparison with server.";
+                    }
+                }
+                else
+                {
+                    $message = "$failedTests PSScriptAnalyzer test(s) failed. Skipping upload.";
+                    Write-TeamCityBuildLogMessage -Message $message;
+                    Write-Warning $message;
+                }
+
+                Write-TeamCityBlockClosedMessage -BlockName $itemToProcess.BaseName;
+
             }
             catch [Exception]
             {
                 $ex = $_.psbase.Exception;
+                $failedTests += 1;
                 $message = "'$($itemToProcess.BaseName)' failed with error`r`n$($ex.ToString())";
                 Write-TeamCityBuildProblemMessage -Description $message;
                 Write-Warning $message;
-                $testResults = @{
-                    "Success" = $false
-                    "Passed"  = 0
-                    "Failed"  = 1
-                };
             }
-
-            $passedTests += $testResults.Passed;
-            $failedTests += $testResults.Failed;
-
-            if( $testResults.Success )
-            {
-                if( $UploadIfSuccessful )
-                {
-
-                    Write-TeamCityProgressMessage -Message "Starting sync of $($itemToProcess.BaseName) to Octopus";
-
-                    $uploadCount += Get-ChildItem -Path $itemToProcess.FullName -File -Recurse | % {
-                        if( $_.Name -like $ScriptModuleFilter )
-                        {
-                            Sync-ScriptModule -Path $_.FullName -UseCache;
-                        }
-                        elseif( $_.Name -like $StepTemplateFilter )
-                        {
-                            Sync-StepTemplate -Path $_.FullName -UseCache;
-                        }
-                    } | % UploadCount | Measure-Object -Sum | % Sum;
-
-                    if( $uploadCount -gt 0 )
-                    {
-                        Write-TeamCityProgressMessage -Message "Uploaded $($itemToProcess.BaseName) to Octopus";
-                    }
-
-                }
-                else
-                {
-                    Write-TeamCityBuildLogMessage -Message "UploadIfSuccessful is false. Skipping comparison with server.";
-                }
-            }
-            else
-            {
-                $message = "One or more PSScriptAnalyzer tests failed. Skipping upload.";
-                Write-TeamCityBuildLogMessage -Message $message;
-                Write-Warning $message;
-            }
-
-            Write-TeamCityBlockClosedMessage -BlockName $itemToProcess.BaseName;
 
         }
 
