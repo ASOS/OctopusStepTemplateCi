@@ -53,6 +53,69 @@ The default setup expects a directory structure similar to:
 
 `New-ScriptValidationTest` - This will create a stub script validation test powershell file as a starting point for a new test.
 
+## Examples
+
+### Step Template
+
+`ExampleStepTemplate.ps1`:
+```powershell
+$StepTemplateName = 'Example Step Template'
+$StepTemplateDescription = 'An example step template to demonstrate OctopusStepTemplateCI'
+$StepTemplateParameters = @(
+    @{
+        'Name' = 'Example Parameter';
+        'Label' = 'Example Parameter';
+        'HelpText' = "A placeholder parameter example";
+        'DefaultValue' = $null;
+        # values for DisplaySettings can be discovered by watching the structure used via
+        # the Octopus portal in your browsers dev tools
+        "DisplaySettings" = @{ }
+    }
+)
+Set-StrictMode -Version Latest
+
+throw "Step Template not implemented"
+```
+
+`ExampleStepTemplate.Tests.ps1`:
+```powershell
+Set-StrictMode -Version Latest
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
+. "$here\$sut"
+
+Describe "Example Step Template" {
+    It "does something useful" {
+        $true | Should Be $false
+    }
+}
+```
+
+### Script Module
+
+`ExampleScriptModule.ps1`:
+```powershell
+$ScriptModuleName = "Example Script Module"
+$ScriptModuleDescription = "An example script module to demonstrate OctopusStepTemplateCI"
+Set-StrictMode -Version Latest
+
+throw "Script Module not implemented"
+```
+
+`ExampleScriptModule.Tests.ps1`:
+```powershell
+Set-StrictMode -Version Latest
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
+. "$here\$sut"
+
+Describe "Example Script Module" {
+    It "does something useful" {
+        $true | Should Be $false
+    }
+}
+```
+
 ## License
 
 Copyright 2016 ASOS.com Limited
