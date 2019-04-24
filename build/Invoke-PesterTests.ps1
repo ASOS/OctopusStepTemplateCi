@@ -8,6 +8,7 @@ param
 
 
 $ErrorActionPreference = "Stop";
+$ProgressPreference = "SilentlyContinue";
 Set-StrictMode -Version "Latest";
 
 
@@ -23,19 +24,18 @@ $packagesRoot = [System.IO.Path]::Combine($rootFolder, "packages");
 Invoke-NuGetInstall -NuGet           $NuGet `
                     -Source          "https://www.powershellgallery.com/api/v2" `
                     -PackageId       "PSScriptAnalyzer" `
-                    -OutputDirectory $packagesRoot `
-                    -ExcludeVersion;
+                    -Version         "1.17.1" `
+                    -OutputDirectory $packagesRoot;
 
 Invoke-NuGetInstall -NuGet           $NuGet `
                     -Source          "https://www.powershellgallery.com/api/v2" `
                     -PackageId       "Pester" `
-                    -Version         "4.0.8" `
-                    -OutputDirectory $packagesRoot `
-                    -ExcludeVersion;
+                    -Version         "4.3.1" `
+                    -OutputDirectory $packagesRoot;
 
 
-Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer"))      -ErrorAction "Stop";
-Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester"))                -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "PSScriptAnalyzer.1.17.1\PSScriptAnalyzer.psd1")) -ErrorAction "Stop";
+Import-Module -Name ([System.IO.Path]::Combine($packagesRoot, "Pester.4.3.1\Pester.psd1")) -ErrorAction "Stop";
 
 
 $testPath      = [System.IO.Path]::Combine($rootFolder, "OctopusStepTemplateCi\Cmdlets");
@@ -45,6 +45,7 @@ $coverageFiles = (Get-ChildItem -Path "$testPath\*.ps1" -Recurse -Exclude *.Test
 Import-Module -Name "$rootFolder\OctopusStepTemplateCi" -ErrorAction "Stop";
 
 
+write-host "invoking pester tests";
 $testResults = Invoke-Pester -Path         $testPath `
                              -OutputFile   "PesterTestOutput.xml" `
                              -OutputFormat "NUnitXml" `

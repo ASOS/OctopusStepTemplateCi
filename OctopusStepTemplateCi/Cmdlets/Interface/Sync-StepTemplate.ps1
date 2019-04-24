@@ -53,6 +53,10 @@ function Sync-StepTemplate
 
     )
 
+    $ErrorActionPreference = "Stop";
+    $ProgressPreference = "SilentlyContinue";
+    Set-StrictMode -Version "Latest";
+
     $newStepTemplate = Read-StepTemplate -Path $Path;
     $templateName = $newStepTemplate.Name;
 
@@ -91,10 +95,17 @@ function Sync-StepTemplate
 
         if( Compare-StepTemplate -OldTemplate $stepTemplate -NewTemplate $newStepTemplate )
         {
+
             Write-TeamCityBuildLogMessage "Step template '$templateName' has changed. Updating";
-            $newStepTemplate.Version = $stepTemplate.Version + 1;
+
+            if( $newStepTemplate.ContainsKey("Version") )
+            {
+                $newStepTemplate.Remove("Version");
+            }
+
             $stepTemplate = Update-OctopusApiActionTemplate -ObjectId $stepTemplate.Id -Object $newStepTemplate;
             $result.UploadCount++;
+
         }
         else
         {

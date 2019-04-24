@@ -131,6 +131,7 @@ NestedModules = @(
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockClosedMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBlockOpenedMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildLogMessage.ps1",
+    "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildProblemMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityBuildStatusMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityImportDataMessage.ps1",
     "Cmdlets\Internal\TeamCity\ServiceMessages\Write-TeamCityProgressMessage.ps1",
