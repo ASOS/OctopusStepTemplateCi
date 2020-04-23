@@ -63,8 +63,8 @@ function Invoke-OctopusApiOperation
         return $cache.Item($cacheKey);
     }
 
-    # by default, only SSL3 and TLS 1.0 are supported.
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType] "Ssl3, Tls, Tls11, Tls12";
+    # SSLv3 no longer supported
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType] "Tls, Tls11, Tls12, Tls13";
 
     #write-host "Invoke-OctopusApiOperation";
     #write-host "    uri    = '$Uri'";
